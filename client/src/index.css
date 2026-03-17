@@ -251,4 +251,15 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Marquee RTL scrolling animation */
+  @keyframes marqueeRTL {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
+  }
+
+  /* Pause on hover */
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
 }

@@ -6,6 +6,7 @@
  * - Fonts: Amiri (headings), Cairo (body), Cormorant Garamond (English)
  */
 import Navbar from "@/components/Navbar";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import OccasionsSection from "@/components/OccasionsSection";
@@ -21,6 +22,7 @@ export default function Home() {
       className="min-h-screen"
       style={{ background: "#0D0B08", direction: "rtl" }}
     >
+      <AnnouncementBanner />
       <Navbar />
       <HeroSection />
       <ServicesSection />

@@ -22,11 +22,26 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [bannerHeight, setBannerHeight] = useState(40);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+      // Detect if banner is dismissed (height becomes 0)
+      const banner = document.querySelector('[data-banner]') as HTMLElement | null;
+      setBannerHeight(banner ? banner.offsetHeight : 0);
+    };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Also observe banner removal
+    const observer = new MutationObserver(() => {
+      const banner = document.querySelector('[data-banner]') as HTMLElement | null;
+      setBannerHeight(banner ? banner.offsetHeight : 0);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   const [location] = useLocation();
@@ -43,12 +58,16 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
+      className={`fixed right-0 left-0 z-50 transition-all duration-500 ${
         scrolled
           ? "bg-[#0D0B08]/95 backdrop-blur-md shadow-lg shadow-black/50"
           : "bg-transparent"
       }`}
-      style={{ borderBottom: scrolled ? "1px solid rgba(201,168,76,0.2)" : "none" }}
+      style={{
+        top: `${bannerHeight}px`,
+        borderBottom: scrolled ? "1px solid rgba(201,168,76,0.2)" : "none",
+        transition: "top 0.3s ease, background 0.5s ease",
+      }}
     >
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-20">
