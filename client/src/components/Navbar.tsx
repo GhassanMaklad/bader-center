@@ -6,6 +6,7 @@
  */
 import { useState, useEffect } from "react";
 import { Menu, X, Phone } from "lucide-react";
+import { Link, useLocation } from "wouter";
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
 
@@ -28,8 +29,14 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [location] = useLocation();
+
   const handleNavClick = (href: string) => {
     setIsOpen(false);
+    if (location !== "/") {
+      window.location.href = "/" + href;
+      return;
+    }
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
@@ -80,15 +87,13 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <a
-              href="https://wa.me/96522675826"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/request"
               className="btn-gold flex items-center gap-2 text-sm"
             >
               <Phone size={16} />
               اطلب الآن
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -123,14 +128,13 @@ export default function Navbar() {
                 {link.label}
               </button>
             ))}
-            <a
-              href="https://wa.me/96522675826"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-gold text-center mt-2"
+            <Link
+              href="/request"
+              className="btn-gold text-center mt-2 block"
+              onClick={() => setIsOpen(false)}
             >
-              تواصل معنا عبر واتساب
-            </a>
+              اطلب خدمة الآن
+            </Link>
           </div>
         </div>
       )}
