@@ -3,6 +3,7 @@
  * Design: Dark Arabian Opulence
  */
 import { Instagram, Facebook, Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "wouter";
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
 
@@ -103,6 +104,24 @@ export default function Footer() {
                   </button>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/catalog"
+                  className="text-[#7A6A50] hover:text-[#C9A84C] transition-colors text-sm"
+                  style={{ fontFamily: "'Cairo', sans-serif" }}
+                >
+                  كتالوج المنتجات
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/request"
+                  className="text-[#7A6A50] hover:text-[#C9A84C] transition-colors text-sm"
+                  style={{ fontFamily: "'Cairo', sans-serif" }}
+                >
+                  طلب خدمة
+                </Link>
+              </li>
             </ul>
           </div>
 

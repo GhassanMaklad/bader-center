@@ -102,6 +102,14 @@ export default function Navbar() {
                 <span className="absolute -bottom-1 right-0 w-0 h-px bg-[#C9A84C] transition-all duration-300 group-hover:w-full" />
               </button>
             ))}
+            <Link
+              href="/catalog"
+              className="text-[#D4C5A0] hover:text-[#C9A84C] transition-colors duration-300 text-sm font-medium relative group"
+              style={{ fontFamily: "'Cairo', sans-serif" }}
+            >
+              كتالوج
+              <span className="absolute -bottom-1 right-0 w-0 h-px bg-[#C9A84C] transition-all duration-300 group-hover:w-full" />
+            </Link>
           </div>
 
           {/* CTA */}
@@ -147,6 +155,14 @@ export default function Navbar() {
                 {link.label}
               </button>
             ))}
+            <Link
+              href="/catalog"
+              className="text-[#D4C5A0] hover:text-[#C9A84C] transition-colors text-base font-medium text-right py-2 block"
+              style={{ fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(201,168,76,0.1)" }}
+              onClick={() => setIsOpen(false)}
+            >
+              كتالوج المنتجات
+            </Link>
             <Link
               href="/request"
               className="btn-gold text-center mt-2 block"
