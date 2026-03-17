@@ -46,6 +46,7 @@ interface Product {
   nameEn: string;
   category: Category;
   price: string;
+  priceValue: number; // numeric KD value for sorting (0 = contact for price)
   priceNote?: string;
   image: string;
   badge?: string;
@@ -64,6 +65,7 @@ const products: Product[] = [
     nameEn: "Luxury Rose Dazza",
     category: "gifts",
     price: "من 45 د.ك",
+    priceValue: 45,
     priceNote: "حسب الحجم",
     image: INSTAGRAM_IMAGES.dazza,
     badge: "الأكثر طلباً",
@@ -79,6 +81,7 @@ const products: Product[] = [
     nameEn: "Ramadan Gift Box",
     category: "gifts",
     price: "من 25 د.ك",
+    priceValue: 25,
     priceNote: "يشمل التوصيل",
     image: INSTAGRAM_IMAGES.ramadan,
     badge: "موسمي",
@@ -94,6 +97,7 @@ const products: Product[] = [
     nameEn: "Luxury Green Gift Box",
     category: "gifts",
     price: "من 35 د.ك",
+    priceValue: 35,
     image: INSTAGRAM_IMAGES.greenBox,
     description: "صندوق هدايا أخضر فاخر مزين بالزهور والشرائط الذهبية — مثالي للأفراح والمناسبات",
     rating: 4,
@@ -106,6 +110,7 @@ const products: Product[] = [
     nameEn: "Custom Brand Boxes",
     category: "gifts",
     price: "من 8 د.ك / قطعة",
+    priceValue: 8,
     priceNote: "بالجملة متاح",
     image: INSTAGRAM_IMAGES.boxes,
     badge: "شركات",
@@ -121,6 +126,7 @@ const products: Product[] = [
     nameEn: "Dried Flowers Gift",
     category: "gifts",
     price: "من 18 د.ك",
+    priceValue: 18,
     image: INSTAGRAM_IMAGES.dazza,
     description: "ترتيب فني للورود المجففة مع تغليف فاخر — تدوم لسنوات كذكرى جميلة",
     rating: 4,
@@ -133,6 +139,7 @@ const products: Product[] = [
     nameEn: "Eid Premium Gift",
     category: "gifts",
     price: "من 30 د.ك",
+    priceValue: 30,
     image: INSTAGRAM_IMAGES.eidEngraving,
     badge: "عيد",
     badgeColor: "#7c3aed",
@@ -149,6 +156,7 @@ const products: Product[] = [
     nameEn: "Gold Honor Shield",
     category: "shields",
     price: "من 22 د.ك",
+    priceValue: 22,
     priceNote: "يشمل النقش",
     image: INSTAGRAM_IMAGES.product6,
     badge: "الأكثر مبيعاً",
@@ -164,6 +172,7 @@ const products: Product[] = [
     nameEn: "Crystal Luxury Shield",
     category: "shields",
     price: "من 35 د.ك",
+    priceValue: 35,
     image: INSTAGRAM_IMAGES.boxes,
     description: "درع كريستال شفاف مع قاعدة خشبية فاخرة ونقش ذهبي — للمناسبات الرسمية الكبرى",
     rating: 5,
@@ -176,6 +185,7 @@ const products: Product[] = [
     nameEn: "Arabic Calligraphy Shield",
     category: "shields",
     price: "من 28 د.ك",
+    priceValue: 28,
     image: INSTAGRAM_IMAGES.eidEngraving,
     badge: "حصري",
     badgeColor: "#b91c1c",
@@ -190,6 +200,7 @@ const products: Product[] = [
     nameEn: "Corporate Shield",
     category: "shields",
     price: "من 18 د.ك",
+    priceValue: 18,
     priceNote: "خصم للكميات",
     image: INSTAGRAM_IMAGES.greenBox,
     description: "درع مؤسسي بشعار الشركة وبيانات الموظف — مثالي لحفلات التخرج والتكريم",
@@ -205,6 +216,7 @@ const products: Product[] = [
     nameEn: "Luxury Catering Stand",
     category: "catering",
     price: "تواصل للسعر",
+    priceValue: 0,
     image: INSTAGRAM_IMAGES.booth,
     badge: "خدمة كاملة",
     badgeColor: "#0f766e",
@@ -219,6 +231,7 @@ const products: Product[] = [
     nameEn: "National Day Booth",
     category: "catering",
     price: "تواصل للسعر",
+    priceValue: 0,
     image: INSTAGRAM_IMAGES.national,
     badge: "وطني",
     badgeColor: "#166534",
@@ -233,6 +246,7 @@ const products: Product[] = [
     nameEn: "Luxury Hospitality Table",
     category: "catering",
     price: "من 120 د.ك",
+    priceValue: 120,
     image: INSTAGRAM_IMAGES.ramadan,
     description: "طاولة ضيافة مجهزة بالكامل مع مفارش فاخرة وأدوات تقديم ذهبية",
     rating: 4,
@@ -247,6 +261,7 @@ const products: Product[] = [
     nameEn: "Qargian 2026 Package",
     category: "occasions",
     price: "من 15 د.ك",
+    priceValue: 15,
     priceNote: "للطفل الواحد",
     image: INSTAGRAM_IMAGES.qargian,
     badge: "2026",
@@ -262,6 +277,7 @@ const products: Product[] = [
     nameEn: "Graduation Memory Package",
     category: "occasions",
     price: "من 40 د.ك",
+    priceValue: 40,
     image: INSTAGRAM_IMAGES.product10,
     description: "باقة تخرج شاملة: درع + بوكس هدايا + بطاقة تهنئة بالخط العربي",
     rating: 5,
@@ -276,6 +292,7 @@ const products: Product[] = [
     nameEn: "Thread Calligraphy Art",
     category: "calligraphy",
     price: "من 55 د.ك",
+    priceValue: 55,
     image: INSTAGRAM_IMAGES.calligraphy,
     badge: "فن حصري",
     badgeColor: "#b91c1c",
@@ -290,6 +307,7 @@ const products: Product[] = [
     nameEn: "Custom Laser Engraving",
     category: "calligraphy",
     price: "من 12 د.ك",
+    priceValue: 12,
     priceNote: "حسب الحجم",
     image: INSTAGRAM_IMAGES.product6,
     description: "نقش ليزر دقيق على الخشب أو المعدن أو الكريستال — أي نص أو شعار تريده",
@@ -477,7 +495,7 @@ function ProductCard({ product }: { product: Product }) {
 export default function Catalog() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "rating">("default");
+  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
 
   const filtered = useMemo(() => {
     let result = products;
@@ -501,6 +519,22 @@ export default function Catalog() {
     // Sort
     if (sortBy === "rating") {
       result = [...result].sort((a, b) => b.rating - a.rating);
+    } else if (sortBy === "price-asc") {
+      result = [...result].sort((a, b) => {
+        // Items with priceValue=0 ("تواصل للسعر") go to the end
+        if (a.priceValue === 0 && b.priceValue === 0) return 0;
+        if (a.priceValue === 0) return 1;
+        if (b.priceValue === 0) return -1;
+        return a.priceValue - b.priceValue;
+      });
+    } else if (sortBy === "price-desc") {
+      result = [...result].sort((a, b) => {
+        // Items with priceValue=0 ("تواصل للسعر") go to the end
+        if (a.priceValue === 0 && b.priceValue === 0) return 0;
+        if (a.priceValue === 0) return 1;
+        if (b.priceValue === 0) return -1;
+        return b.priceValue - a.priceValue;
+      });
     }
 
     return result;
@@ -653,6 +687,8 @@ export default function Catalog() {
                 }}
               >
                 <option value="default">الترتيب الافتراضي</option>
+                <option value="price-asc">السعر: من الأقل للأعلى</option>
+                <option value="price-desc">السعر: من الأعلى للأقل</option>
                 <option value="rating">الأعلى تقييماً</option>
               </select>
             </div>
