@@ -1,0 +1,20 @@
+CREATE TABLE `products` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`nameEn` varchar(255) DEFAULT '',
+	`category` enum('gifts','shields','catering','occasions','calligraphy') NOT NULL,
+	`price` varchar(100) NOT NULL,
+	`priceValue` decimal(10,2) DEFAULT '0',
+	`priceNote` varchar(100),
+	`image` text NOT NULL,
+	`badge` varchar(50),
+	`badgeColor` varchar(20),
+	`description` text NOT NULL,
+	`rating` int NOT NULL DEFAULT 5,
+	`inStock` boolean NOT NULL DEFAULT true,
+	`tags` text NOT NULL DEFAULT ('[]'),
+	`sortOrder` int NOT NULL DEFAULT 0,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `products_id` PRIMARY KEY(`id`)
+);

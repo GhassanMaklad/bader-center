@@ -8,10 +8,11 @@
  */
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
-import { Search, Filter, ShoppingBag, ArrowRight, Star, Phone } from "lucide-react";
+import { Search, Filter, ShoppingBag, ArrowRight, Star, Phone, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
+import { trpc } from "@/lib/trpc";
 
 // ─── Product Data ──────────────────────────────────────────────────────────────
 const INSTAGRAM_IMAGES = {
@@ -318,13 +319,14 @@ const products: Product[] = [
 ];
 
 // ─── Category Config ────────────────────────────────────────────────────────────
-const categories: { id: Category; label: string; icon: string; count: number }[] = [
-  { id: "all",        label: "جميع المنتجات", icon: "✦",  count: products.length },
-  { id: "gifts",      label: "الهدايا والدزات", icon: "🎁", count: products.filter(p => p.category === "gifts").length },
-  { id: "shields",    label: "الدروع والتكريم", icon: "🏆", count: products.filter(p => p.category === "shields").length },
-  { id: "catering",   label: "الكيترنج والبوثات", icon: "🍽️", count: products.filter(p => p.category === "catering").length },
-  { id: "occasions",  label: "المناسبات الخاصة", icon: "🎊", count: products.filter(p => p.category === "occasions").length },
-  { id: "calligraphy",label: "الخط والنقش", icon: "✍️", count: products.filter(p => p.category === "calligraphy").length },
+// Category config is computed dynamically inside the component based on DB data
+const CATEGORY_DEFS = [
+  { id: "all" as Category,        label: "جميع المنتجات",    icon: "✦"  },
+  { id: "gifts" as Category,      label: "الهدايا والدزات",  icon: "🎁" },
+  { id: "shields" as Category,    label: "الدروع والتكريم",  icon: "🏆" },
+  { id: "catering" as Category,   label: "الكيترنج والبوثات",icon: "🍽️" },
+  { id: "occasions" as Category,  label: "المناسبات الخاصة", icon: "🎊" },
+  { id: "calligraphy" as Category,label: "الخط والنقش",      icon: "✍️" },
 ];
 
 // ─── Product Card ───────────────────────────────────────────────────────────────
@@ -497,8 +499,32 @@ export default function Catalog() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
 
+  // Fetch products from database
+  const { data: dbProducts, isLoading: productsLoading } = trpc.products.list.useQuery();
+
+  // Map DB products to the Product interface
+  const allProducts: Product[] = useMemo(() => {
+    if (!dbProducts) return [];
+    return dbProducts.map((p) => ({
+      id: p.id,
+      name: p.name,
+      nameEn: p.nameEn ?? "",
+      category: p.category as Category,
+      price: p.price,
+      priceValue: Number(p.priceValue ?? 0),
+      priceNote: p.priceNote ?? undefined,
+      image: p.image,
+      badge: p.badge ?? undefined,
+      badgeColor: p.badgeColor ?? undefined,
+      description: p.description,
+      rating: p.rating,
+      inStock: p.inStock,
+      tags: p.tags ? JSON.parse(p.tags) : [],
+    }));
+  }, [dbProducts]);
+
   const filtered = useMemo(() => {
-    let result = products;
+    let result = allProducts;
 
     // Category filter
     if (activeCategory !== "all") {
@@ -538,7 +564,27 @@ export default function Catalog() {
     }
 
     return result;
-  }, [activeCategory, searchQuery, sortBy]);
+  }, [activeCategory, searchQuery, sortBy, allProducts]);
+
+  // Build category tabs with live counts from DB
+  const categories = useMemo(() =>
+    CATEGORY_DEFS.map((def) => ({
+      ...def,
+      count: def.id === "all" ? allProducts.length : allProducts.filter((p) => p.category === def.id).length,
+    })),
+    [allProducts]
+  );
+
+  if (productsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0D0B08" }}>
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 animate-spin text-yellow-500 mx-auto mb-4" />
+          <p style={{ color: "#A09070", fontFamily: "'Cairo', sans-serif" }}>جاري تحميل الكتالوج...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen" style={{ background: "#0D0B08", direction: "rtl" }}>
@@ -588,7 +634,7 @@ export default function Catalog() {
           {/* Stats */}
           <div className="flex justify-center gap-12 mt-10">
             {[
-              { value: `${products.length}+`, label: "منتج متوفر" },
+              { value: `${allProducts.length}+`, label: "منتج متوفر" },
               { value: "20+", label: "عاماً من الخبرة" },
               { value: "100%", label: "رضا العملاء" },
             ].map((s) => (

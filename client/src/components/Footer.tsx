@@ -122,6 +122,15 @@ export default function Footer() {
                   طلب خدمة
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/admin"
+                  className="text-[#5A4A30] hover:text-[#C9A84C] transition-colors text-xs"
+                  style={{ fontFamily: "'Cairo', sans-serif" }}
+                >
+                  لوحة التحكم
+                </Link>
+              </li>
             </ul>
           </div>
 

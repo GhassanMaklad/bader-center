@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1773753794467,
+      "tag": "0000_high_payback",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1773753881619,
+      "tag": "0001_curious_lorna_dane",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1773754814070,
+      "tag": "0002_motionless_rockslide",
+      "breakpoints": true
+    }
+  ]
+}
