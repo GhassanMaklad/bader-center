@@ -22,14 +22,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import {
+  Bell,
+  CheckCircle,
   Edit,
+  ImagePlus,
   Loader2,
   LogOut,
   Package,
+  Phone,
   Plus,
   ShieldCheck,
   Star,
   Trash2,
+  Upload,
+  X,
+  XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -95,8 +102,43 @@ export default function AdminDashboard() {
   const [form, setForm] = useState<ProductForm>(emptyForm);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<"products" | "requests">("products");
+
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const { data: products, refetch, isLoading } = trpc.products.list.useQuery();
+  const { data: serviceRequests, refetch: refetchRequests, isLoading: requestsLoading } = trpc.serviceRequests.list.useQuery();
+
+  const updateStatusMutation = trpc.serviceRequests.updateStatus.useMutation({
+    onSuccess: () => { toast.success("تم تحديث حالة الطلب"); refetchRequests(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
+
+  const newRequestsCount = serviceRequests?.filter(r => r.status === "new").length ?? 0;
+
+  const uploadImageMutation = trpc.upload.productImage.useMutation({
+    onSuccess: ({ url }) => {
+      setForm((prev) => ({ ...prev, image: url }));
+      toast.success("تم رفع الصورة بنجاح!");
+    },
+    onError: (e) => toast.error("فشل رفع الصورة: " + e.message),
+    onSettled: () => setUploadingImage(false),
+  });
+
+  const handleImageFile = (file: File) => {
+    if (!file) return;
+    setUploadingImage(true);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = (e.target?.result as string).split(",")[1];
+      uploadImageMutation.mutate({
+        filename: file.name,
+        contentType: file.type,
+        dataBase64: base64,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   const createMutation = trpc.products.create.useMutation({
     onSuccess: () => {
@@ -225,7 +267,7 @@ export default function AdminDashboard() {
             <h1 className="text-lg font-bold text-yellow-400" style={{ fontFamily: "'Amiri', serif" }}>
               لوحة تحكم مركز بدر
             </h1>
-            <p className="text-xs text-gray-400">إدارة كتالوج المنتجات</p>
+            <p className="text-xs text-gray-400">إدارة الموقع والطلبات</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -249,6 +291,42 @@ export default function AdminDashboard() {
           </Button>
         </div>
       </header>
+
+      {/* Tab Navigation */}
+      <div className="border-b px-6" style={{ borderColor: "rgba(201,168,76,0.2)" }}>
+        <div className="flex gap-1">
+          <button
+            onClick={() => setActiveTab("products")}
+            className="px-5 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-2"
+            style={{
+              color: activeTab === "products" ? "#C9A84C" : "#6B5A3E",
+              borderBottom: activeTab === "products" ? "2px solid #C9A84C" : "2px solid transparent",
+            }}
+          >
+            <Package className="w-4 h-4" />
+            المنتجات
+          </button>
+          <button
+            onClick={() => setActiveTab("requests")}
+            className="px-5 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-2 relative"
+            style={{
+              color: activeTab === "requests" ? "#C9A84C" : "#6B5A3E",
+              borderBottom: activeTab === "requests" ? "2px solid #C9A84C" : "2px solid transparent",
+            }}
+          >
+            <Bell className="w-4 h-4" />
+            طلبات الخدمة
+            {newRequestsCount > 0 && (
+              <span
+                className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center"
+                style={{ background: "#ef4444", color: "#fff" }}
+              >
+                {newRequestsCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
 
       <main className="p-6 max-w-7xl mx-auto">
         {/* Stats Row */}
@@ -300,6 +378,9 @@ export default function AdminDashboard() {
           </Button>
         </div>
 
+        {/* ─── Products Tab ─────────────────────────────────────────────── */}
+        {activeTab === "products" && (
+        <>
         {/* Products Table */}
         {isLoading ? (
           <div className="flex justify-center py-20">
@@ -409,6 +490,131 @@ export default function AdminDashboard() {
             )}
           </div>
         )}
+        </>
+        )}
+
+        {/* ─── Service Requests Tab ─────────────────────────────────────── */}
+        {activeTab === "requests" && (
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-yellow-400" style={{ fontFamily: "'Amiri', serif" }}>
+                طلبات الخدمة الواردة
+              </h2>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetchRequests()}
+                className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10"
+              >
+                تحديث
+              </Button>
+            </div>
+
+            {requestsLoading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
+              </div>
+            ) : !serviceRequests?.length ? (
+              <div className="text-center py-20 text-gray-500">
+                <Bell className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p className="text-lg">لا توجد طلبات حتى الآن</p>
+                <p className="text-sm mt-1">ستظهر الطلبات هنا عند إرسالها من صفحة طلب الخدمة</p>
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {serviceRequests.map((req) => {
+                  const statusColors: Record<string, string> = {
+                    new: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+                    contacted: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+                    completed: "bg-green-500/20 text-green-300 border-green-500/30",
+                    cancelled: "bg-red-500/20 text-red-300 border-red-500/30",
+                  };
+                  const statusLabels: Record<string, string> = {
+                    new: "جديد",
+                    contacted: "تم التواصل",
+                    completed: "مكتمل",
+                    cancelled: "ملغي",
+                  };
+                  return (
+                    <div
+                      key={req.id}
+                      className="rounded-xl p-5"
+                      style={{ background: "#1a1508", border: "1px solid rgba(201,168,76,0.2)" }}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-3">
+                            <h3 className="text-white font-bold text-lg">{req.name}</h3>
+                            <span className={`text-xs px-2 py-1 rounded-full border ${statusColors[req.status]}`}>
+                              {statusLabels[req.status]}
+                            </span>
+                            {req.status === "new" && (
+                              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                            )}
+                          </div>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                            <div className="flex items-center gap-2 text-gray-300">
+                              <Phone className="w-3.5 h-3.5 text-yellow-500" />
+                              <a href={`tel:${req.phone}`} className="hover:text-yellow-400 transition-colors">{req.phone}</a>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-300">
+                              <span className="text-yellow-500">🎉</span>
+                              {req.occasionLabel}
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-300">
+                              <span className="text-yellow-500">📅</span>
+                              {req.date}
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-300">
+                              <span className="text-yellow-500">💰</span>
+                              {req.budgetLabel}
+                            </div>
+                            {req.notes && (
+                              <div className="flex items-start gap-2 text-gray-400 col-span-2">
+                                <span className="text-yellow-500 mt-0.5">📝</span>
+                                <span className="text-xs">{req.notes}</span>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-600 mt-3">
+                            {new Date(req.createdAt).toLocaleString("ar-KW", { dateStyle: "medium", timeStyle: "short" })}
+                          </p>
+                        </div>
+                        {/* Actions */}
+                        <div className="flex flex-row sm:flex-col gap-2 flex-shrink-0">
+                          <a
+                            href={`https://wa.me/${req.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`مرحباً ${req.name}، بخصوص طلبك لمناسبة ${req.occasionLabel}...`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                            style={{ background: "rgba(37,211,102,0.15)", color: "#25D366", border: "1px solid rgba(37,211,102,0.3)" }}
+                          >
+                            <Phone className="w-3.5 h-3.5" />
+                            واتساب
+                          </a>
+                          <Select
+                            value={req.status}
+                            onValueChange={(v) => updateStatusMutation.mutate({ id: req.id, status: v as "new" | "contacted" | "completed" | "cancelled" })}
+                          >
+                            <SelectTrigger className="h-8 text-xs w-32" style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent style={{ background: "#1a1508", borderColor: "rgba(201,168,76,0.3)" }}>
+                              <SelectItem value="new">جديد</SelectItem>
+                              <SelectItem value="contacted">تم التواصل</SelectItem>
+                              <SelectItem value="completed">مكتمل</SelectItem>
+                              <SelectItem value="cancelled">ملغي</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
       {/* Add/Edit Dialog */}
@@ -490,19 +696,77 @@ export default function AdminDashboard() {
                 style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
               />
             </div>
-            {/* Image URL */}
-            <div className="space-y-1 md:col-span-2">
-              <Label className="text-gray-300 text-sm">رابط الصورة (CDN URL) *</Label>
-              <Input
-                value={form.image}
-                onChange={(e) => setForm({ ...form, image: e.target.value })}
-                placeholder="https://..."
-                dir="ltr"
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
-              />
-              {form.image && (
-                <img src={form.image} alt="preview" className="w-20 h-20 rounded-lg object-cover mt-1" />
-              )}
+            {/* Image Upload */}
+            <div className="space-y-2 md:col-span-2">
+              <Label className="text-gray-300 text-sm">صورة المنتج *</Label>
+              <div className="flex gap-3 items-start">
+                {/* Upload button */}
+                <label
+                  className="flex flex-col items-center justify-center w-28 h-28 rounded-xl cursor-pointer transition-all duration-200 flex-shrink-0"
+                  style={{
+                    background: uploadingImage ? "rgba(201,168,76,0.05)" : "rgba(201,168,76,0.08)",
+                    border: "2px dashed rgba(201,168,76,0.4)",
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file) handleImageFile(file);
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageFile(file);
+                    }}
+                    disabled={uploadingImage}
+                  />
+                  {uploadingImage ? (
+                    <Loader2 className="w-6 h-6 text-yellow-500 animate-spin" />
+                  ) : (
+                    <>
+                      <ImagePlus className="w-6 h-6 text-yellow-500 mb-1" />
+                      <span className="text-xs text-yellow-600 text-center leading-tight">ارفع صورة<br/>أو اسحبها</span>
+                    </>
+                  )}
+                </label>
+
+                {/* Preview + URL input */}
+                <div className="flex-1 space-y-2">
+                  {form.image && (
+                    <div className="relative inline-block">
+                      <img
+                        src={form.image}
+                        alt="preview"
+                        className="w-28 h-28 rounded-xl object-cover"
+                        style={{ border: "1px solid rgba(201,168,76,0.3)" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, image: "" })}
+                        className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{ background: "#ef4444" }}
+                      >
+                        <X className="w-3 h-3 text-white" />
+                      </button>
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <p className="text-xs text-gray-500">أو الصق رابط URL مباشرة:</p>
+                    <Input
+                      value={form.image}
+                      onChange={(e) => setForm({ ...form, image: e.target.value })}
+                      placeholder="https://..."
+                      dir="ltr"
+                      style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff", fontSize: "0.75rem" }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <p className="text-xs text-gray-600">الأحجام المدعومة: JPEG, PNG, WebP, GIF — حد أقصى 5MB</p>
             </div>
             {/* Description */}
             <div className="space-y-1 md:col-span-2">

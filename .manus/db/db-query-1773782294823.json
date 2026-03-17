@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `service_requests` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `name` VARCHAR(255) NOT NULL,\n  `phone` VARCHAR(30) NOT NULL,\n  `occasion` VARCHAR(64) NOT NULL,\n  `occasionLabel` VARCHAR(128) NOT NULL,\n  `date` VARCHAR(20) NOT NULL,\n  `budget` VARCHAR(64) NOT NULL,\n  `budgetLabel` VARCHAR(128) NOT NULL,\n  `notes` TEXT,\n  `status` ENUM('new', 'contacted', 'completed', 'cancelled') NOT NULL DEFAULT 'new',\n  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute CREATE TABLE IF NOT EXISTS `service_requests` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `name` VARCHAR(255) NOT NULL,\n  `phone` VARCHAR(30) NOT NULL,\n  `occasion` VARCHAR(64) NOT NULL,\n  `occasionLabel` VARCHAR(128) NOT NULL,\n  `date` VARCHAR(20) NOT NULL,\n  `budget` VARCHAR(64) NOT NULL,\n  `budgetLabel` VARCHAR(128) NOT NULL,\n  `notes` TEXT,\n  `status` ENUM('new', 'contacted', 'completed', 'cancelled') NOT NULL DEFAULT 'new',\n  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1920
+}

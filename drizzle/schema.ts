@@ -44,3 +44,23 @@ export const products = mysqlTable("products", {
 
 export type Product = typeof products.$inferSelect;
 export type InsertProduct = typeof products.$inferInsert;
+
+/**
+ * Service requests submitted from the /request page.
+ */
+export const serviceRequests = mysqlTable("service_requests", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 30 }).notNull(),
+  occasion: varchar("occasion", { length: 64 }).notNull(),
+  occasionLabel: varchar("occasionLabel", { length: 128 }).notNull(),
+  date: varchar("date", { length: 20 }).notNull(),
+  budget: varchar("budget", { length: 64 }).notNull(),
+  budgetLabel: varchar("budgetLabel", { length: 128 }).notNull(),
+  notes: text("notes"),
+  status: mysqlEnum("status", ["new", "contacted", "completed", "cancelled"]).default("new").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ServiceRequest = typeof serviceRequests.$inferSelect;
+export type InsertServiceRequest = typeof serviceRequests.$inferInsert;

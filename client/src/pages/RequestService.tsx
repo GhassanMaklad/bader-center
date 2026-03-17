@@ -18,6 +18,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 const LOGO_URL =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
@@ -260,6 +262,13 @@ export default function RequestService() {
   const set = (field: keyof FormData) => (value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
+  const submitMutation = trpc.serviceRequests.submit.useMutation({
+    onError: (e) => {
+      console.warn("[ServiceRequest] DB save failed:", e.message);
+      // Non-blocking: WhatsApp still opens even if DB save fails
+    },
+  });
+
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     if (!form.name.trim()) newErrors.name = "الاسم مطلوب";
@@ -275,13 +284,26 @@ export default function RequestService() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     const occasionLabel = OCCASIONS.find((o) => o.value === form.occasion)?.label || form.occasion;
     const budgetLabel = BUDGETS.find((b) => b.value === form.budget)?.label || form.budget;
 
+    // Save to DB and notify owner (fire-and-forget, non-blocking)
+    submitMutation.mutate({
+      name: form.name,
+      phone: form.phone,
+      occasion: form.occasion,
+      occasionLabel,
+      date: form.date,
+      budget: form.budget,
+      budgetLabel,
+      notes: form.notes,
+    });
+
+    // Open WhatsApp with pre-filled message
     const message = [
       "🌟 *طلب خدمة جديد — مركز بدر*",
       "",

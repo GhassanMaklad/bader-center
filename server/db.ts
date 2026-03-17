@@ -1,6 +1,6 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertProduct, InsertUser, products, users } from "../drizzle/schema";
+import { InsertProduct, InsertServiceRequest, InsertUser, products, serviceRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -127,4 +127,28 @@ export async function toggleProductStock(id: number, inStock: boolean) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(products).set({ inStock }).where(eq(products.id, id));
+}
+
+// ─── Service Request Queries ──────────────────────────────────────────────────
+
+export async function createServiceRequest(data: InsertServiceRequest) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(serviceRequests).values(data);
+  return result;
+}
+
+export async function getAllServiceRequests() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(serviceRequests).orderBy(desc(serviceRequests.createdAt));
+}
+
+export async function updateServiceRequestStatus(
+  id: number,
+  status: "new" | "contacted" | "completed" | "cancelled"
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(serviceRequests).set({ status }).where(eq(serviceRequests.id, id));
 }
