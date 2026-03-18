@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
 import { storagePut } from "./storage";
+import { invokeLLM } from "./_core/llm";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
@@ -18,7 +19,7 @@ import {
   updateServiceRequestStatus,
 } from "./db";
 
-// Admin-only middleware
+// ─── Admin middleware ──────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") {
     throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
@@ -26,7 +27,7 @@ const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   return next({ ctx });
 });
 
-// Product input schema
+// ─── Product input schema ──────────────────────────────────────────────────────
 const productInput = z.object({
   name: z.string().min(1),
   nameEn: z.string().optional().default(""),
@@ -44,8 +45,53 @@ const productInput = z.object({
   sortOrder: z.number().default(0),
 });
 
+// ─── Bader Center AI knowledge base ───────────────────────────────────────────
+const BADER_SYSTEM_PROMPT = `أنت مساعد ذكي لـ "مركز بدر" — شركة كويتية فاخرة متخصصة في تنظيم المناسبات والهدايا والكيترنج منذ عام 2004، تقع في الفحيحيل، الكويت.
+
+معلومات الشركة:
+- الاسم: مركز بدر (Bader Center)
+- الموقع: الفحيحيل، الكويت
+- الهاتف / واتساب: 22675826 (الكويت)
+- الإنستغرام: @badercenterco
+- سنوات الخبرة: أكثر من 20 عاماً (منذ 2004)
+- ساعات العمل: السبت–الخميس 9 صباحاً–10 مساءً، الجمعة 4 مساءً–10 مساءً
+
+الخدمات الرئيسية:
+1. الكيترنج والبوثات: تجهيز بوثات الكيترنج الفاخرة للمناسبات والفعاليات، توصيل لجميع مناطق الكويت
+2. الهدايا والدزات: دزات الورود، هدايا رمضان، هدايا الأعياد، بوكسات مخصصة، تغليف فاخر
+3. الدروع والتكريم: دروع تكريمية فاخرة مخصصة، شهادات تقدير، هدايا المؤسسات
+4. الأفراح والاستقبالات: تجهيز حفلات الأعراس والاستقبالات بالكامل
+5. الخط العربي والنقش: لوحات خط عربي يدوي، نقش على الهدايا والدروع
+6. المناسبات الوطنية: تجهيزات العيد الوطني الكويتي، قرقيعان، رمضان، الأعياد
+
+المنتجات والأسعار التقريبية:
+- دزة الورود الفاخرة: من 45 د.ك
+- هبّة رمضان: من 35 د.ك
+- عيدية العيد الذهبية: من 25 د.ك
+- درع تكريمي فاخر: من 30 د.ك
+- درع بلوري مخصص: من 55 د.ك
+- بوكس هدية مخصص: من 20 د.ك
+- لوحة خط عربي بالخيوط: من 120 د.ك
+- تجهيز بوث كيترنج: تواصل للسعر
+- قرقيعان 2026: من 15 د.ك
+
+المناسبات التي يخدمها المركز:
+الأعراس والأفراح، حفلات التخرج، الأعياد الوطنية، رمضان والعيد، قرقيعان، حفلات الشركات، مناسبات التكريم، المؤتمرات والفعاليات، حفلات الميلاد، الاحتفالات العائلية
+
+تعليمات الرد:
+- تحدث دائماً بالعربية الفصيحة السهلة (يمكن استخدام بعض العبارات الكويتية)
+- كن ودوداً ومحترفاً وموجزاً
+- إذا سأل العميل عن السعر، أعطه السعر التقريبي وشجعه على التواصل للحصول على عرض دقيق
+- إذا أراد العميل طلب خدمة، وجّهه إلى صفحة طلب الخدمة: /request أو واتساب: 22675826
+- لا تخترع معلومات غير موجودة في هذا الملف
+- إذا لم تعرف الإجابة، قل ذلك بأدب وشجّع على التواصل المباشر
+- الردود يجب أن تكون قصيرة ومفيدة (3-5 جمل كحد أقصى)
+`;
+
+// ─── App Router ────────────────────────────────────────────────────────────────
 export const appRouter = router({
   system: systemRouter,
+
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -55,6 +101,48 @@ export const appRouter = router({
     }),
   }),
 
+  // ─── AI Chatbot ─────────────────────────────────────────────────────────────
+  chatbot: router({
+    chat: publicProcedure
+      .input(
+        z.object({
+          messages: z
+            .array(
+              z.object({
+                role: z.enum(["user", "assistant"]),
+                content: z.string().min(1).max(1000),
+              })
+            )
+            .min(1)
+            .max(20),
+        })
+      )
+      .mutation(async ({ input }) => {
+        try {
+          const result = await invokeLLM({
+            messages: [
+              { role: "system", content: BADER_SYSTEM_PROMPT },
+              ...input.messages.map((m) => ({ role: m.role, content: m.content })),
+            ],
+            maxTokens: 400,
+          });
+
+          const content = result.choices[0]?.message?.content;
+          const text =
+            typeof content === "string"
+              ? content
+              : "عذراً، حدث خطأ. يرجى المحاولة مجدداً.";
+          return { reply: text };
+        } catch (err) {
+          console.error("[Chatbot] LLM error:", err);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "عذراً، الخدمة غير متاحة حالياً. يرجى التواصل عبر واتساب.",
+          });
+        }
+      }),
+  }),
+
   // ─── Image Upload (admin only) ─────────────────────────────────────────────
   upload: router({
     productImage: adminProcedure
@@ -62,11 +150,10 @@ export const appRouter = router({
         z.object({
           filename: z.string().min(1),
           contentType: z.string().min(1),
-          dataBase64: z.string().min(1), // base64-encoded file bytes
+          dataBase64: z.string().min(1),
         })
       )
       .mutation(async ({ input }) => {
-        // Validate content type
         const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
         if (!allowed.includes(input.contentType)) {
           throw new TRPCError({
@@ -74,20 +161,16 @@ export const appRouter = router({
             message: "نوع الملف غير مدعوم. يُسمح فقط بـ JPEG, PNG, WebP, GIF",
           });
         }
-
-        // Validate size (max 5MB base64 ≈ 3.75MB actual)
         if (input.dataBase64.length > 7_000_000) {
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "حجم الصورة يتجاوز الحد المسموح (5MB)",
           });
         }
-
         const buffer = Buffer.from(input.dataBase64, "base64");
         const ext = input.filename.split(".").pop() ?? "jpg";
         const randomSuffix = Math.random().toString(36).substring(2, 10);
         const key = `products/${Date.now()}-${randomSuffix}.${ext}`;
-
         const { url } = await storagePut(key, buffer, input.contentType);
         return { url };
       }),
@@ -107,20 +190,18 @@ export const appRouter = router({
         return product;
       }),
 
-    create: adminProcedure
-      .input(productInput)
-      .mutation(async ({ input }) => {
-        await createProduct({
-          ...input,
-          priceValue: String(input.priceValue),
-          nameEn: input.nameEn ?? "",
-          tags: input.tags ?? null,
-          badge: input.badge ?? null,
-          badgeColor: input.badgeColor ?? null,
-          priceNote: input.priceNote ?? null,
-        });
-        return { success: true };
-      }),
+    create: adminProcedure.input(productInput).mutation(async ({ input }) => {
+      await createProduct({
+        ...input,
+        priceValue: String(input.priceValue),
+        nameEn: input.nameEn ?? "",
+        tags: input.tags ?? null,
+        badge: input.badge ?? null,
+        badgeColor: input.badgeColor ?? null,
+        priceNote: input.priceNote ?? null,
+      });
+      return { success: true };
+    }),
 
     update: adminProcedure
       .input(z.object({ id: z.number(), data: productInput.partial() }))
@@ -150,7 +231,6 @@ export const appRouter = router({
 
   // ─── Service Requests ──────────────────────────────────────────────────────
   serviceRequests: router({
-    // Public: submit a new service request and notify the owner
     submit: publicProcedure
       .input(
         z.object({
@@ -165,7 +245,6 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        // Save to database
         await createServiceRequest({
           name: input.name,
           phone: input.phone,
@@ -178,7 +257,6 @@ export const appRouter = router({
           status: "new",
         });
 
-        // Send notification to owner (non-blocking)
         notifyOwner({
           title: `🌟 طلب خدمة جديد — ${input.name}`,
           content: [
@@ -196,12 +274,10 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    // Admin: list all service requests
     list: adminProcedure.query(async () => {
       return getAllServiceRequests();
     }),
 
-    // Admin: update request status
     updateStatus: adminProcedure
       .input(
         z.object({

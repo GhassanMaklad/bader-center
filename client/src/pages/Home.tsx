@@ -15,6 +15,7 @@ import StatsSection from "@/components/StatsSection";
 import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import ChatbotWidget from "@/components/ChatbotWidget";
 
 export default function Home() {
   return (
@@ -32,6 +33,9 @@ export default function Home() {
       <AboutSection />
       <ContactSection />
       <Footer />
+
+      {/* AI Chatbot Widget */}
+      <ChatbotWidget />
 
       {/* Floating WhatsApp Button */}
       <a
