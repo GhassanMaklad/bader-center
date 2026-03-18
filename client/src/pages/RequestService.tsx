@@ -303,8 +303,8 @@ export default function RequestService() {
       notes: form.notes,
     });
 
-    // Open WhatsApp with pre-filled message
-    const message = [
+    // 1️⃣ Send request to Bader Center (owner)
+    const ownerMessage = [
       "🌟 *طلب خدمة جديد — مركز بدر*",
       "",
       `👤 *الاسم:* ${form.name}`,
@@ -316,11 +316,50 @@ export default function RequestService() {
       "",
       "_تم الإرسال من موقع مركز بدر_",
     ]
-      .filter((l) => l !== undefined)
+      .filter((l) => l !== "")
       .join("\n");
 
-    const encoded = encodeURIComponent(message);
-    window.open(`https://wa.me/96522675826?text=${encoded}`, "_blank");
+    window.open(`https://wa.me/96522675826?text=${encodeURIComponent(ownerMessage)}`, "_blank");
+
+    // 2️⃣ Build confirmation message for the customer
+    // Normalize phone: strip spaces/dashes, ensure it starts with country code
+    const rawPhone = form.phone.replace(/[\s\-]/g, "");
+    const customerPhone = rawPhone.startsWith("+")
+      ? rawPhone.replace("+", "")
+      : rawPhone.startsWith("00")
+      ? rawPhone.replace("00", "")
+      : rawPhone.startsWith("0")
+      ? `965${rawPhone.slice(1)}`
+      : `965${rawPhone}`;
+
+    const confirmationMessage = [
+      `✨ أهلاً ${form.name}،`,
+      "",
+      "شكراً لتواصلك مع *مركز بدر* 🌟",
+      "تم استلام طلبك بنجاح، وسيتواصل معك فريقنا في أقرب وقت ممكن.",
+      "",
+      "📋 *ملخص طلبك:*",
+      `🎉 المناسبة: ${occasionLabel}`,
+      `📅 التاريخ: ${form.date}`,
+      `💰 الميزانية: ${budgetLabel}`,
+      form.notes ? `📝 ملاحظات: ${form.notes}` : "",
+      "",
+      "━━━━━━━━━━━━━━━━━━━━",
+      "🏪 *مركز بدر — الفحيحيل، الكويت*",
+      "📞 22675826 | منذ 2004",
+      "━━━━━━━━━━━━━━━━━━━━",
+    ]
+      .filter((l) => l !== "")
+      .join("\n");
+
+    // Open WhatsApp to send confirmation to customer (slight delay so both tabs open)
+    setTimeout(() => {
+      window.open(
+        `https://wa.me/${customerPhone}?text=${encodeURIComponent(confirmationMessage)}`,
+        "_blank"
+      );
+    }, 800);
+
     setSubmitted(true);
   };
 
@@ -356,11 +395,45 @@ export default function RequestService() {
           </h1>
           <div className="gold-divider max-w-xs mx-auto mb-6" />
           <p
-            className="text-[#A09070] text-lg mb-8 leading-relaxed"
+            className="text-[#A09070] text-lg mb-6 leading-relaxed"
             style={{ fontFamily: "'Cairo', sans-serif" }}
           >
-            شكراً لك! سيتواصل معك فريق مركز بدر عبر واتساب في أقرب وقت ممكن لمناقشة تفاصيل مناسبتك.
+            شكراً لك! تم إرسال طلبك إلى مركز بدر، كما فُتح واتساب لإرسال رسالة تأكيد إليك على رقمك المسجّل.
           </p>
+
+          {/* Confirmation steps */}
+          <div
+            className="rounded-xl p-5 mb-8 text-right"
+            style={{
+              background: "rgba(201,168,76,0.07)",
+              border: "1px solid rgba(201,168,76,0.2)",
+            }}
+          >
+            <p
+              className="text-[#C9A84C] font-semibold mb-3 text-sm tracking-wide"
+              style={{ fontFamily: "'Cairo', sans-serif" }}
+            >
+              ماذا حدث الآن؟
+            </p>
+            <ul
+              className="space-y-2 text-[#A09070] text-sm"
+              style={{ fontFamily: "'Cairo', sans-serif" }}
+            >
+              <li className="flex items-center gap-2">
+                <span className="text-green-400">✓</span>
+                تم حفظ طلبك في نظامنا
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-green-400">✓</span>
+                تم إرسال تفاصيل طلبك إلى فريق مركز بدر عبر واتساب
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-[#C9A84C]">↗</span>
+                فُتح واتساب لإرسال رسالة تأكيد على رقمك — تأكد من الضغط على "إرسال"
+              </li>
+            </ul>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="https://wa.me/96522675826"
