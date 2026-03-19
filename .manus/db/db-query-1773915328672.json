@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, name, email, openId, role, createdAt FROM users ORDER BY createdAt DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute SELECT id, name, email, openId, role, createdAt FROM users ORDER BY createdAt DESC;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Ghassan Maklad",
+      "email": "daralebda2020@gmail.com",
+      "openId": "gfsiM4bFoCC9WHsd5YSZdv",
+      "role": "admin",
+      "createdAt": "2026-03-17 13:36:47"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\topenId\trole\tcreatedAt\n1\tGhassan Maklad\tdaralebda2020@gmail.com\tgfsiM4bFoCC9WHsd5YSZdv\tadmin\t2026-03-17 13:36:47\n",
+  "stderr": "",
+  "execution_time_ms": 1747
+}

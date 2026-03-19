@@ -5,8 +5,9 @@
  * Direction: RTL
  */
 import { useState, useEffect } from "react";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, LayoutDashboard } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
 
@@ -23,6 +24,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [bannerHeight, setBannerHeight] = useState(40);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -114,6 +117,21 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition-all duration-300 border"
+                style={{
+                  color: "#C9A84C",
+                  borderColor: "rgba(201,168,76,0.4)",
+                  background: "rgba(201,168,76,0.08)",
+                  fontFamily: "'Cairo', sans-serif",
+                }}
+              >
+                <LayoutDashboard size={15} />
+                لوحة الإدارة
+              </Link>
+            )}
             <Link
               href="/request"
               className="btn-gold flex items-center gap-2 text-sm"
@@ -163,6 +181,21 @@ export default function Navbar() {
             >
               كتالوج المنتجات
             </Link>
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="flex items-center gap-2 text-base font-medium text-right py-2"
+                style={{
+                  color: "#C9A84C",
+                  fontFamily: "'Cairo', sans-serif",
+                  borderBottom: "1px solid rgba(201,168,76,0.1)",
+                }}
+                onClick={() => setIsOpen(false)}
+              >
+                <LayoutDashboard size={16} />
+                لوحة الإدارة
+              </Link>
+            )}
             <Link
               href="/request"
               className="btn-gold text-center mt-2 block"
