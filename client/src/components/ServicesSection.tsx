@@ -1,8 +1,6 @@
 /**
- * ServicesSection - Dark luxury services grid
- * Design: Dark Arabian Opulence
- * - 4 main service cards with gold icons
- * - Hover effects with gold glow
+ * ServicesSection - Light Luxury services grid
+ * Design: White/Gray/Gold Elegance
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -62,12 +60,17 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
   return (
     <div
       ref={ref}
-      className="luxury-card rounded-lg overflow-hidden group"
+      className="rounded-2xl overflow-hidden group"
       style={{
+        background: "#FFFFFF",
+        border: "1px solid rgba(184,146,42,0.15)",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(40px)",
         transition: `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.15}s`,
       }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 40px rgba(184,146,42,0.2)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(184,146,42,0.4)"; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(0,0,0,0.06)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(184,146,42,0.15)"; }}
     >
       {/* Image */}
       <div className="relative h-56 overflow-hidden">
@@ -76,21 +79,23 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
           alt={service.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(13,11,8,0.9) 100%)" }} />
-        <div className="absolute top-4 right-4 text-3xl">{service.icon}</div>
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(255,255,255,0.95) 100%)" }} />
+        <div className="absolute top-4 right-4 text-3xl bg-white/80 rounded-full w-12 h-12 flex items-center justify-center shadow-sm">
+          {service.icon}
+        </div>
       </div>
 
       {/* Content */}
       <div className="p-6">
         <h3
-          className="text-xl font-bold text-white mb-3 gold-underline"
-          style={{ fontFamily: "'Amiri', serif" }}
+          className="text-xl font-bold mb-3"
+          style={{ color: "#1C1810", fontFamily: "'Amiri', serif", borderBottom: "2px solid #C9A84C", paddingBottom: "8px", display: "inline-block" }}
         >
           {service.title}
         </h3>
         <p
-          className="text-[#A09070] text-sm leading-relaxed mb-4"
-          style={{ fontFamily: "'Cairo', sans-serif" }}
+          className="text-sm leading-relaxed mb-4 mt-3"
+          style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
         >
           {service.description}
         </p>
@@ -100,8 +105,8 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
           {service.features.map((f) => (
             <span
               key={f}
-              className="text-xs text-[#C9A84C] px-3 py-1 rounded-full"
-              style={{ border: "1px solid rgba(201,168,76,0.3)", fontFamily: "'Cairo', sans-serif" }}
+              className="text-xs px-3 py-1 rounded-full font-medium"
+              style={{ background: "rgba(184,146,42,0.08)", color: "#B8922A", border: "1px solid rgba(184,146,42,0.25)", fontFamily: "'Cairo', sans-serif" }}
             >
               {f}
             </span>
@@ -112,7 +117,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
           href="https://wa.me/96522675826"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-gold-outline text-sm w-full block text-center"
+          className="btn-gold text-sm w-full block text-center"
         >
           اطلب الآن
         </a>
@@ -135,9 +140,9 @@ export default function ServicesSection() {
   }, []);
 
   return (
-    <section id="services" className="py-24 relative" style={{ background: "#0D0B08" }}>
+    <section id="services" className="py-24 relative" style={{ background: "#F5F3EE" }}>
       {/* Islamic pattern */}
-      <div className="absolute inset-0 islamic-pattern opacity-20" />
+      <div className="absolute inset-0 islamic-pattern opacity-25" />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -150,17 +155,17 @@ export default function ServicesSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ خدماتنا ✦
           </p>
           <h2
-            className="text-4xl sm:text-5xl font-bold text-white mb-4"
-            style={{ fontFamily: "'Amiri', serif" }}
+            className="text-4xl sm:text-5xl font-bold mb-4"
+            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
           >
             ما نقدمه لك
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="text-[#A09070] max-w-xl mx-auto" style={{ fontFamily: "'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}>
             نقدم خدمات متكاملة لجميع مناسباتك بأعلى معايير الجودة والفخامة
           </p>
         </div>

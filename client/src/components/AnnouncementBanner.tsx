@@ -1,10 +1,6 @@
 /**
  * AnnouncementBanner - Animated seasonal offers ticker
- * Design: Dark Arabian Luxury Theme
- * - Gold gradient background with scrolling marquee text
- * - Seasonal offers for Ramadan, National Day, Eid, etc.
- * - Dismissible with X button
- * - Smooth infinite scroll animation
+ * Design: Light Luxury Theme - Gold gradient background
  */
 import { useState } from "react";
 import { X, Star } from "lucide-react";
@@ -33,31 +29,21 @@ export default function AnnouncementBanner() {
       data-banner="true"
       className="relative z-[60] overflow-hidden"
       style={{
-        background: "linear-gradient(90deg, #0D0B08 0%, #1A1208 15%, #2A1E08 50%, #1A1208 85%, #0D0B08 100%)",
-        borderBottom: "1px solid rgba(201,168,76,0.5)",
-        borderTop: "1px solid rgba(201,168,76,0.2)",
+        background: "linear-gradient(90deg, #B8922A 0%, #D4AF37 30%, #E8C96A 50%, #D4AF37 70%, #B8922A 100%)",
+        borderBottom: "1px solid rgba(184,146,42,0.4)",
         height: "40px",
       }}
     >
-      {/* Shimmer overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%)",
-          animation: "shimmer 3s ease-in-out infinite",
-        }}
-      />
-
       {/* Left fade */}
       <div
         className="absolute top-0 bottom-0 left-0 w-20 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to right, #0D0B08, transparent)" }}
+        style={{ background: "linear-gradient(to right, #B8922A, transparent)" }}
       />
 
       {/* Right fade — leave space for close button */}
       <div
         className="absolute top-0 bottom-0 right-10 w-20 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to left, #0D0B08, transparent)" }}
+        style={{ background: "linear-gradient(to left, #B8922A, transparent)" }}
       />
 
       {/* Scrolling track */}
@@ -77,8 +63,8 @@ export default function AnnouncementBanner() {
           >
             <span className="text-base leading-none">{offer.icon}</span>
             <span
-              className="text-sm font-medium"
-              style={{ color: "#E8C96A" }}
+              className="text-sm font-semibold"
+              style={{ color: "#3D2B00" }}
             >
               {offer.text}
             </span>
@@ -87,18 +73,18 @@ export default function AnnouncementBanner() {
                 href="/request"
                 className="inline-flex items-center gap-1 text-xs font-bold px-3 py-0.5 rounded-full transition-all duration-200 hover:opacity-80"
                 style={{
-                  background: "rgba(201,168,76,0.2)",
-                  color: "#C9A84C",
-                  border: "1px solid rgba(201,168,76,0.4)",
+                  background: "rgba(61,43,0,0.15)",
+                  color: "#3D2B00",
+                  border: "1px solid rgba(61,43,0,0.3)",
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 {offer.cta} ←
               </Link>
             )}
-            <Star size={8} className="opacity-50" style={{ color: "#C9A84C" }} />
-            <Star size={8} className="opacity-50" style={{ color: "#C9A84C" }} />
-            <Star size={8} className="opacity-50" style={{ color: "#C9A84C" }} />
+            <Star size={8} className="opacity-60" style={{ color: "#3D2B00" }} />
+            <Star size={8} className="opacity-60" style={{ color: "#3D2B00" }} />
+            <Star size={8} className="opacity-60" style={{ color: "#3D2B00" }} />
           </span>
         ))}
       </div>
@@ -107,7 +93,7 @@ export default function AnnouncementBanner() {
       <button
         onClick={() => setDismissed(true)}
         className="absolute top-0 bottom-0 left-0 w-10 flex items-center justify-center z-20 transition-opacity duration-200 hover:opacity-70"
-        style={{ color: "#C9A84C" }}
+        style={{ color: "#3D2B00" }}
         aria-label="إغلاق الشريط"
       >
         <X size={14} strokeWidth={2.5} />

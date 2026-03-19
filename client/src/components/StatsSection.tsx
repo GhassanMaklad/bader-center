@@ -1,8 +1,6 @@
 /**
  * StatsSection - Numbers and testimonials
- * Design: Dark Arabian Opulence
- * - Full-width dark section with gold numbers
- * - Customer testimonials
+ * Design: Light Luxury Theme - White/Gray/Gold
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -31,14 +29,6 @@ const testimonials = [
   },
 ];
 
-function CountUp({ target, suffix = "" }: { target: string; suffix?: string }) {
-  return (
-    <span className="gold-shimmer text-4xl sm:text-5xl font-bold" style={{ fontFamily: "'Amiri', serif" }}>
-      {target}
-    </span>
-  );
-}
-
 export default function StatsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -55,21 +45,19 @@ export default function StatsSection() {
   return (
     <section
       className="py-24 relative overflow-hidden"
-      style={{
-        background: "linear-gradient(135deg, #130F09 0%, #0D0B08 50%, #1A1510 100%)",
-      }}
+      style={{ background: "#FFFFFF" }}
     >
-      {/* Gold glow */}
+      {/* Subtle gold glow */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5"
-        style={{ background: "radial-gradient(circle, #C9A84C 0%, transparent 70%)" }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10"
+        style={{ background: "radial-gradient(circle, #D4AF37 0%, transparent 70%)" }}
       />
-      <div className="absolute inset-0 islamic-pattern opacity-20" />
+      <div className="absolute inset-0 islamic-pattern opacity-15" />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10" ref={ref}>
         {/* Stats */}
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-20"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(30px)",
@@ -79,20 +67,23 @@ export default function StatsSection() {
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className="text-center p-6 rounded-lg"
+              className="text-center p-6 rounded-2xl"
               style={{
-                background: "rgba(201,168,76,0.05)",
-                border: "1px solid rgba(201,168,76,0.15)",
+                background: "linear-gradient(135deg, #FEFCF5 0%, #FFF9EC 100%)",
+                border: "1px solid rgba(184,146,42,0.2)",
+                boxShadow: "0 4px 20px rgba(184,146,42,0.08)",
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateY(0)" : "translateY(20px)",
                 transition: `all 0.8s ease ${i * 0.15}s`,
               }}
             >
               <div className="text-3xl mb-3">{stat.icon}</div>
-              <CountUp target={stat.num} />
+              <span className="gold-shimmer text-4xl sm:text-5xl font-bold" style={{ fontFamily: "'Amiri', serif" }}>
+                {stat.num}
+              </span>
               <p
-                className="text-[#7A6A50] text-sm mt-2"
-                style={{ fontFamily: "'Cairo', sans-serif" }}
+                className="text-sm mt-2"
+                style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
               >
                 {stat.label}
               </p>
@@ -108,15 +99,16 @@ export default function StatsSection() {
             transition: "all 0.8s ease 0.4s",
           }}
         >
-          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ آراء عملائنا ✦
           </p>
           <h2
-            className="text-3xl sm:text-4xl font-bold text-white"
-            style={{ fontFamily: "'Amiri', serif" }}
+            className="text-3xl sm:text-4xl font-bold"
+            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
           >
             ماذا يقول عملاؤنا
           </h2>
+          <div className="gold-divider max-w-xs mx-auto mt-4" />
         </div>
 
         <div
@@ -130,33 +122,38 @@ export default function StatsSection() {
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="luxury-card rounded-lg p-6 relative"
+              className="rounded-2xl p-6 relative"
+              style={{
+                background: "#FAFAF8",
+                border: "1px solid rgba(184,146,42,0.15)",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+              }}
             >
               {/* Quote mark */}
               <div
-                className="text-6xl leading-none mb-4 opacity-30"
+                className="text-6xl leading-none mb-4 opacity-40"
                 style={{ color: "#C9A84C", fontFamily: "'Amiri', serif" }}
               >
                 "
               </div>
               <p
-                className="text-[#A09070] text-sm leading-relaxed mb-6"
-                style={{ fontFamily: "'Cairo', sans-serif" }}
+                className="text-sm leading-relaxed mb-6"
+                style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
               >
                 {t.text}
               </p>
               <div className="flex items-center gap-3">
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-[#C9A84C] font-bold"
-                  style={{ background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.3)" }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center font-bold"
+                  style={{ background: "rgba(184,146,42,0.1)", border: "1px solid rgba(184,146,42,0.3)", color: "#B8922A" }}
                 >
                   {t.name[0]}
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-sm" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                  <p className="font-semibold text-sm" style={{ color: "#1C1810", fontFamily: "'Cairo', sans-serif" }}>
                     {t.name}
                   </p>
-                  <p className="text-[#7A6A50] text-xs" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                  <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
                     {t.role}
                   </p>
                 </div>

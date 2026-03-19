@@ -1,6 +1,6 @@
 /**
- * Navbar Component - Dark Arabian Luxury Theme
- * Colors: #0D0B08 bg, #C9A84C gold, #E8C96A light gold
+ * Navbar Component - Light Luxury Theme
+ * Colors: White bg, #B8922A gold, #1C1810 dark text
  * Font: Cairo (Arabic), Cormorant Garamond (English)
  * Direction: RTL
  */
@@ -30,12 +30,10 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-      // Detect if banner is dismissed (height becomes 0)
       const banner = document.querySelector('[data-banner]') as HTMLElement | null;
       setBannerHeight(banner ? banner.offsetHeight : 0);
     };
     window.addEventListener("scroll", handleScroll);
-    // Also observe banner removal
     const observer = new MutationObserver(() => {
       const banner = document.querySelector('[data-banner]') as HTMLElement | null;
       setBannerHeight(banner ? banner.offsetHeight : 0);
@@ -63,12 +61,12 @@ export default function Navbar() {
     <nav
       className={`fixed right-0 left-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-[#0D0B08]/95 backdrop-blur-md shadow-lg shadow-black/50"
-          : "bg-transparent"
+          ? "bg-white/97 backdrop-blur-md shadow-md"
+          : "bg-white/90 backdrop-blur-sm"
       }`}
       style={{
         top: `${bannerHeight}px`,
-        borderBottom: scrolled ? "1px solid rgba(201,168,76,0.2)" : "none",
+        borderBottom: "1px solid rgba(201,168,76,0.25)",
         transition: "top 0.3s ease, background 0.5s ease",
       }}
     >
@@ -80,13 +78,13 @@ export default function Navbar() {
               src={LOGO_URL}
               alt="مركز بدر"
               className="h-14 w-14 rounded-full object-cover"
-              style={{ border: "2px solid rgba(201,168,76,0.5)" }}
+              style={{ border: "2px solid rgba(184,146,42,0.5)", boxShadow: "0 2px 12px rgba(184,146,42,0.15)" }}
             />
             <div className="hidden sm:block">
-              <p className="text-xs text-[#C9A84C] font-light tracking-widest" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              <p className="text-xs font-light tracking-widest" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
                 BADER CENTER
               </p>
-              <p className="text-white font-bold text-lg leading-tight" style={{ fontFamily: "'Amiri', serif" }}>
+              <p className="font-bold text-lg leading-tight" style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}>
                 مركز بدر
               </p>
             </div>
@@ -98,8 +96,10 @@ export default function Navbar() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className="text-[#D4C5A0] hover:text-[#C9A84C] transition-colors duration-300 text-sm font-medium relative group"
-                style={{ fontFamily: "'Cairo', sans-serif" }}
+                className="transition-colors duration-300 text-sm font-medium relative group"
+                style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#B8922A")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#4A3F2F")}
               >
                 {link.label}
                 <span className="absolute -bottom-1 right-0 w-0 h-px bg-[#C9A84C] transition-all duration-300 group-hover:w-full" />
@@ -107,8 +107,8 @@ export default function Navbar() {
             ))}
             <Link
               href="/catalog"
-              className="text-[#D4C5A0] hover:text-[#C9A84C] transition-colors duration-300 text-sm font-medium relative group"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              className="transition-colors duration-300 text-sm font-medium relative group"
+              style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
             >
               كتالوج
               <span className="absolute -bottom-1 right-0 w-0 h-px bg-[#C9A84C] transition-all duration-300 group-hover:w-full" />
@@ -122,9 +122,9 @@ export default function Navbar() {
                 href="/admin"
                 className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition-all duration-300 border"
                 style={{
-                  color: "#C9A84C",
-                  borderColor: "rgba(201,168,76,0.4)",
-                  background: "rgba(201,168,76,0.08)",
+                  color: "#B8922A",
+                  borderColor: "rgba(184,146,42,0.4)",
+                  background: "rgba(184,146,42,0.06)",
                   fontFamily: "'Cairo', sans-serif",
                 }}
               >
@@ -143,7 +143,8 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden text-[#C9A84C] p-2"
+            className="lg:hidden p-2"
+            style={{ color: "#B8922A" }}
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -156,10 +157,11 @@ export default function Navbar() {
         <div
           className="lg:hidden absolute top-full right-0 left-0 py-6 px-4"
           style={{
-            background: "rgba(13,11,8,0.98)",
+            background: "rgba(255,255,255,0.98)",
             backdropFilter: "blur(20px)",
             borderTop: "1px solid rgba(201,168,76,0.2)",
             borderBottom: "1px solid rgba(201,168,76,0.2)",
+            boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
           }}
         >
           <div className="flex flex-col gap-4">
@@ -167,16 +169,16 @@ export default function Navbar() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className="text-[#D4C5A0] hover:text-[#C9A84C] transition-colors text-base font-medium text-right py-2"
-                style={{ fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(201,168,76,0.1)" }}
+                className="transition-colors text-base font-medium text-right py-2"
+                style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(201,168,76,0.1)" }}
               >
                 {link.label}
               </button>
             ))}
             <Link
               href="/catalog"
-              className="text-[#D4C5A0] hover:text-[#C9A84C] transition-colors text-base font-medium text-right py-2 block"
-              style={{ fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(201,168,76,0.1)" }}
+              className="transition-colors text-base font-medium text-right py-2 block"
+              style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(201,168,76,0.1)" }}
               onClick={() => setIsOpen(false)}
             >
               كتالوج المنتجات
@@ -186,7 +188,7 @@ export default function Navbar() {
                 href="/admin"
                 className="flex items-center gap-2 text-base font-medium text-right py-2"
                 style={{
-                  color: "#C9A84C",
+                  color: "#B8922A",
                   fontFamily: "'Cairo', sans-serif",
                   borderBottom: "1px solid rgba(201,168,76,0.1)",
                 }}

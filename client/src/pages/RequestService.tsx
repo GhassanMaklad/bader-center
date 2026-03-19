@@ -507,8 +507,8 @@ export default function RequestService() {
           </h1>
           <div className="gold-divider max-w-xs mx-auto mb-6" />
           <p
-            className="text-[#A09070] max-w-xl mx-auto text-lg"
-            style={{ fontFamily: "'Cairo', sans-serif" }}
+            className="max-w-xl mx-auto text-lg"
+            style={{ fontFamily: "'Cairo', sans-serif", color: "#6B5E4A" }}
           >
             أخبرنا عن مناسبتك وسنتواصل معك لتحويل فكرتك إلى واقع فاخر
           </p>

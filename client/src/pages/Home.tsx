@@ -1,8 +1,8 @@
 /**
  * Home Page - مركز بدر - Bader Center
- * Design: Dark Arabian Opulence
+ * Design: Light Luxury Theme
  * - Full RTL Arabic website
- * - Dark background #0D0B08 with gold accents #C9A84C
+ * - Light background with gold accents #C9A84C
  * - Fonts: Amiri (headings), Cairo (body), Cormorant Garamond (English)
  */
 import Navbar from "@/components/Navbar";
@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: "#0D0B08", direction: "rtl" }}
+      style={{ background: "#FAFAF8", direction: "rtl" }}
     >
       <AnnouncementBanner />
       <Navbar />

@@ -1,9 +1,6 @@
 /**
  * ContactSection - Contact info and social media links
- * Design: Dark Arabian Opulence
- * - Gold contact cards
- * - WhatsApp CTA
- * - Social media links
+ * Design: Light Luxury Theme - White/Gray/Gold
  */
 import { useEffect, useRef, useState } from "react";
 import { Phone, Mail, MapPin, Instagram, Facebook } from "lucide-react";
@@ -81,13 +78,13 @@ export default function ContactSection() {
     <section
       id="contact"
       className="py-24 relative overflow-hidden"
-      style={{ background: "#0D0B08" }}
+      style={{ background: "#F5F3EE" }}
     >
       {/* Background */}
-      <div className="absolute inset-0 islamic-pattern opacity-20" />
+      <div className="absolute inset-0 islamic-pattern opacity-15" />
       <div
-        className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-5"
-        style={{ background: "radial-gradient(circle, #C9A84C 0%, transparent 70%)", transform: "translate(50%, 50%)" }}
+        className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-10"
+        style={{ background: "radial-gradient(circle, #D4AF37 0%, transparent 70%)", transform: "translate(50%, 50%)" }}
       />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10" ref={ref}>
@@ -100,17 +97,17 @@ export default function ContactSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ تواصل معنا ✦
           </p>
           <h2
-            className="text-4xl sm:text-5xl font-bold text-white mb-4"
-            style={{ fontFamily: "'Amiri', serif" }}
+            className="text-4xl sm:text-5xl font-bold mb-4"
+            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
           >
             نحن هنا لخدمتك
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="text-[#A09070] max-w-xl mx-auto" style={{ fontFamily: "'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}>
             تواصل معنا الآن لتحويل مناسبتك إلى تجربة لا تُنسى
           </p>
         </div>
@@ -127,23 +124,28 @@ export default function ContactSection() {
           {contactInfo.map((info) => (
             <div
               key={info.title}
-              className="luxury-card rounded-lg p-6 text-center"
+              className="rounded-2xl p-6 text-center"
+              style={{
+                background: "#FFFFFF",
+                border: "1px solid rgba(184,146,42,0.15)",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+              }}
             >
               <div
-                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 text-[#C9A84C]"
-                style={{ background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.3)" }}
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
+                style={{ background: "rgba(184,146,42,0.1)", border: "1px solid rgba(184,146,42,0.3)", color: "#B8922A" }}
               >
                 {info.icon}
               </div>
               <h3
-                className="text-[#C9A84C] font-semibold mb-2 text-sm"
-                style={{ fontFamily: "'Cairo', sans-serif" }}
+                className="font-semibold mb-2 text-sm"
+                style={{ color: "#B8922A", fontFamily: "'Cairo', sans-serif" }}
               >
                 {info.title}
               </h3>
               <p
-                className="text-white mb-3 text-sm"
-                style={{ fontFamily: "'Cairo', sans-serif", direction: "ltr" }}
+                className="mb-3 text-sm"
+                style={{ color: "#1C1810", fontFamily: "'Cairo', sans-serif", direction: "ltr" }}
               >
                 {info.value}
               </p>
@@ -151,8 +153,10 @@ export default function ContactSection() {
                 href={info.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#C9A84C] text-xs hover:text-[#E8C96A] transition-colors"
-                style={{ fontFamily: "'Cairo', sans-serif" }}
+                className="text-xs transition-colors"
+                style={{ color: "#B8922A", fontFamily: "'Cairo', sans-serif" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#8A6A1A")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#B8922A")}
               >
                 {info.linkText} ←
               </a>
@@ -170,8 +174,8 @@ export default function ContactSection() {
           }}
         >
           <h3
-            className="text-center text-2xl font-bold text-white mb-8"
-            style={{ fontFamily: "'Amiri', serif" }}
+            className="text-center text-2xl font-bold mb-8"
+            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
           >
             تابعنا على وسائل التواصل
           </h3>
@@ -182,23 +186,33 @@ export default function ContactSection() {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="luxury-card rounded-lg p-6 text-center group"
+                className="rounded-2xl p-6 text-center group"
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(184,146,42,0.15)",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+                  textDecoration: "none",
+                  display: "block",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 30px rgba(0,0,0,0.1)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 20px rgba(0,0,0,0.05)"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
               >
                 <div
                   className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 transition-all duration-300 group-hover:scale-110"
-                  style={{ background: `${social.color}20`, color: social.color, border: `1px solid ${social.color}40` }}
+                  style={{ background: `${social.color}18`, color: social.color, border: `1px solid ${social.color}35` }}
                 >
                   {social.icon}
                 </div>
-                <p className="text-white font-semibold mb-1" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                <p className="font-semibold mb-1" style={{ color: "#1C1810", fontFamily: "'Cairo', sans-serif" }}>
                   {social.name}
                 </p>
-                <p className="text-[#7A6A50] text-xs mb-2" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                <p className="text-xs mb-2" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
                   {social.handle}
                 </p>
                 <span
                   className="text-xs px-3 py-1 rounded-full"
-                  style={{ background: `${social.color}20`, color: social.color, fontFamily: "'Cairo', sans-serif" }}
+                  style={{ background: `${social.color}18`, color: social.color, fontFamily: "'Cairo', sans-serif" }}
                 >
                   {social.followers} متابع
                 </span>
@@ -207,30 +221,31 @@ export default function ContactSection() {
           </div>
         </div>
 
-        {/* Big WhatsApp CTA */}
+        {/* Big CTA */}
         <div
           className="text-center p-12 rounded-2xl relative overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, rgba(201,168,76,0.1) 0%, rgba(201,168,76,0.05) 100%)",
-            border: "1px solid rgba(201,168,76,0.3)",
+            background: "linear-gradient(135deg, #FEFCF5 0%, #FFF5D6 100%)",
+            border: "1px solid rgba(184,146,42,0.3)",
+            boxShadow: "0 8px 40px rgba(184,146,42,0.12)",
             opacity: visible ? 1 : 0,
             transition: "all 0.8s ease 0.6s",
           }}
         >
-          <div className="absolute inset-0 islamic-pattern opacity-30" />
+          <div className="absolute inset-0 islamic-pattern opacity-20" />
           <div className="relative z-10">
-            <p className="text-[#C9A84C] text-xs tracking-widest uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <p className="text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
               ابدأ رحلتك معنا
             </p>
             <h3
-              className="text-3xl sm:text-4xl font-bold text-white mb-4"
-              style={{ fontFamily: "'Amiri', serif" }}
+              className="text-3xl sm:text-4xl font-bold mb-4"
+              style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
             >
               جاهز لتجهيز مناسبتك؟
             </h3>
             <p
-              className="text-[#A09070] mb-8 max-w-md mx-auto"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              className="mb-8 max-w-md mx-auto"
+              style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
             >
               تواصل معنا الآن عبر واتساب وسنساعدك في تحويل فكرتك إلى واقع فاخر
             </p>

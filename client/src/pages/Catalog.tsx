@@ -341,9 +341,9 @@ function ProductCard({ product }: { product: Product }) {
     <div
       className="group relative rounded-xl overflow-hidden transition-all duration-500"
       style={{
-        background: "linear-gradient(145deg, #1A1208, #120E06)",
-        border: hovered ? "1px solid rgba(201,168,76,0.6)" : "1px solid rgba(201,168,76,0.15)",
-        boxShadow: hovered ? "0 20px 60px rgba(0,0,0,0.6), 0 0 30px rgba(201,168,76,0.1)" : "0 4px 20px rgba(0,0,0,0.4)",
+        background: "#FFFFFF",
+        border: hovered ? "1px solid rgba(184,146,42,0.5)" : "1px solid rgba(184,146,42,0.15)",
+        boxShadow: hovered ? "0 20px 50px rgba(0,0,0,0.12), 0 0 20px rgba(184,146,42,0.1)" : "0 4px 16px rgba(0,0,0,0.06)",
         transform: hovered ? "translateY(-6px)" : "translateY(0)",
       }}
       onMouseEnter={() => setHovered(true)}
@@ -364,7 +364,7 @@ function ProductCard({ product }: { product: Product }) {
         <div
           className="absolute inset-0 transition-opacity duration-300"
           style={{
-            background: "linear-gradient(to top, rgba(13,11,8,0.9) 0%, rgba(13,11,8,0.2) 60%, transparent 100%)",
+            background: "linear-gradient(to top, rgba(28,24,16,0.7) 0%, rgba(28,24,16,0.1) 60%, transparent 100%)",
           }}
         />
 
@@ -427,14 +427,14 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* Name */}
         <h3
-          className="text-white font-bold text-lg mb-1 leading-snug"
-          style={{ fontFamily: "'Amiri', serif" }}
+          className="font-bold text-lg mb-1 leading-snug"
+          style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
         >
           {product.name}
         </h3>
         <p
           className="text-xs mb-3 leading-relaxed line-clamp-2"
-          style={{ color: "#7A6A50", fontFamily: "'Cairo', sans-serif" }}
+          style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
         >
           {product.description}
         </p>
@@ -467,7 +467,7 @@ function ProductCard({ product }: { product: Product }) {
               background: hovered
                 ? "linear-gradient(135deg, #C9A84C, #E8C96A)"
                 : "rgba(201,168,76,0.15)",
-              color: hovered ? "#0D0B08" : "#C9A84C",
+              color: hovered ? "#1C1810" : "#B8922A",
               border: "1px solid rgba(201,168,76,0.4)",
               fontFamily: "'Cairo', sans-serif",
             }}
@@ -577,7 +577,7 @@ export default function Catalog() {
 
   if (productsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0D0B08" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#FAFAF8" }}>
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-yellow-500 mx-auto mb-4" />
           <p style={{ color: "#A09070", fontFamily: "'Cairo', sans-serif" }}>جاري تحميل الكتالوج...</p>
@@ -587,7 +587,7 @@ export default function Catalog() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D0B08", direction: "rtl" }}>
+    <div className="min-h-screen" style={{ background: "#FAFAF8", direction: "rtl" }}>
       <AnnouncementBanner />
       <Navbar />
 
@@ -595,8 +595,8 @@ export default function Catalog() {
       <section
         className="relative pt-36 pb-16 overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, #1A1208 0%, #0D0B08 100%)",
-          borderBottom: "1px solid rgba(201,168,76,0.15)",
+          background: "linear-gradient(180deg, #F5F3EE 0%, #FAFAF8 100%)",
+          borderBottom: "1px solid rgba(184,146,42,0.15)",
         }}
       >
         {/* Decorative pattern */}
@@ -611,8 +611,8 @@ export default function Catalog() {
             ✦ BADER CENTER ✦ CATALOG ✦
           </p>
           <h1
-            className="text-5xl sm:text-6xl font-bold text-white mb-4"
-            style={{ fontFamily: "'Amiri', serif" }}
+            className="text-5xl sm:text-6xl font-bold mb-4"
+            style={{ fontFamily: "'Amiri', serif", color: "#1C1810" }}
           >
             كتالوج <span className="gold-shimmer">منتجاتنا</span>
           </h1>
@@ -625,8 +625,8 @@ export default function Catalog() {
             }}
           />
           <p
-            className="text-[#A09070] max-w-xl mx-auto text-lg"
-            style={{ fontFamily: "'Cairo', sans-serif" }}
+            className="max-w-xl mx-auto text-lg"
+            style={{ fontFamily: "'Cairo', sans-serif", color: "#6B5E4A" }}
           >
             اكتشف مجموعتنا الفاخرة من الهدايا والدروع والتجهيزات — كل قطعة تحكي قصة
           </p>
@@ -647,7 +647,7 @@ export default function Catalog() {
                 </div>
                 <div
                   className="text-xs mt-1"
-                  style={{ color: "#5A4A30", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
                 >
                   {s.label}
                 </div>
@@ -658,7 +658,7 @@ export default function Catalog() {
       </section>
 
       {/* Filters & Search */}
-      <section className="sticky top-[40px] z-40 py-4" style={{ background: "rgba(13,11,8,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,168,76,0.1)" }}>
+      <section className="sticky top-[40px] z-40 py-4" style={{ background: "rgba(250,250,248,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(184,146,42,0.15)" }}>
         <div className="container mx-auto px-4">
           {/* Category Tabs */}
           <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
@@ -672,7 +672,7 @@ export default function Catalog() {
                   background: activeCategory === cat.id
                     ? "linear-gradient(135deg, #C9A84C, #E8C96A)"
                     : "rgba(201,168,76,0.08)",
-                  color: activeCategory === cat.id ? "#0D0B08" : "#A09070",
+                  color: activeCategory === cat.id ? "#1C1810" : "#6B5E4A",
                   border: activeCategory === cat.id
                     ? "1px solid #C9A84C"
                     : "1px solid rgba(201,168,76,0.15)",
@@ -684,8 +684,8 @@ export default function Catalog() {
                 <span
                   className="text-xs px-1.5 py-0.5 rounded-full"
                   style={{
-                    background: activeCategory === cat.id ? "rgba(13,11,8,0.2)" : "rgba(201,168,76,0.15)",
-                    color: activeCategory === cat.id ? "#0D0B08" : "#C9A84C",
+                    background: activeCategory === cat.id ? "rgba(28,24,16,0.15)" : "rgba(184,146,42,0.12)",
+                    color: activeCategory === cat.id ? "#1C1810" : "#B8922A",
                   }}
                 >
                   {cat.count}
@@ -710,9 +710,9 @@ export default function Catalog() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pr-10 pl-4 py-2.5 rounded-lg text-sm outline-none transition-all duration-300"
                 style={{
-                  background: "rgba(201,168,76,0.06)",
-                  border: "1px solid rgba(201,168,76,0.2)",
-                  color: "#E8C96A",
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(184,146,42,0.2)",
+                  color: "#1C1810",
                   fontFamily: "'Cairo', sans-serif",
                 }}
               />
@@ -726,9 +726,9 @@ export default function Catalog() {
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                 className="pr-8 pl-4 py-2.5 rounded-lg text-sm outline-none appearance-none cursor-pointer"
                 style={{
-                  background: "rgba(201,168,76,0.06)",
-                  border: "1px solid rgba(201,168,76,0.2)",
-                  color: "#A09070",
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(184,146,42,0.2)",
+                  color: "#6B5E4A",
                   fontFamily: "'Cairo', sans-serif",
                 }}
               >
@@ -747,7 +747,7 @@ export default function Catalog() {
         <div className="container mx-auto px-4">
           {/* Results count */}
           <div className="flex items-center justify-between mb-8">
-            <p style={{ color: "#5A4A30", fontFamily: "'Cairo', sans-serif", fontSize: "0.875rem" }}>
+            <p style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif", fontSize: "0.875rem" }}>
               يعرض{" "}
               <span style={{ color: "#C9A84C", fontWeight: "bold" }}>{filtered.length}</span>{" "}
               منتج
@@ -774,12 +774,12 @@ export default function Catalog() {
             <div className="text-center py-24">
               <div className="text-6xl mb-6">🔍</div>
               <h3
-                className="text-2xl font-bold text-white mb-3"
-                style={{ fontFamily: "'Amiri', serif" }}
+                className="text-2xl font-bold mb-3"
+                style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
               >
                 لا توجد نتائج
               </h3>
-              <p style={{ color: "#5A4A30", fontFamily: "'Cairo', sans-serif" }}>
+              <p style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
                 جرب كلمة بحث مختلفة أو اختر فئة أخرى
               </p>
               <button
@@ -805,8 +805,8 @@ export default function Catalog() {
           <div
             className="text-center p-12 rounded-2xl relative overflow-hidden"
             style={{
-              background: "linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.03) 100%)",
-              border: "1px solid rgba(201,168,76,0.2)",
+              background: "linear-gradient(135deg, #FEFCF5 0%, #FFF5D6 100%)",
+              border: "1px solid rgba(184,146,42,0.25)",
             }}
           >
             <div className="absolute inset-0 islamic-pattern opacity-20" />
@@ -818,14 +818,14 @@ export default function Catalog() {
                 ✦ طلب مخصص ✦
               </p>
               <h3
-                className="text-3xl sm:text-4xl font-bold text-white mb-4"
-                style={{ fontFamily: "'Amiri', serif" }}
+                className="text-3xl sm:text-4xl font-bold mb-4"
+                style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
               >
                 لم تجد ما تبحث عنه؟
               </h3>
               <p
-                className="text-[#A09070] mb-8 max-w-md mx-auto"
-                style={{ fontFamily: "'Cairo', sans-serif" }}
+                className="mb-8 max-w-md mx-auto"
+                style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
               >
                 نصمم ونجهز أي طلب مخصص حسب رؤيتك — تواصل معنا وسنحول فكرتك إلى واقع فاخر
               </p>

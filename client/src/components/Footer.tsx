@@ -1,6 +1,6 @@
 /**
- * Footer - Dark luxury footer
- * Design: Dark Arabian Opulence
+ * Footer - Light luxury footer
+ * Design: Light Luxury Theme - White/Gray/Gold
  */
 import { Instagram, Facebook, Phone, Mail, MapPin } from "lucide-react";
 import { Link } from "wouter";
@@ -16,11 +16,11 @@ export default function Footer() {
     <footer
       className="relative pt-16 pb-8"
       style={{
-        background: "#080604",
-        borderTop: "1px solid rgba(201,168,76,0.2)",
+        background: "#1C1810",
+        borderTop: "3px solid #C9A84C",
       }}
     >
-      <div className="absolute inset-0 islamic-pattern opacity-10" />
+      <div className="absolute inset-0 islamic-pattern opacity-15" />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
@@ -31,20 +31,20 @@ export default function Footer() {
                 src={LOGO_URL}
                 alt="مركز بدر"
                 className="h-16 w-16 rounded-full object-cover"
-                style={{ border: "2px solid rgba(201,168,76,0.5)" }}
+                style={{ border: "2px solid rgba(201,168,76,0.6)" }}
               />
               <div>
-                <p className="text-[#C9A84C] text-xs tracking-widest" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <p className="text-xs tracking-widest" style={{ color: "#C9A84C", fontFamily: "'Cormorant Garamond', serif" }}>
                   BADER CENTER
                 </p>
-                <p className="text-white font-bold text-xl" style={{ fontFamily: "'Amiri', serif" }}>
+                <p className="font-bold text-xl" style={{ color: "#FFFFFF", fontFamily: "'Amiri', serif" }}>
                   مركز بدر
                 </p>
               </div>
             </div>
             <p
-              className="text-[#7A6A50] text-sm leading-relaxed mb-4"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              className="text-sm leading-relaxed mb-4"
+              style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
             >
               للفخامة أصول.. نجسدها منذ 20 عاماً
               <br />
@@ -81,8 +81,8 @@ export default function Footer() {
           {/* Quick Links */}
           <div>
             <h4
-              className="text-[#C9A84C] font-semibold mb-4 text-sm"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              className="font-semibold mb-4 text-sm"
+              style={{ color: "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
             >
               روابط سريعة
             </h4>
@@ -97,8 +97,10 @@ export default function Footer() {
                 <li key={link.id}>
                   <button
                     onClick={() => scrollTo(link.id)}
-                    className="text-[#7A6A50] hover:text-[#C9A84C] transition-colors text-sm"
-                    style={{ fontFamily: "'Cairo', sans-serif" }}
+                    className="text-sm transition-colors"
+                    style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#C9A84C")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
                   >
                     {link.label}
                   </button>
@@ -107,8 +109,8 @@ export default function Footer() {
               <li>
                 <Link
                   href="/catalog"
-                  className="text-[#7A6A50] hover:text-[#C9A84C] transition-colors text-sm"
-                  style={{ fontFamily: "'Cairo', sans-serif" }}
+                  className="text-sm transition-colors"
+                  style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
                 >
                   كتالوج المنتجات
                 </Link>
@@ -116,19 +118,10 @@ export default function Footer() {
               <li>
                 <Link
                   href="/request"
-                  className="text-[#7A6A50] hover:text-[#C9A84C] transition-colors text-sm"
-                  style={{ fontFamily: "'Cairo', sans-serif" }}
+                  className="text-sm transition-colors"
+                  style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
                 >
                   طلب خدمة
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/admin"
-                  className="text-[#5A4A30] hover:text-[#C9A84C] transition-colors text-xs"
-                  style={{ fontFamily: "'Cairo', sans-serif" }}
-                >
-                  لوحة التحكم
                 </Link>
               </li>
             </ul>
@@ -137,8 +130,8 @@ export default function Footer() {
           {/* Services */}
           <div>
             <h4
-              className="text-[#C9A84C] font-semibold mb-4 text-sm"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              className="font-semibold mb-4 text-sm"
+              style={{ color: "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
             >
               خدماتنا
             </h4>
@@ -152,7 +145,7 @@ export default function Footer() {
                 "الطباعة والتصميم",
               ].map((s) => (
                 <li key={s}>
-                  <span className="text-[#7A6A50] text-sm" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                  <span className="text-sm" style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}>
                     {s}
                   </span>
                 </li>
@@ -163,27 +156,33 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h4
-              className="text-[#C9A84C] font-semibold mb-4 text-sm"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              className="font-semibold mb-4 text-sm"
+              style={{ color: "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
             >
               تواصل معنا
             </h4>
             <ul className="space-y-3">
-              <li className="flex items-center gap-2 text-[#7A6A50] text-sm">
-                <Phone size={14} className="text-[#C9A84C] shrink-0" />
-                <a href="tel:+96522675826" className="hover:text-[#C9A84C] transition-colors" style={{ fontFamily: "'Cairo', sans-serif", direction: "ltr" }}>
+              <li className="flex items-center gap-2 text-sm">
+                <Phone size={14} className="shrink-0" style={{ color: "#C9A84C" }} />
+                <a href="tel:+96522675826" className="transition-colors" style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif", direction: "ltr" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#C9A84C")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
+                >
                   +965 2267 5826
                 </a>
               </li>
-              <li className="flex items-center gap-2 text-[#7A6A50] text-sm">
-                <Mail size={14} className="text-[#C9A84C] shrink-0" />
-                <a href="mailto:badercenterco@gmail.com" className="hover:text-[#C9A84C] transition-colors text-xs" style={{ fontFamily: "'Cairo', sans-serif" }}>
+              <li className="flex items-center gap-2 text-sm">
+                <Mail size={14} className="shrink-0" style={{ color: "#C9A84C" }} />
+                <a href="mailto:badercenterco@gmail.com" className="transition-colors text-xs" style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#C9A84C")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
+                >
                   badercenterco@gmail.com
                 </a>
               </li>
-              <li className="flex items-center gap-2 text-[#7A6A50] text-sm">
-                <MapPin size={14} className="text-[#C9A84C] shrink-0" />
-                <span style={{ fontFamily: "'Cairo', sans-serif" }}>الفحيحيل، الكويت</span>
+              <li className="flex items-center gap-2 text-sm">
+                <MapPin size={14} className="shrink-0" style={{ color: "#C9A84C" }} />
+                <span style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}>الفحيحيل، الكويت</span>
               </li>
             </ul>
 
@@ -204,14 +203,14 @@ export default function Footer() {
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p
-            className="text-[#4A3A2A] text-xs"
-            style={{ fontFamily: "'Cairo', sans-serif" }}
+            className="text-xs"
+            style={{ color: "#6A5A40", fontFamily: "'Cairo', sans-serif" }}
           >
             © 2024 مركز بدر - Bader Center. جميع الحقوق محفوظة.
           </p>
           <p
-            className="text-[#4A3A2A] text-xs"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            className="text-xs"
+            style={{ color: "#6A5A40", fontFamily: "'Cormorant Garamond', serif" }}
           >
             للفخامة أصول ✦ Luxury Has Its Origins
           </p>

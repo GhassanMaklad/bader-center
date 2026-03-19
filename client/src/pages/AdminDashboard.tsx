@@ -183,7 +183,7 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0D0B08" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#FAFAF8" }}>
         <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
       </div>
     );
@@ -254,24 +254,24 @@ export default function AdminDashboard() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: "#0D0B08", direction: "rtl", fontFamily: "'Cairo', sans-serif" }}
+      style={{ background: "#FAFAF8", direction: "rtl", fontFamily: "'Cairo', sans-serif" }}
     >
       {/* Header */}
       <header
         className="sticky top-0 z-40 border-b px-6 py-4 flex items-center justify-between"
-        style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.2)" }}
+        style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.2)", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
       >
         <div className="flex items-center gap-3">
           <ShieldCheck className="w-6 h-6 text-yellow-500" />
           <div>
-            <h1 className="text-lg font-bold text-yellow-400" style={{ fontFamily: "'Amiri', serif" }}>
+            <h1 className="text-lg font-bold" style={{ fontFamily: "'Amiri', serif", color: "#B8922A" }}>
               لوحة تحكم مركز بدر
             </h1>
-            <p className="text-xs text-gray-400">إدارة الموقع والطلبات</p>
+            <p className="text-xs" style={{ color: "#8A7560" }}>إدارة الموقع والطلبات</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-400">{user.name ?? "المدير"}</span>
+          <span className="text-sm" style={{ color: "#6B5E4A" }}>{user.name ?? "المدير"}</span>
           <Button
             variant="outline"
             size="sm"
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
       </header>
 
       {/* Tab Navigation */}
-      <div className="border-b px-6" style={{ borderColor: "rgba(201,168,76,0.2)" }}>
+      <div className="border-b px-6" style={{ borderColor: "rgba(184,146,42,0.2)", background: "#FFFFFF" }}>
         <div className="flex gap-1">
           <button
             onClick={() => setActiveTab("products")}
@@ -337,12 +337,12 @@ export default function AdminDashboard() {
             { label: "غير متوفر", value: products?.filter(p => !p.inStock).length ?? 0, icon: Star, color: "text-red-400" },
             { label: "الفئات", value: 5, icon: ShieldCheck, color: "text-yellow-400" },
           ].map((stat) => (
-            <Card key={stat.label} style={{ background: "#1a1508", border: "1px solid rgba(201,168,76,0.15)" }}>
+            <Card key={stat.label} style={{ background: "#FFFFFF", border: "1px solid rgba(184,146,42,0.15)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
               <CardContent className="p-4 flex items-center gap-3">
                 <stat.icon className={`w-8 h-8 ${stat.color ?? "text-yellow-500"}`} />
                 <div>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-gray-400">{stat.label}</p>
+                  <p className="text-2xl font-bold" style={{ color: "#1C1810" }}>{stat.value}</p>
+                  <p className="text-xs" style={{ color: "#8A7560" }}>{stat.label}</p>
                 </div>
               </CardContent>
             </Card>
@@ -356,13 +356,13 @@ export default function AdminDashboard() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 text-right"
-            style={{ background: "#1a1508", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+            style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
           />
           <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger style={{ background: "#1a1508", borderColor: "rgba(201,168,76,0.3)", color: "#fff", width: "200px" }}>
+            <SelectTrigger style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810", width: "200px" }}>
               <SelectValue placeholder="كل الفئات" />
             </SelectTrigger>
-            <SelectContent style={{ background: "#1a1508", borderColor: "rgba(201,168,76,0.3)" }}>
+            <SelectContent style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)" }}>
               <SelectItem value="all">كل الفئات</SelectItem>
               {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
                 <SelectItem key={k} value={k}>{v}</SelectItem>
@@ -387,9 +387,9 @@ export default function AdminDashboard() {
             <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
           </div>
         ) : (
-          <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(201,168,76,0.2)" }}>
+          <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(184,146,42,0.2)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
             <table className="w-full text-sm">
-              <thead style={{ background: "rgba(201,168,76,0.1)" }}>
+              <thead style={{ background: "rgba(184,146,42,0.08)" }}>
                 <tr>
                   <th className="text-right p-3 text-yellow-400 font-semibold">المنتج</th>
                   <th className="text-right p-3 text-yellow-400 font-semibold hidden md:table-cell">الفئة</th>
@@ -403,8 +403,8 @@ export default function AdminDashboard() {
                   <tr
                     key={product.id}
                     style={{
-                      background: idx % 2 === 0 ? "#0D0B08" : "#111008",
-                      borderBottom: "1px solid rgba(201,168,76,0.08)",
+                      background: idx % 2 === 0 ? "#FFFFFF" : "#FAFAF8",
+                      borderBottom: "1px solid rgba(184,146,42,0.08)",
                     }}
                   >
                     {/* Product Info */}
@@ -417,8 +417,8 @@ export default function AdminDashboard() {
                           style={{ border: "1px solid rgba(201,168,76,0.2)" }}
                         />
                         <div>
-                          <p className="font-semibold text-white text-sm">{product.name}</p>
-                          <p className="text-xs text-gray-500">{product.nameEn}</p>
+                          <p className="font-semibold text-sm" style={{ color: "#1C1810" }}>{product.name}</p>
+                          <p className="text-xs" style={{ color: "#8A7560" }}>{product.nameEn}</p>
                           {product.badge && (
                             <span
                               className="text-xs px-2 py-0.5 rounded-full mt-1 inline-block"
@@ -483,7 +483,7 @@ export default function AdminDashboard() {
               </tbody>
             </table>
             {filtered.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
+              <div className="text-center py-12" style={{ color: "#8A7560" }}>
                 <Package className="w-10 h-10 mx-auto mb-2 opacity-30" />
                 <p>لا توجد منتجات مطابقة</p>
               </div>
@@ -497,7 +497,7 @@ export default function AdminDashboard() {
         {activeTab === "requests" && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-yellow-400" style={{ fontFamily: "'Amiri', serif" }}>
+              <h2 className="text-lg font-bold" style={{ fontFamily: "'Amiri', serif", color: "#B8922A" }}>
                 طلبات الخدمة الواردة
               </h2>
               <Button
@@ -515,7 +515,7 @@ export default function AdminDashboard() {
                 <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
               </div>
             ) : !serviceRequests?.length ? (
-              <div className="text-center py-20 text-gray-500">
+              <div className="text-center py-20" style={{ color: "#8A7560" }}>
                 <Bell className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p className="text-lg">لا توجد طلبات حتى الآن</p>
                 <p className="text-sm mt-1">ستظهر الطلبات هنا عند إرسالها من صفحة طلب الخدمة</p>
@@ -539,12 +539,12 @@ export default function AdminDashboard() {
                     <div
                       key={req.id}
                       className="rounded-xl p-5"
-                      style={{ background: "#1a1508", border: "1px solid rgba(201,168,76,0.2)" }}
+                      style={{ background: "#FFFFFF", border: "1px solid rgba(184,146,42,0.2)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-3">
-                            <h3 className="text-white font-bold text-lg">{req.name}</h3>
+                            <h3 className="font-bold text-lg" style={{ color: "#1C1810" }}>{req.name}</h3>
                             <span className={`text-xs px-2 py-1 rounded-full border ${statusColors[req.status]}`}>
                               {statusLabels[req.status]}
                             </span>
@@ -553,19 +553,19 @@ export default function AdminDashboard() {
                             )}
                           </div>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
-                            <div className="flex items-center gap-2 text-gray-300">
+                            <div className="flex items-center gap-2" style={{ color: "#4A3D2A" }}>
                               <Phone className="w-3.5 h-3.5 text-yellow-500" />
                               <a href={`tel:${req.phone}`} className="hover:text-yellow-400 transition-colors">{req.phone}</a>
                             </div>
-                            <div className="flex items-center gap-2 text-gray-300">
+                            <div className="flex items-center gap-2" style={{ color: "#4A3D2A" }}>
                               <span className="text-yellow-500">🎉</span>
                               {req.occasionLabel}
                             </div>
-                            <div className="flex items-center gap-2 text-gray-300">
+                            <div className="flex items-center gap-2" style={{ color: "#4A3D2A" }}>
                               <span className="text-yellow-500">📅</span>
                               {req.date}
                             </div>
-                            <div className="flex items-center gap-2 text-gray-300">
+                            <div className="flex items-center gap-2" style={{ color: "#4A3D2A" }}>
                               <span className="text-yellow-500">💰</span>
                               {req.budgetLabel}
                             </div>
@@ -576,7 +576,7 @@ export default function AdminDashboard() {
                               </div>
                             )}
                           </div>
-                          <p className="text-xs text-gray-600 mt-3">
+                          <p className="text-xs mt-3" style={{ color: "#8A7560" }}>
                             {new Date(req.createdAt).toLocaleString("ar-KW", { dateStyle: "medium", timeStyle: "short" })}
                           </p>
                         </div>
@@ -596,10 +596,10 @@ export default function AdminDashboard() {
                             value={req.status}
                             onValueChange={(v) => updateStatusMutation.mutate({ id: req.id, status: v as "new" | "contacted" | "completed" | "cancelled" })}
                           >
-                            <SelectTrigger className="h-8 text-xs w-32" style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}>
+                            <SelectTrigger className="h-8 text-xs w-32" style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}>
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent style={{ background: "#1a1508", borderColor: "rgba(201,168,76,0.3)" }}>
+                            <SelectContent style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)" }}>
                               <SelectItem value="new">جديد</SelectItem>
                               <SelectItem value="contacted">تم التواصل</SelectItem>
                               <SelectItem value="completed">مكتمل</SelectItem>
@@ -621,10 +621,10 @@ export default function AdminDashboard() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent
           className="max-w-2xl max-h-[90vh] overflow-y-auto"
-          style={{ background: "#1a1508", border: "1px solid rgba(201,168,76,0.3)", direction: "rtl" }}
+          style={{ background: "#FFFFFF", border: "1px solid rgba(184,146,42,0.3)", direction: "rtl" }}
         >
           <DialogHeader>
-            <DialogTitle className="text-yellow-400 text-right" style={{ fontFamily: "'Amiri', serif" }}>
+            <DialogTitle className="text-right" style={{ fontFamily: "'Amiri', serif", color: "#B8922A" }}>
               {editingId !== null ? "تعديل المنتج" : "إضافة منتج جديد"}
             </DialogTitle>
           </DialogHeader>
@@ -632,33 +632,33 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {/* Name */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">اسم المنتج (عربي) *</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>اسم المنتج (عربي) *</Label>
               <Input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="مثال: دزة الورود الفاخرة"
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
             {/* Name EN */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">اسم المنتج (إنجليزي)</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>اسم المنتج (إنجليزي)</Label>
               <Input
                 value={form.nameEn}
                 onChange={(e) => setForm({ ...form, nameEn: e.target.value })}
                 placeholder="Luxury Rose Dazza"
                 dir="ltr"
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
             {/* Category */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">الفئة *</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>الفئة *</Label>
               <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v as Category })}>
-                <SelectTrigger style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}>
+                <SelectTrigger style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent style={{ background: "#1a1508", borderColor: "rgba(201,168,76,0.3)" }}>
+                <SelectContent style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)" }}>
                   {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
                     <SelectItem key={k} value={k}>{v}</SelectItem>
                   ))}
@@ -667,38 +667,38 @@ export default function AdminDashboard() {
             </div>
             {/* Price Display */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">السعر (للعرض) *</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>السعر (للعرض) *</Label>
               <Input
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
                 placeholder="من 45 د.ك"
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
             {/* Price Value */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">السعر الرقمي (للفرز)</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>السعر الرقمي (للفرز)</Label>
               <Input
                 type="number"
                 value={form.priceValue}
                 onChange={(e) => setForm({ ...form, priceValue: Number(e.target.value) })}
                 placeholder="45"
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
             {/* Price Note */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">ملاحظة السعر</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>ملاحظة السعر</Label>
               <Input
                 value={form.priceNote}
                 onChange={(e) => setForm({ ...form, priceNote: e.target.value })}
                 placeholder="يشمل التوصيل"
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
             {/* Image Upload */}
             <div className="space-y-2 md:col-span-2">
-              <Label className="text-gray-300 text-sm">صورة المنتج *</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>صورة المنتج *</Label>
               <div className="flex gap-3 items-start">
                 {/* Upload button */}
                 <label
@@ -755,50 +755,50 @@ export default function AdminDashboard() {
                     </div>
                   )}
                   <div className="space-y-1">
-                    <p className="text-xs text-gray-500">أو الصق رابط URL مباشرة:</p>
+                    <p className="text-xs" style={{ color: "#8A7560" }}>أو الصق رابط URL مباشرة:</p>
                     <Input
                       value={form.image}
                       onChange={(e) => setForm({ ...form, image: e.target.value })}
                       placeholder="https://..."
                       dir="ltr"
-                      style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff", fontSize: "0.75rem" }}
+                      style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810", fontSize: "0.75rem" }}
                     />
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-gray-600">الأحجام المدعومة: JPEG, PNG, WebP, GIF — حد أقصى 5MB</p>
+              <p className="text-xs" style={{ color: "#8A7560" }}>الأحجام المدعومة: JPEG, PNG, WebP, GIF — حد أقصى 5MB</p>
             </div>
             {/* Description */}
             <div className="space-y-1 md:col-span-2">
-              <Label className="text-gray-300 text-sm">الوصف *</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>الوصف *</Label>
               <Textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="وصف مختصر للمنتج..."
                 rows={2}
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
             {/* Badge */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">الشارة (اختياري)</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>الشارة (اختياري)</Label>
               <Input
                 value={form.badge}
                 onChange={(e) => setForm({ ...form, badge: e.target.value })}
                 placeholder="الأكثر طلباً"
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
             {/* Badge Color */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">لون الشارة</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>لون الشارة</Label>
               <div className="flex gap-2">
                 <Input
                   value={form.badgeColor}
                   onChange={(e) => setForm({ ...form, badgeColor: e.target.value })}
                   placeholder="#C9A84C"
                   dir="ltr"
-                  style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                  style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
                 />
                 <input
                   type="color"
@@ -810,44 +810,45 @@ export default function AdminDashboard() {
             </div>
             {/* Tags */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">الوسوم (JSON مثال: ["هدايا","أفراح"])</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>الوسوم (JSON مثال: ["هدايا","أفراح"])</Label>
               <Input
                 value={form.tags}
                 onChange={(e) => setForm({ ...form, tags: e.target.value })}
                 placeholder='["هدايا","أفراح"]'
                 dir="ltr"
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
             {/* Sort Order */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">ترتيب العرض</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>ترتيب العرض</Label>
               <Input
                 type="number"
                 value={form.sortOrder}
                 onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })}
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
-            {/* Rating & Stock */}
+            {/* Rating */}
             <div className="space-y-1">
-              <Label className="text-gray-300 text-sm">التقييم (1-5)</Label>
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>التقييم (1-5)</Label>
               <Input
                 type="number"
                 min={1}
                 max={5}
                 value={form.rating}
                 onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })}
-                style={{ background: "#0D0B08", borderColor: "rgba(201,168,76,0.3)", color: "#fff" }}
+                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
               />
             </div>
+            {/* Stock */}
             <div className="space-y-1 flex items-end">
               <div className="flex items-center gap-3">
                 <Switch
                   checked={form.inStock}
                   onCheckedChange={(v) => setForm({ ...form, inStock: v })}
                 />
-                <Label className="text-gray-300 text-sm">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>
                   {form.inStock ? "متوفر في المخزون" : "غير متوفر حالياً"}
                 </Label>
               </div>

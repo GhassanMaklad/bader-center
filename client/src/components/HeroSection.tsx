@@ -1,7 +1,7 @@
 /**
- * HeroSection - Full-screen dark luxury hero
- * Design: Dark Arabian Opulence
- * - Full viewport height with parallax background
+ * HeroSection - Light Luxury Hero
+ * Design: White/Gray/Gold Elegance
+ * - Full viewport height with background image + light overlay
  * - Gold shimmer text for headline
  * - Animated entrance
  */
@@ -27,7 +27,7 @@ export default function HeroSection() {
     <section
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{ background: "#0D0B08" }}
+      style={{ background: "#F5F3EE" }}
     >
       {/* Background Image */}
       <div
@@ -38,19 +38,19 @@ export default function HeroSection() {
         }}
       />
 
-      {/* Dark overlay with gradient */}
+      {/* Light warm overlay */}
       <div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(to bottom, rgba(13,11,8,0.6) 0%, rgba(13,11,8,0.5) 50%, rgba(13,11,8,0.85) 100%)",
+          background: "linear-gradient(to bottom, rgba(245,243,238,0.55) 0%, rgba(245,243,238,0.45) 50%, rgba(245,243,238,0.80) 100%)",
         }}
       />
 
       {/* Islamic pattern overlay */}
-      <div className="absolute inset-0 islamic-pattern opacity-30" />
+      <div className="absolute inset-0 islamic-pattern opacity-40" />
 
       {/* Gold top border */}
-      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(to right, transparent, #C9A84C, transparent)" }} />
+      <div className="absolute top-0 left-0 right-0 h-1" style={{ background: "linear-gradient(to right, transparent, #C9A84C, transparent)" }} />
 
       {/* Content */}
       <div
@@ -63,8 +63,8 @@ export default function HeroSection() {
       >
         {/* Tagline */}
         <p
-          className="text-[#C9A84C] text-sm tracking-[0.3em] uppercase mb-6 font-light"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          className="text-sm tracking-[0.3em] uppercase mb-6 font-semibold"
+          style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif", textShadow: "0 1px 3px rgba(255,255,255,0.8)" }}
         >
           ✦ BADER CENTER ✦ KUWAIT ✦ SINCE 2004 ✦
         </p>
@@ -76,22 +76,24 @@ export default function HeroSection() {
         >
           <span className="gold-shimmer">للفخامة</span>
           <br />
-          <span className="text-white">أصول</span>
+          <span style={{ color: "#1C1810", textShadow: "0 2px 8px rgba(255,255,255,0.7)" }}>أصول</span>
         </h1>
 
         {/* Sub headline */}
         <p
-          className="text-xl sm:text-2xl text-[#D4C5A0] mb-4 font-light"
-          style={{ fontFamily: "'Cairo', sans-serif" }}
+          className="text-xl sm:text-2xl mb-4 font-light"
+          style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", textShadow: "0 1px 4px rgba(255,255,255,0.8)" }}
         >
-          نجسدها منذ <span className="text-[#C9A84C] font-semibold">20 عاماً</span>
+          نجسدها منذ <span className="font-semibold" style={{ color: "#B8922A" }}>20 عاماً</span>
         </p>
 
         {/* Description */}
         <p
-          className="text-[#A09070] text-base sm:text-lg max-w-2xl mx-auto mb-12 leading-relaxed"
+          className="text-base sm:text-lg max-w-2xl mx-auto mb-12 leading-relaxed"
           style={{
+            color: "#5A4E3A",
             fontFamily: "'Cairo', sans-serif",
+            textShadow: "0 1px 4px rgba(255,255,255,0.8)",
             opacity: visible ? 1 : 0,
             transition: "opacity 1.5s ease 0.4s",
           }}
@@ -140,10 +142,15 @@ export default function HeroSection() {
             { num: "100%", label: "رضا العملاء" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
-              <p className="text-2xl sm:text-3xl font-bold text-[#C9A84C]" style={{ fontFamily: "'Amiri', serif" }}>
-                {stat.num}
-              </p>
-              <p className="text-[#A09070] text-xs mt-1" style={{ fontFamily: "'Cairo', sans-serif" }}>
+              <div
+                className="inline-block px-4 py-2 rounded-xl mb-1"
+                style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(8px)", boxShadow: "0 2px 12px rgba(184,146,42,0.15)" }}
+              >
+                <p className="text-2xl sm:text-3xl font-bold" style={{ color: "#B8922A", fontFamily: "'Amiri', serif" }}>
+                  {stat.num}
+                </p>
+              </div>
+              <p className="text-xs mt-1 font-medium" style={{ color: "#5A4E3A", fontFamily: "'Cairo', sans-serif" }}>
                 {stat.label}
               </p>
             </div>
@@ -154,7 +161,8 @@ export default function HeroSection() {
       {/* Scroll indicator */}
       <button
         onClick={scrollToServices}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#C9A84C] animate-bounce"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
+        style={{ color: "#B8922A" }}
       >
         <ChevronDown size={32} />
       </button>
@@ -162,7 +170,7 @@ export default function HeroSection() {
       {/* Bottom gradient */}
       <div
         className="absolute bottom-0 left-0 right-0 h-32"
-        style={{ background: "linear-gradient(to bottom, transparent, #0D0B08)" }}
+        style={{ background: "linear-gradient(to bottom, transparent, #FAFAF8)" }}
       />
     </section>
   );

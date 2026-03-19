@@ -1,8 +1,6 @@
 /**
  * AboutSection - Company story and values
- * Design: Dark Arabian Opulence
- * - Split layout with image and text
- * - Gold accent elements
+ * Design: Light Luxury Theme - White/Gray/Gold
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -33,13 +31,13 @@ export default function AboutSection() {
     <section
       id="about"
       className="py-24 relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #0D0B08 0%, #110E08 100%)" }}
+      style={{ background: "#F5F3EE" }}
     >
       {/* Background decoration */}
       <div className="absolute inset-0 islamic-pattern opacity-20" />
       <div
-        className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-5"
-        style={{ background: "radial-gradient(circle, #C9A84C 0%, transparent 70%)", transform: "translate(-50%, -50%)" }}
+        className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-10"
+        style={{ background: "radial-gradient(circle, #D4AF37 0%, transparent 70%)", transform: "translate(-50%, -50%)" }}
       />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
@@ -56,7 +54,7 @@ export default function AboutSection() {
               transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            <div className="relative rounded-lg overflow-hidden" style={{ border: "1px solid rgba(201,168,76,0.3)" }}>
+            <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(184,146,42,0.3)", boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
               <img
                 src={CATERING_IMG}
                 alt="مركز بدر"
@@ -64,7 +62,7 @@ export default function AboutSection() {
               />
               <div
                 className="absolute inset-0"
-                style={{ background: "linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 50%)" }}
+                style={{ background: "linear-gradient(135deg, rgba(184,146,42,0.08) 0%, transparent 50%)" }}
               />
             </div>
 
@@ -72,9 +70,9 @@ export default function AboutSection() {
             <div
               className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full flex items-center justify-center"
               style={{
-                background: "#0D0B08",
+                background: "#FFFFFF",
                 border: "3px solid #C9A84C",
-                boxShadow: "0 0 30px rgba(201,168,76,0.3)",
+                boxShadow: "0 4px 20px rgba(184,146,42,0.3)",
               }}
             >
               <img src={LOGO_URL} alt="مركز بدر" className="w-20 h-20 rounded-full object-cover" />
@@ -82,16 +80,16 @@ export default function AboutSection() {
 
             {/* Experience badge */}
             <div
-              className="absolute -top-4 -right-4 px-4 py-2 rounded-lg"
+              className="absolute -top-4 -right-4 px-4 py-2 rounded-xl"
               style={{
                 background: "linear-gradient(135deg, #C9A84C, #E8C96A)",
-                boxShadow: "0 4px 20px rgba(201,168,76,0.4)",
+                boxShadow: "0 4px 20px rgba(184,146,42,0.4)",
               }}
             >
-              <p className="text-[#0D0B08] font-bold text-sm" style={{ fontFamily: "'Cairo', sans-serif" }}>
+              <p className="font-bold text-sm" style={{ color: "#3D2B00", fontFamily: "'Cairo', sans-serif" }}>
                 +20 عاماً
               </p>
-              <p className="text-[#0D0B08] text-xs" style={{ fontFamily: "'Cairo', sans-serif" }}>
+              <p className="text-xs" style={{ color: "#3D2B00", fontFamily: "'Cairo', sans-serif" }}>
                 من الخبرة
               </p>
             </div>
@@ -105,12 +103,12 @@ export default function AboutSection() {
               transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s",
             }}
           >
-            <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
               ✦ من نحن ✦
             </p>
             <h2
-              className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight"
-              style={{ fontFamily: "'Amiri', serif" }}
+              className="text-4xl sm:text-5xl font-bold mb-6 leading-tight"
+              style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
             >
               قصتنا مع
               <br />
@@ -119,14 +117,14 @@ export default function AboutSection() {
             <div className="gold-divider mb-6" style={{ width: "80px" }} />
 
             <p
-              className="text-[#A09070] leading-relaxed mb-6 text-base"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              className="leading-relaxed mb-6 text-base"
+              style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
             >
               مركز بدر هو وجهتك الأولى للفخامة والأناقة في الكويت. منذ أكثر من 20 عاماً، ونحن نجسّد أحلام عملائنا في كل مناسبة — من الأعراس الفاخرة إلى الاحتفالات الوطنية، ومن الهدايا المميزة إلى التكريمات الرسمية.
             </p>
             <p
-              className="text-[#A09070] leading-relaxed mb-8 text-base"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              className="leading-relaxed mb-8 text-base"
+              style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
             >
               نؤمن أن كل مناسبة تستحق لمسة استثنائية. لذلك نعمل بشغف وإتقان لنقدم لك تجربة لا تُنسى، مع توصيل لجميع مناطق الكويت.
             </p>
@@ -136,15 +134,15 @@ export default function AboutSection() {
               {values.map((v) => (
                 <div
                   key={v.title}
-                  className="flex items-start gap-3 p-3 rounded-lg"
-                  style={{ background: "rgba(201,168,76,0.05)", border: "1px solid rgba(201,168,76,0.1)" }}
+                  className="flex items-start gap-3 p-3 rounded-xl"
+                  style={{ background: "#FFFFFF", border: "1px solid rgba(184,146,42,0.15)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
                 >
                   <span className="text-2xl">{v.icon}</span>
                   <div>
-                    <p className="text-[#C9A84C] font-semibold text-sm" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                    <p className="font-semibold text-sm" style={{ color: "#B8922A", fontFamily: "'Cairo', sans-serif" }}>
                       {v.title}
                     </p>
-                    <p className="text-[#7A6A50] text-xs" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                    <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
                       {v.desc}
                     </p>
                   </div>

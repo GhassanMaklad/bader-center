@@ -1,9 +1,7 @@
 /**
  * GallerySection - Product gallery with masonry-like layout
- * Design: Dark Arabian Opulence
- * - Asymmetric grid layout using REAL unique Instagram images from @badercenterco
- * - All 9 images are verified unique from the Instagram account
- * - Gold hover overlays with category labels
+ * Design: Light Luxury Theme - White/Gray/Gold
+ * - Real Instagram images from @badercenterco
  */
 import { useEffect, useRef, useState } from "react";
 import { Instagram, ExternalLink } from "lucide-react";
@@ -92,12 +90,13 @@ function GalleryCard({ item, index }: { item: typeof galleryItems[0]; index: num
   return (
     <div
       ref={ref}
-      className={`relative overflow-hidden rounded-lg cursor-pointer ${item.span}`}
+      className={`relative overflow-hidden rounded-2xl cursor-pointer ${item.span}`}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "scale(1)" : "scale(0.95)",
         transition: `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.08}s`,
         minHeight: "180px",
+        boxShadow: hovered ? "0 8px 30px rgba(184,146,42,0.25)" : "0 2px 12px rgba(0,0,0,0.08)",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -114,13 +113,13 @@ function GalleryCard({ item, index }: { item: typeof galleryItems[0]; index: num
         className="absolute inset-0 flex flex-col justify-end p-4 transition-all duration-400"
         style={{
           background: hovered
-            ? "linear-gradient(to top, rgba(13,11,8,0.95) 0%, rgba(13,11,8,0.4) 60%, transparent 100%)"
-            : "linear-gradient(to top, rgba(13,11,8,0.7) 0%, transparent 60%)",
+            ? "linear-gradient(to top, rgba(28,24,16,0.92) 0%, rgba(28,24,16,0.3) 60%, transparent 100%)"
+            : "linear-gradient(to top, rgba(28,24,16,0.65) 0%, transparent 60%)",
         }}
       >
         <span
-          className="text-[#C9A84C] text-xs mb-1 tracking-wider"
-          style={{ fontFamily: "'Cairo', sans-serif" }}
+          className="text-xs mb-1 tracking-wider font-semibold"
+          style={{ color: "#E8C96A", fontFamily: "'Cairo', sans-serif" }}
         >
           {item.category}
         </span>
@@ -136,7 +135,7 @@ function GalleryCard({ item, index }: { item: typeof galleryItems[0]; index: num
               href="https://www.instagram.com/badercenterco"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#C9A84C] hover:text-white transition-colors flex-shrink-0"
+              className="text-[#E8C96A] hover:text-white transition-colors flex-shrink-0"
               onClick={(e) => e.stopPropagation()}
             >
               <ExternalLink size={14} />
@@ -146,9 +145,9 @@ function GalleryCard({ item, index }: { item: typeof galleryItems[0]; index: num
 
         {/* Gold border on hover */}
         <div
-          className="absolute inset-0 rounded-lg transition-all duration-400 pointer-events-none"
+          className="absolute inset-0 rounded-2xl transition-all duration-400 pointer-events-none"
           style={{
-            border: hovered ? "2px solid rgba(201,168,76,0.6)" : "2px solid transparent",
+            border: hovered ? "2px solid rgba(184,146,42,0.7)" : "2px solid transparent",
           }}
         />
       </div>
@@ -158,8 +157,8 @@ function GalleryCard({ item, index }: { item: typeof galleryItems[0]; index: num
         className="absolute top-3 right-3 transition-all duration-300"
         style={{ opacity: hovered ? 1 : 0, transform: hovered ? "scale(1)" : "scale(0.8)" }}
       >
-        <div className="bg-black/60 backdrop-blur-sm rounded-full p-1.5">
-          <Instagram size={12} className="text-[#C9A84C]" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+          <Instagram size={12} style={{ color: "#B8922A" }} />
         </div>
       </div>
     </div>
@@ -180,7 +179,7 @@ export default function GallerySection() {
   }, []);
 
   return (
-    <section id="gallery" className="py-24 relative" style={{ background: "#0D0B08" }}>
+    <section id="gallery" className="py-24 relative" style={{ background: "#F5F3EE" }}>
       <div className="absolute inset-0 islamic-pattern opacity-15" />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
@@ -194,17 +193,17 @@ export default function GallerySection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ من حساب الإنستغرام ✦
           </p>
           <h2
-            className="text-4xl sm:text-5xl font-bold text-white mb-4"
-            style={{ fontFamily: "'Amiri', serif" }}
+            className="text-4xl sm:text-5xl font-bold mb-4"
+            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
           >
             معرض أعمالنا الحقيقية
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="text-[#A09070] max-w-xl mx-auto" style={{ fontFamily: "'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}>
             صور حقيقية من أعمالنا على إنستغرام — كل صورة تحكي قصة نجاح
           </p>
 
@@ -213,12 +212,12 @@ export default function GallerySection() {
             href="https://www.instagram.com/badercenterco"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 mt-4 text-[#C9A84C] hover:text-white transition-colors text-sm"
-            style={{ fontFamily: "'Cairo', sans-serif" }}
+            className="inline-flex items-center gap-2 mt-4 transition-colors text-sm"
+            style={{ color: "#B8922A", fontFamily: "'Cairo', sans-serif" }}
           >
             <Instagram size={16} />
             <span>@badercenterco</span>
-            <span className="text-[#A09070]">· 19.7K متابع</span>
+            <span style={{ color: "#8A7560" }}>· 19.7K متابع</span>
           </a>
         </div>
 
@@ -256,12 +255,12 @@ export default function GallerySection() {
             href="https://www.instagram.com/badercenterco"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 btn-gold-outline px-8 py-4"
+            className="inline-flex items-center gap-3 btn-gold px-8 py-4"
           >
             <Instagram size={20} />
             شاهد المزيد على إنستغرام
           </a>
-          <p className="text-[#A09070] text-sm mt-3" style={{ fontFamily: "'Cairo', sans-serif" }}>
+          <p className="text-sm mt-3" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
             أكثر من 2,767 منشور على حسابنا
           </p>
         </div>

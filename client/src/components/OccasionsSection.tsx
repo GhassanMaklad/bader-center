@@ -1,8 +1,6 @@
 /**
  * OccasionsSection - All occasions Bader Center serves
- * Design: Dark Arabian Opulence
- * - Horizontal scrolling cards
- * - Gold hover effects
+ * Design: Light Luxury Theme - White/Gray/Gold
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -36,7 +34,7 @@ export default function OccasionsSection() {
     <section
       id="occasions"
       className="py-24 relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #0D0B08 0%, #130F09 50%, #0D0B08 100%)" }}
+      style={{ background: "#FFFFFF" }}
     >
       <div className="absolute inset-0 islamic-pattern opacity-20" />
 
@@ -51,17 +49,17 @@ export default function OccasionsSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ مناسباتنا ✦
           </p>
           <h2
-            className="text-4xl sm:text-5xl font-bold text-white mb-4"
-            style={{ fontFamily: "'Amiri', serif" }}
+            className="text-4xl sm:text-5xl font-bold mb-4"
+            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
           >
             نكون معك في كل مناسبة
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="text-[#A09070] max-w-xl mx-auto" style={{ fontFamily: "'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}>
             من رمضان إلى الأعراس، من التخرج إلى العيد الوطني — مركز بدر يجهز مناسبتك بأسلوب لا يُنسى
           </p>
         </div>
@@ -71,37 +69,38 @@ export default function OccasionsSection() {
           {occasions.map((occ, i) => (
             <div
               key={occ.title}
-              className="group text-center p-6 rounded-lg cursor-pointer transition-all duration-400"
+              className="group text-center p-6 rounded-2xl cursor-pointer transition-all duration-400"
               style={{
-                background: "rgba(26,21,16,0.8)",
-                border: "1px solid rgba(201,168,76,0.15)",
+                background: "#F8F6F0",
+                border: "1px solid rgba(184,146,42,0.15)",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateY(0)" : "translateY(20px)",
                 transition: `all 0.6s ease ${i * 0.07}s`,
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,0.6)";
-                (e.currentTarget as HTMLElement).style.background = "rgba(201,168,76,0.05)";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(184,146,42,0.5)";
+                (e.currentTarget as HTMLElement).style.background = "#FFFFFF";
                 (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 30px rgba(201,168,76,0.1)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 30px rgba(184,146,42,0.15)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,0.15)";
-                (e.currentTarget as HTMLElement).style.background = "rgba(26,21,16,0.8)";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(184,146,42,0.15)";
+                (e.currentTarget as HTMLElement).style.background = "#F8F6F0";
                 (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)";
               }}
             >
               <div className="text-4xl mb-3">{occ.icon}</div>
               <h3
-                className="text-white font-semibold text-sm mb-2"
-                style={{ fontFamily: "'Cairo', sans-serif" }}
+                className="font-semibold text-sm mb-2"
+                style={{ color: "#1C1810", fontFamily: "'Cairo', sans-serif" }}
               >
                 {occ.title}
               </h3>
               <p
-                className="text-[#7A6A50] text-xs leading-relaxed"
-                style={{ fontFamily: "'Cairo', sans-serif" }}
+                className="text-xs leading-relaxed"
+                style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
               >
                 {occ.desc}
               </p>
