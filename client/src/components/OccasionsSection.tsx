@@ -49,17 +49,17 @@ export default function OccasionsSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.4em] uppercase mb-4 font-normal" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>
+          <p className="tracking-[0.4em] uppercase mb-5 font-bold" style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontStyle: "italic", fontSize: "20px", paddingBottom: "20px" }}>
             ✦ مناسباتنا ✦
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
           >
             نكون معك في كل مناسبة
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto font-bold" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontSize: "14px" }}>
             من رمضان إلى الأعراس، من التخرج إلى العيد الوطني — مركز بدر يجهز مناسبتك بأسلوب لا يُنسى
           </p>
         </div>

@@ -90,7 +90,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8" style={{ paddingLeft: "50px" }}>
             {navLinks.map((link) => (
               <button
                 key={link.href}
@@ -119,12 +119,17 @@ export default function Navbar() {
             {isAdmin && (
               <Link
                 href="/admin"
-                className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition-all duration-300 border"
+                className="flex items-center gap-2 rounded-lg transition-all duration-300 border"
                 style={{
                   color: "#9C7A3C",
                   borderColor: "rgba(156,122,60,0.4)",
                   background: "rgba(156,122,60,0.06)",
                   fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+                  fontWeight: 100,
+                  fontSize: "14px",
+                  padding: "0px 0px",
+                  width: "100px",
+                  justifyContent: "center",
                 }}
               >
                 <LayoutDashboard size={15} />
@@ -133,7 +138,8 @@ export default function Navbar() {
             )}
             <Link
               href="/request"
-              className="btn-gold flex items-center gap-2 text-sm"
+              className="btn-gold flex items-center gap-2"
+              style={{ fontSize: "16px", fontWeight: 700, fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", padding: "5px 20px", height: "40px" }}
             >
               <Phone size={16} />
               اطلب الآن

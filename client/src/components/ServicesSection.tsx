@@ -236,7 +236,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
           className="text-lg font-semibold mb-3"
           style={{
             color: "#2C2416",
-            fontFamily: "'Noto Naskh Arabic', serif",
+            fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
             borderBottom: "1.5px solid rgba(156,122,60,0.4)",
             paddingBottom: "8px",
             display: "inline-block",

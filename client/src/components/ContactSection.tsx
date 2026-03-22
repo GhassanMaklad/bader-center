@@ -102,12 +102,12 @@ export default function ContactSection() {
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
           >
             نحن هنا لخدمتك
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontSize: "20px" }}>
             تواصل معنا الآن لتحويل مناسبتك إلى تجربة لا تُنسى
           </p>
         </div>

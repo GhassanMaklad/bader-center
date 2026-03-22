@@ -108,11 +108,9 @@ export default function AboutSection() {
             </p>
             <h2
               className="text-4xl sm:text-5xl font-bold mb-6 leading-tight"
-              style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
+              style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
-              قصتنا مع
-              <br />
-              <span className="gold-text">الفخامة</span>
+              قصتنا
             </h2>
             <div className="gold-divider mb-6" style={{ width: "80px" }} />
 
@@ -155,6 +153,7 @@ export default function AboutSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="btn-gold inline-block"
+              style={{ fontSize: "16px", fontWeight: 700, fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               تواصل معنا
             </a>

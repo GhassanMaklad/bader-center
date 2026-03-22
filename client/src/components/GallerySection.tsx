@@ -193,18 +193,18 @@ export default function GallerySection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.4em] uppercase mb-4 font-normal" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>
+          <p className="tracking-[0.4em] uppercase mb-5 font-bold" style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontStyle: "italic", fontSize: "20px" }}>
             ✦ من حساب الإنستغرام ✦
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
           >
-            معرض أعمالنا الحقيقية
+            معرض أعمالنا
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
-            صور حقيقية من أعمالنا على إنستغرام — كل صورة تحكي قصة نجاح
+          <p className="max-w-xl mx-auto font-medium" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontSize: "20px" }}>
+            صور حقيقية من أعمالنا على إنستغرام — كل صورة تحكي قصة
           </p>
 
           {/* Instagram handle badge */}
@@ -213,7 +213,7 @@ export default function GallerySection() {
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 mt-4 transition-colors text-sm"
-            style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+            style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontWeight: 500 }}
           >
             <Instagram size={16} />
             <span>@badercenterco</span>
