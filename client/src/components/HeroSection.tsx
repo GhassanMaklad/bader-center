@@ -1,15 +1,14 @@
 /**
- * HeroSection - Light Luxury Hero
- * Design: White/Gray/Gold Elegance
- * - Full viewport height with background image + light overlay
+ * HeroSection - Pure Color Luxury Hero
+ * Design: Warm Beige Gradient — No background image
+ * - Full viewport height with layered gradient
+ * - Decorative geometric/Islamic SVG patterns
  * - Gold shimmer text for headline
  * - Animated entrance
  */
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Link } from "wouter";
-
-const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/hero_bg-eyMGwi7DBgHftcSdbF64dj.webp";
 
 export default function HeroSection() {
   const [visible, setVisible] = useState(false);
@@ -27,30 +26,77 @@ export default function HeroSection() {
     <section
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{ background: "#EDE8DF" }}
+      style={{
+        background: "linear-gradient(135deg, #F7F2E8 0%, #EDE8DF 35%, #E4DDD0 65%, #D8D0C0 100%)",
+      }}
     >
-      {/* Background Image */}
+      {/* Gold top border */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute top-0 left-0 right-0 h-1"
+        style={{ background: "linear-gradient(to right, transparent, #C9A84C 30%, #9C7A3C 50%, #C9A84C 70%, transparent)" }}
+      />
+
+      {/* Decorative large circle — top right */}
+      <div
+        className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{
-          backgroundImage: `url(${HERO_BG})`,
-          transform: "scale(1.05)",
+          background: "radial-gradient(circle, rgba(201,168,76,0.12) 0%, rgba(201,168,76,0.04) 50%, transparent 70%)",
         }}
       />
 
-      {/* Light warm overlay */}
+      {/* Decorative large circle — bottom left */}
       <div
-        className="absolute inset-0"
+        className="absolute -bottom-40 -left-40 w-[700px] h-[700px] rounded-full pointer-events-none"
         style={{
-          background: "linear-gradient(to bottom, rgba(237,232,223,0.72) 0%, rgba(237,232,223,0.65) 50%, rgba(237,232,223,0.92) 100%)",
+          background: "radial-gradient(circle, rgba(156,122,60,0.1) 0%, rgba(156,122,60,0.03) 50%, transparent 70%)",
         }}
       />
 
       {/* Islamic pattern overlay */}
-      <div className="absolute inset-0 islamic-pattern opacity-40" />
+      <div className="absolute inset-0 islamic-pattern opacity-30 pointer-events-none" />
 
-      {/* Gold top border */}
-      <div className="absolute top-0 left-0 right-0 h-1" style={{ background: "linear-gradient(to right, transparent, #C9A84C, transparent)" }} />
+      {/* Decorative SVG geometric ornament — top left */}
+      <svg
+        className="absolute top-16 left-8 opacity-20 pointer-events-none hidden lg:block"
+        width="180"
+        height="180"
+        viewBox="0 0 180 180"
+        fill="none"
+      >
+        <circle cx="90" cy="90" r="80" stroke="#9C7A3C" strokeWidth="1" strokeDasharray="4 6" />
+        <circle cx="90" cy="90" r="55" stroke="#C9A84C" strokeWidth="0.8" />
+        <circle cx="90" cy="90" r="30" stroke="#9C7A3C" strokeWidth="1" />
+        <line x1="90" y1="10" x2="90" y2="170" stroke="#C9A84C" strokeWidth="0.5" />
+        <line x1="10" y1="90" x2="170" y2="90" stroke="#C9A84C" strokeWidth="0.5" />
+        <line x1="33" y1="33" x2="147" y2="147" stroke="#9C7A3C" strokeWidth="0.5" />
+        <line x1="147" y1="33" x2="33" y2="147" stroke="#9C7A3C" strokeWidth="0.5" />
+        <polygon points="90,20 105,75 160,75 115,108 130,163 90,130 50,163 65,108 20,75 75,75" stroke="#C9A84C" strokeWidth="0.8" fill="none" />
+      </svg>
+
+      {/* Decorative SVG geometric ornament — bottom right */}
+      <svg
+        className="absolute bottom-20 right-8 opacity-15 pointer-events-none hidden lg:block"
+        width="220"
+        height="220"
+        viewBox="0 0 220 220"
+        fill="none"
+      >
+        <rect x="20" y="20" width="180" height="180" rx="4" stroke="#9C7A3C" strokeWidth="1" strokeDasharray="3 5" />
+        <rect x="45" y="45" width="130" height="130" rx="2" stroke="#C9A84C" strokeWidth="0.8" transform="rotate(45 110 110)" />
+        <circle cx="110" cy="110" r="50" stroke="#9C7A3C" strokeWidth="0.8" />
+        <circle cx="110" cy="110" r="25" stroke="#C9A84C" strokeWidth="1" />
+        <circle cx="110" cy="110" r="5" fill="#C9A84C" opacity="0.5" />
+      </svg>
+
+      {/* Thin vertical gold lines — decorative */}
+      <div
+        className="absolute top-0 bottom-0 left-1/4 w-px pointer-events-none hidden xl:block"
+        style={{ background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.15) 30%, rgba(201,168,76,0.15) 70%, transparent)" }}
+      />
+      <div
+        className="absolute top-0 bottom-0 right-1/4 w-px pointer-events-none hidden xl:block"
+        style={{ background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.15) 30%, rgba(201,168,76,0.15) 70%, transparent)" }}
+      />
 
       {/* Content */}
       <div
@@ -64,7 +110,11 @@ export default function HeroSection() {
         {/* Tagline */}
         <p
           className="text-xs tracking-[0.45em] uppercase mb-6 font-medium"
-          style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', 'Cormorant Garamond', serif", textShadow: "0 1px 3px rgba(237,232,223,0.9)", fontStyle: "italic" }}
+          style={{
+            color: "#9C7A3C",
+            fontFamily: "'Playfair Display', 'Cormorant Garamond', serif",
+            fontStyle: "italic",
+          }}
         >
           ✦ Bader Center ✦ Kuwait ✦ Since 2004 ✦
         </p>
@@ -76,13 +126,18 @@ export default function HeroSection() {
         >
           <span className="gold-shimmer">للفخامة</span>
           <br />
-          <span style={{ color: "#2C2416", textShadow: "0 2px 8px rgba(237,232,223,0.8)" }}>أصول</span>
+          <span style={{ color: "#2C2416" }}>أصول</span>
         </h1>
 
         {/* Sub headline */}
         <p
           className="text-xl sm:text-2xl mb-4"
-          style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", textShadow: "0 1px 4px rgba(237,232,223,0.9)", fontWeight: 300, letterSpacing: "0.02em" }}
+          style={{
+            color: "#4A3F2F",
+            fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+            fontWeight: 300,
+            letterSpacing: "0.02em",
+          }}
         >
           نجسدها منذ <span className="font-semibold" style={{ color: "#9C7A3C" }}>20 عاماً</span>
         </p>
@@ -93,7 +148,6 @@ export default function HeroSection() {
           style={{
             color: "#5A4E3A",
             fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
-            textShadow: "0 1px 4px rgba(237,232,223,0.9)",
             opacity: visible ? 1 : 0,
             transition: "opacity 1.5s ease 0.4s",
           }}
@@ -144,13 +198,23 @@ export default function HeroSection() {
             <div key={stat.label} className="text-center">
               <div
                 className="inline-block px-4 py-2 rounded-xl mb-1"
-                style={{ background: "rgba(247,243,236,0.8)", backdropFilter: "blur(8px)", boxShadow: "0 2px 12px rgba(44,36,22,0.1)" }}
+                style={{
+                  background: "rgba(255,252,245,0.85)",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 2px 16px rgba(44,36,22,0.08), 0 0 0 1px rgba(201,168,76,0.15)",
+                }}
               >
-                <p className="text-2xl sm:text-3xl font-bold" style={{ color: "#9C7A3C", fontFamily: "'Noto Naskh Arabic', serif" }}>
+                <p
+                  className="text-2xl sm:text-3xl font-bold"
+                  style={{ color: "#9C7A3C", fontFamily: "'Noto Naskh Arabic', serif" }}
+                >
                   {stat.num}
                 </p>
               </div>
-              <p className="text-xs mt-1 font-medium" style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
+              <p
+                className="text-xs mt-1 font-medium"
+                style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+              >
                 {stat.label}
               </p>
             </div>
@@ -167,9 +231,9 @@ export default function HeroSection() {
         <ChevronDown size={32} />
       </button>
 
-      {/* Bottom gradient */}
+      {/* Bottom gradient fade into next section */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-32"
+        className="absolute bottom-0 left-0 right-0 h-24"
         style={{ background: "linear-gradient(to bottom, transparent, #EDE8DF)" }}
       />
     </section>
