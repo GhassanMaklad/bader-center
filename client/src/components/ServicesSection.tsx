@@ -313,8 +313,8 @@ export default function ServicesSection() {
           }}
         >
           <p
-            className="text-xs tracking-[0.4em] uppercase mb-4 font-normal"
-            style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}
+            className="tracking-[0.4em] uppercase mb-4 font-bold"
+            style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "20px" }}
           >
             Our Services
           </p>
@@ -322,12 +322,12 @@ export default function ServicesSection() {
             className="text-4xl sm:text-5xl font-bold mb-4"
             style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif", letterSpacing: "-0.01em", lineHeight: "1.3" }}
           >
-            ما نقدمه لك
+            خدماتنا
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
           <p
-            className="max-w-xl mx-auto"
-            style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+            className="max-w-xl mx-auto font-bold"
+            style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontSize: "20px" }}
           >
             نقدم خدمات متكاملة لجميع مناسباتك بأعلى معايير الجودة والفخامة
           </p>

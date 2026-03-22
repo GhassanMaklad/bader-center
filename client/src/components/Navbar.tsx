@@ -80,11 +80,11 @@ export default function Navbar() {
               style={{ border: "2px solid rgba(156,122,60,0.4)", boxShadow: "0 2px 12px rgba(44,36,22,0.1)" }}
             />
             <div className="hidden sm:block">
-              <p className="text-xs font-normal tracking-[0.35em]" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic", letterSpacing: "0.3em" }}>
+              <p className="text-sm font-bold tracking-[0.35em]" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic", letterSpacing: "0.3em" }}>
                 Bader Center
               </p>
-              <p className="font-semibold text-base leading-tight" style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif", letterSpacing: "0.01em" }}>
-                مركز بدر
+              <p className="font-bold text-base leading-tight" style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif", letterSpacing: "0.01em" }}>
+                مـركـز بــدـر
               </p>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function Navbar() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className="transition-colors duration-300 text-sm font-normal relative group"
+                className="transition-colors duration-300 text-sm font-semibold relative group"
                 style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", letterSpacing: "0.02em" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#2C2416")}
                 onMouseLeave={e => (e.currentTarget.style.color = "#4A3F2F")}
@@ -106,7 +106,7 @@ export default function Navbar() {
             ))}
             <Link
               href="/catalog"
-              className="transition-colors duration-300 text-sm font-medium relative group"
+              className="transition-colors duration-300 text-sm font-semibold relative group"
               style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               كتالوج
