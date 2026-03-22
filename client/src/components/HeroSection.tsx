@@ -27,7 +27,7 @@ export default function HeroSection() {
     <section
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{ background: "#F5F3EE" }}
+      style={{ background: "#EDE8DF" }}
     >
       {/* Background Image */}
       <div
@@ -42,7 +42,7 @@ export default function HeroSection() {
       <div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(to bottom, rgba(245,243,238,0.55) 0%, rgba(245,243,238,0.45) 50%, rgba(245,243,238,0.80) 100%)",
+          background: "linear-gradient(to bottom, rgba(237,232,223,0.72) 0%, rgba(237,232,223,0.65) 50%, rgba(237,232,223,0.92) 100%)",
         }}
       />
 
@@ -64,7 +64,7 @@ export default function HeroSection() {
         {/* Tagline */}
         <p
           className="text-sm tracking-[0.3em] uppercase mb-6 font-semibold"
-          style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif", textShadow: "0 1px 3px rgba(255,255,255,0.8)" }}
+          style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif", textShadow: "0 1px 3px rgba(237,232,223,0.9)" }}
         >
           ✦ BADER CENTER ✦ KUWAIT ✦ SINCE 2004 ✦
         </p>
@@ -76,15 +76,15 @@ export default function HeroSection() {
         >
           <span className="gold-shimmer">للفخامة</span>
           <br />
-          <span style={{ color: "#1C1810", textShadow: "0 2px 8px rgba(255,255,255,0.7)" }}>أصول</span>
+          <span style={{ color: "#2C2416", textShadow: "0 2px 8px rgba(237,232,223,0.8)" }}>أصول</span>
         </h1>
 
         {/* Sub headline */}
         <p
           className="text-xl sm:text-2xl mb-4 font-light"
-          style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", textShadow: "0 1px 4px rgba(255,255,255,0.8)" }}
+          style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", textShadow: "0 1px 4px rgba(237,232,223,0.9)" }}
         >
-          نجسدها منذ <span className="font-semibold" style={{ color: "#B8922A" }}>20 عاماً</span>
+          نجسدها منذ <span className="font-semibold" style={{ color: "#9C7A3C" }}>20 عاماً</span>
         </p>
 
         {/* Description */}
@@ -93,7 +93,7 @@ export default function HeroSection() {
           style={{
             color: "#5A4E3A",
             fontFamily: "'Cairo', sans-serif",
-            textShadow: "0 1px 4px rgba(255,255,255,0.8)",
+            textShadow: "0 1px 4px rgba(237,232,223,0.9)",
             opacity: visible ? 1 : 0,
             transition: "opacity 1.5s ease 0.4s",
           }}
@@ -144,13 +144,13 @@ export default function HeroSection() {
             <div key={stat.label} className="text-center">
               <div
                 className="inline-block px-4 py-2 rounded-xl mb-1"
-                style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(8px)", boxShadow: "0 2px 12px rgba(184,146,42,0.15)" }}
+                style={{ background: "rgba(247,243,236,0.8)", backdropFilter: "blur(8px)", boxShadow: "0 2px 12px rgba(44,36,22,0.1)" }}
               >
-                <p className="text-2xl sm:text-3xl font-bold" style={{ color: "#B8922A", fontFamily: "'Amiri', serif" }}>
+                <p className="text-2xl sm:text-3xl font-bold" style={{ color: "#9C7A3C", fontFamily: "'Amiri', serif" }}>
                   {stat.num}
                 </p>
               </div>
-              <p className="text-xs mt-1 font-medium" style={{ color: "#5A4E3A", fontFamily: "'Cairo', sans-serif" }}>
+              <p className="text-xs mt-1 font-medium" style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}>
                 {stat.label}
               </p>
             </div>
@@ -162,7 +162,7 @@ export default function HeroSection() {
       <button
         onClick={scrollToServices}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
-        style={{ color: "#B8922A" }}
+        style={{ color: "#9C7A3C" }}
       >
         <ChevronDown size={32} />
       </button>
@@ -170,7 +170,7 @@ export default function HeroSection() {
       {/* Bottom gradient */}
       <div
         className="absolute bottom-0 left-0 right-0 h-32"
-        style={{ background: "linear-gradient(to bottom, transparent, #FAFAF8)" }}
+        style={{ background: "linear-gradient(to bottom, transparent, #EDE8DF)" }}
       />
     </section>
   );

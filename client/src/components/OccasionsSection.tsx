@@ -34,7 +34,7 @@ export default function OccasionsSection() {
     <section
       id="occasions"
       className="py-24 relative overflow-hidden"
-      style={{ background: "#FFFFFF" }}
+      style={{ background: "#F2EDE4" }}
     >
       <div className="absolute inset-0 islamic-pattern opacity-20" />
 
@@ -49,12 +49,12 @@ export default function OccasionsSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ مناسباتنا ✦
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
           >
             نكون معك في كل مناسبة
           </h2>
@@ -71,30 +71,30 @@ export default function OccasionsSection() {
               key={occ.title}
               className="group text-center p-6 rounded-2xl cursor-pointer transition-all duration-400"
               style={{
-                background: "#F8F6F0",
-                border: "1px solid rgba(184,146,42,0.15)",
-                boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
+                background: "#EDE8DF",
+                border: "1px solid rgba(156,122,60,0.15)",
+                boxShadow: "0 2px 12px rgba(44,36,22,0.04)",
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateY(0)" : "translateY(20px)",
                 transition: `all 0.6s ease ${i * 0.07}s`,
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(184,146,42,0.5)";
-                (e.currentTarget as HTMLElement).style.background = "#FFFFFF";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(156,122,60,0.45)";
+                (e.currentTarget as HTMLElement).style.background = "#F7F3EC";
                 (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 30px rgba(184,146,42,0.15)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 30px rgba(156,122,60,0.12)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(184,146,42,0.15)";
-                (e.currentTarget as HTMLElement).style.background = "#F8F6F0";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(156,122,60,0.15)";
+                (e.currentTarget as HTMLElement).style.background = "#EDE8DF";
                 (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 12px rgba(44,36,22,0.04)";
               }}
             >
               <div className="text-4xl mb-3">{occ.icon}</div>
               <h3
                 className="font-semibold text-sm mb-2"
-                style={{ color: "#1C1810", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#2C2416", fontFamily: "'Cairo', sans-serif" }}
               >
                 {occ.title}
               </h3>

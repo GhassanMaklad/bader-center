@@ -96,9 +96,9 @@ export default function ChatbotWidget() {
           style={{
             width: "min(360px, calc(100vw - 2rem))",
             height: "min(520px, calc(100vh - 8rem))",
-            background: "#FFFFFF",
-            border: "1px solid rgba(184,146,42,0.25)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 0 40px rgba(184,146,42,0.08)",
+            background: "#F7F3EC",
+            border: "1px solid rgba(156,122,60,0.25)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 0 40px rgba(156,122,60,0.08)",
             animation: "fadeInUp 0.25s ease forwards",
           }}
           dir="rtl"
@@ -107,14 +107,14 @@ export default function ChatbotWidget() {
           <div
             className="flex items-center gap-3 px-4 py-3 flex-shrink-0"
             style={{
-              background: "linear-gradient(135deg, #1C1810, #2A2010)",
-              borderBottom: "2px solid #C9A84C",
+              background: "linear-gradient(135deg, #2C2416, #2A2010)",
+              borderBottom: "2px solid #B89050",
             }}
           >
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
               style={{
-                background: "linear-gradient(135deg, #C9A84C, #8B6914)",
+                background: "linear-gradient(135deg, #B89050, #8B6914)",
               }}
             >
               <Bot size={18} className="text-black" />
@@ -122,7 +122,7 @@ export default function ChatbotWidget() {
             <div className="flex-1 min-w-0">
               <p
                 className="font-semibold text-sm leading-tight"
-                style={{ color: "#FFFFFF", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#F7F3EC", fontFamily: "'Cairo', sans-serif" }}
               >
                 مساعد مركز بدر
               </p>
@@ -140,7 +140,7 @@ export default function ChatbotWidget() {
               onClick={() => setIsOpen(false)}
               className="transition-colors flex-shrink-0"
               style={{ color: "#9A8A70" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "#C9A84C")}
+              onMouseEnter={e => (e.currentTarget.style.color = "#B89050")}
               onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
             >
               <X size={18} />
@@ -150,7 +150,7 @@ export default function ChatbotWidget() {
           {/* Messages */}
           <div
             className="flex-1 overflow-y-auto px-4 py-3 space-y-3"
-            style={{ scrollbarWidth: "thin", scrollbarColor: "#D4C4A0 transparent", background: "#FAFAF8" }}
+            style={{ scrollbarWidth: "thin", scrollbarColor: "#D4C4A0 transparent", background: "#F2EDE4" }}
           >
             {messages.map((msg, i) => (
               <div
@@ -160,7 +160,7 @@ export default function ChatbotWidget() {
                 {msg.role === "assistant" && (
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                    style={{ background: "linear-gradient(135deg, #C9A84C, #8B6914)" }}
+                    style={{ background: "linear-gradient(135deg, #B89050, #8B6914)" }}
                   >
                     <Bot size={13} className="text-black" />
                   </div>
@@ -171,15 +171,15 @@ export default function ChatbotWidget() {
                     fontFamily: "'Cairo', sans-serif",
                     ...(msg.role === "assistant"
                       ? {
-                          background: "#FFFFFF",
-                          border: "1px solid rgba(184,146,42,0.2)",
+                          background: "#F7F3EC",
+                          border: "1px solid rgba(156,122,60,0.2)",
                           color: "#3A2E1A",
                           borderTopRightRadius: "4px",
                           boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                         }
                       : {
-                          background: "linear-gradient(135deg, #C9A84C, #A8873C)",
-                          color: "#1C1810",
+                          background: "linear-gradient(135deg, #B89050, #A8873C)",
+                          color: "#2C2416",
                           fontWeight: 600,
                           borderTopLeftRadius: "4px",
                         }),
@@ -195,15 +195,15 @@ export default function ChatbotWidget() {
               <div className="flex gap-2 flex-row">
                 <div
                   className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                  style={{ background: "linear-gradient(135deg, #C9A84C, #8B6914)" }}
+                  style={{ background: "linear-gradient(135deg, #B89050, #8B6914)" }}
                 >
                   <Bot size={13} className="text-black" />
                 </div>
                 <div
                   className="rounded-2xl px-4 py-3 flex items-center gap-1"
                   style={{
-                    background: "#FFFFFF",
-                    border: "1px solid rgba(184,146,42,0.2)",
+                    background: "#F7F3EC",
+                    border: "1px solid rgba(156,122,60,0.2)",
                     borderTopRightRadius: "4px",
                   }}
                 >
@@ -212,7 +212,7 @@ export default function ChatbotWidget() {
                       key={i}
                       className="w-1.5 h-1.5 rounded-full inline-block"
                       style={{
-                        background: "#C9A84C",
+                        background: "#B89050",
                         animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
                       }}
                     />
@@ -237,9 +237,9 @@ export default function ChatbotWidget() {
                       onClick={() => handleSuggestion(q)}
                       className="text-xs px-3 py-1.5 rounded-full transition-all duration-200 hover:scale-105"
                       style={{
-                        background: "rgba(184,146,42,0.08)",
-                        border: "1px solid rgba(184,146,42,0.25)",
-                        color: "#B8922A",
+                        background: "rgba(156,122,60,0.08)",
+                        border: "1px solid rgba(156,122,60,0.25)",
+                        color: "#9C7A3C",
                         fontFamily: "'Cairo', sans-serif",
                       }}
                     >
@@ -257,7 +257,7 @@ export default function ChatbotWidget() {
           <form
             onSubmit={handleSubmit}
             className="flex items-center gap-2 px-3 py-3 flex-shrink-0"
-            style={{ borderTop: "1px solid rgba(184,146,42,0.15)", background: "#FFFFFF" }}
+            style={{ borderTop: "1px solid rgba(156,122,60,0.15)", background: "#F7F3EC" }}
           >
             <button
               type="submit"
@@ -265,14 +265,14 @@ export default function ChatbotWidget() {
               className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40"
               style={{
                 background: input.trim()
-                  ? "linear-gradient(135deg, #C9A84C, #8B6914)"
-                  : "rgba(184,146,42,0.12)",
+                  ? "linear-gradient(135deg, #B89050, #8B6914)"
+                  : "rgba(156,122,60,0.12)",
               }}
             >
               {chatMutation.isPending ? (
                 <Loader2 size={15} className="text-white animate-spin" />
               ) : (
-                <Send size={15} className={input.trim() ? "text-black" : ""} style={{ color: input.trim() ? "#000" : "#B8922A", transform: "scaleX(-1)" }} />
+                <Send size={15} className={input.trim() ? "text-black" : ""} style={{ color: input.trim() ? "#000" : "#9C7A3C", transform: "scaleX(-1)" }} />
               )}
             </button>
             <input
@@ -283,7 +283,7 @@ export default function ChatbotWidget() {
               placeholder="اكتب سؤالك هنا..."
               disabled={chatMutation.isPending}
               className="flex-1 bg-transparent text-sm outline-none disabled:opacity-60"
-              style={{ fontFamily: "'Cairo', sans-serif", color: "#1C1810" }}
+              style={{ fontFamily: "'Cairo', sans-serif", color: "#2C2416" }}
               maxLength={500}
             />
           </form>
@@ -296,18 +296,18 @@ export default function ChatbotWidget() {
         className="fixed bottom-6 left-20 z-50 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
         style={{
           background: isOpen
-            ? "#FFFFFF"
-            : "linear-gradient(135deg, #C9A84C, #8B6914)",
+            ? "#F7F3EC"
+            : "linear-gradient(135deg, #B89050, #8B6914)",
           boxShadow: isOpen
-            ? "0 4px 20px rgba(184,146,42,0.25)"
-            : "0 4px 20px rgba(184,146,42,0.5)",
-          border: "2px solid rgba(184,146,42,0.4)",
+            ? "0 4px 20px rgba(156,122,60,0.25)"
+            : "0 4px 20px rgba(156,122,60,0.5)",
+          border: "2px solid rgba(156,122,60,0.4)",
         }}
         title="مساعد مركز بدر الذكي"
         aria-label="فتح المساعد الذكي"
       >
         {isOpen ? (
-          <ChevronDown size={20} style={{ color: "#B8922A" }} />
+          <ChevronDown size={20} style={{ color: "#9C7A3C" }} />
         ) : (
           <MessageCircle size={20} className="text-black" />
         )}

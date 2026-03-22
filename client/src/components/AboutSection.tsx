@@ -31,13 +31,13 @@ export default function AboutSection() {
     <section
       id="about"
       className="py-24 relative overflow-hidden"
-      style={{ background: "#F5F3EE" }}
+      style={{ background: "#EDE8DF" }}
     >
       {/* Background decoration */}
       <div className="absolute inset-0 islamic-pattern opacity-20" />
       <div
         className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-10"
-        style={{ background: "radial-gradient(circle, #D4AF37 0%, transparent 70%)", transform: "translate(-50%, -50%)" }}
+        style={{ background: "radial-gradient(circle, #B89050 0%, transparent 70%)", transform: "translate(-50%, -50%)" }}
       />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
@@ -54,7 +54,7 @@ export default function AboutSection() {
               transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(184,146,42,0.3)", boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
+            <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(156,122,60,0.3)", boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
               <img
                 src={CATERING_IMG}
                 alt="مركز بدر"
@@ -62,7 +62,7 @@ export default function AboutSection() {
               />
               <div
                 className="absolute inset-0"
-                style={{ background: "linear-gradient(135deg, rgba(184,146,42,0.08) 0%, transparent 50%)" }}
+                style={{ background: "linear-gradient(135deg, rgba(156,122,60,0.08) 0%, transparent 50%)" }}
               />
             </div>
 
@@ -70,9 +70,9 @@ export default function AboutSection() {
             <div
               className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full flex items-center justify-center"
               style={{
-                background: "#FFFFFF",
-                border: "3px solid #C9A84C",
-                boxShadow: "0 4px 20px rgba(184,146,42,0.3)",
+                background: "#F7F3EC",
+                border: "3px solid #B89050",
+                boxShadow: "0 4px 20px rgba(156,122,60,0.3)",
               }}
             >
               <img src={LOGO_URL} alt="مركز بدر" className="w-20 h-20 rounded-full object-cover" />
@@ -82,8 +82,8 @@ export default function AboutSection() {
             <div
               className="absolute -top-4 -right-4 px-4 py-2 rounded-xl"
               style={{
-                background: "linear-gradient(135deg, #C9A84C, #E8C96A)",
-                boxShadow: "0 4px 20px rgba(184,146,42,0.4)",
+                background: "linear-gradient(135deg, #B89050, #D4B070)",
+                boxShadow: "0 4px 20px rgba(156,122,60,0.4)",
               }}
             >
               <p className="font-bold text-sm" style={{ color: "#3D2B00", fontFamily: "'Cairo', sans-serif" }}>
@@ -103,12 +103,12 @@ export default function AboutSection() {
               transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s",
             }}
           >
-            <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
+            <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
               ✦ من نحن ✦
             </p>
             <h2
               className="text-4xl sm:text-5xl font-bold mb-6 leading-tight"
-              style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+              style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
             >
               قصتنا مع
               <br />
@@ -135,11 +135,11 @@ export default function AboutSection() {
                 <div
                   key={v.title}
                   className="flex items-start gap-3 p-3 rounded-xl"
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(184,146,42,0.15)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+                  style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.15)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
                 >
                   <span className="text-2xl">{v.icon}</span>
                   <div>
-                    <p className="font-semibold text-sm" style={{ color: "#B8922A", fontFamily: "'Cairo', sans-serif" }}>
+                    <p className="font-semibold text-sm" style={{ color: "#9C7A3C", fontFamily: "'Cairo', sans-serif" }}>
                       {v.title}
                     </p>
                     <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>

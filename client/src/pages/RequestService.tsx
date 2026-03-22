@@ -82,7 +82,7 @@ function FloatingLabel({
       <label
         htmlFor={id}
         className="block text-sm font-medium mb-2"
-        style={{ color: error ? "#ef4444" : "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
+        style={{ color: error ? "#ef4444" : "#B89050", fontFamily: "'Cairo', sans-serif" }}
       >
         {label}
       </label>
@@ -99,7 +99,7 @@ function FloatingLabel({
 const inputStyle: React.CSSProperties = {
   width: "100%",
   background: "rgba(26,21,16,0.8)",
-  border: "1px solid rgba(201,168,76,0.25)",
+  border: "1px solid rgba(156,122,60,0.25)",
   borderRadius: "0.375rem",
   padding: "0.875rem 1rem",
   color: "#F0E6CC",
@@ -111,8 +111,8 @@ const inputStyle: React.CSSProperties = {
 };
 
 const inputFocusStyle: React.CSSProperties = {
-  borderColor: "rgba(201,168,76,0.7)",
-  boxShadow: "0 0 0 3px rgba(201,168,76,0.1)",
+  borderColor: "rgba(156,122,60,0.7)",
+  boxShadow: "0 0 0 3px rgba(156,122,60,0.1)",
 };
 
 function InputField({
@@ -137,7 +137,7 @@ function InputField({
     <div className="relative">
       <div
         className="absolute top-1/2 -translate-y-1/2 pointer-events-none"
-        style={{ left: "1rem", color: focused ? "#C9A84C" : "#6B5A3E" }}
+        style={{ left: "1rem", color: focused ? "#B89050" : "#6B5A3E" }}
       >
         <Icon size={18} />
       </div>
@@ -155,9 +155,9 @@ function InputField({
           borderColor: error
             ? "rgba(239,68,68,0.6)"
             : focused
-            ? "rgba(201,168,76,0.7)"
-            : "rgba(201,168,76,0.25)",
-          boxShadow: focused ? "0 0 0 3px rgba(201,168,76,0.1)" : "none",
+            ? "rgba(156,122,60,0.7)"
+            : "rgba(156,122,60,0.25)",
+          boxShadow: focused ? "0 0 0 3px rgba(156,122,60,0.1)" : "none",
         }}
       />
     </div>
@@ -186,7 +186,7 @@ function SelectField({
     <div className="relative">
       <div
         className="absolute top-1/2 -translate-y-1/2 pointer-events-none z-10"
-        style={{ left: "1rem", color: focused ? "#C9A84C" : "#6B5A3E" }}
+        style={{ left: "1rem", color: focused ? "#B89050" : "#6B5A3E" }}
       >
         <Icon size={18} />
       </div>
@@ -211,9 +211,9 @@ function SelectField({
           borderColor: error
             ? "rgba(239,68,68,0.6)"
             : focused
-            ? "rgba(201,168,76,0.7)"
-            : "rgba(201,168,76,0.25)",
-          boxShadow: focused ? "0 0 0 3px rgba(201,168,76,0.1)" : "none",
+            ? "rgba(156,122,60,0.7)"
+            : "rgba(156,122,60,0.25)",
+          boxShadow: focused ? "0 0 0 3px rgba(156,122,60,0.1)" : "none",
           color: value ? "#F0E6CC" : "#6B5A3E",
         }}
       >
@@ -368,7 +368,7 @@ export default function RequestService() {
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center relative"
-        style={{ background: "#0D0B08" }}
+        style={{ background: "#F2EDE4" }}
       >
         <div className="absolute inset-0 islamic-pattern opacity-10" />
         <div
@@ -380,12 +380,12 @@ export default function RequestService() {
           <div
             className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8"
             style={{
-              background: "linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.05))",
-              border: "2px solid rgba(201,168,76,0.5)",
-              boxShadow: "0 0 40px rgba(201,168,76,0.2)",
+              background: "linear-gradient(135deg, rgba(156,122,60,0.2), rgba(156,122,60,0.05))",
+              border: "2px solid rgba(156,122,60,0.5)",
+              boxShadow: "0 0 40px rgba(156,122,60,0.2)",
             }}
           >
-            <CheckCircle2 size={48} className="text-[#C9A84C]" />
+            <CheckCircle2 size={48} className="text-[#B89050]" />
           </div>
           <h1
             className="text-4xl font-bold text-white mb-4"
@@ -405,12 +405,12 @@ export default function RequestService() {
           <div
             className="rounded-xl p-5 mb-8 text-right"
             style={{
-              background: "rgba(201,168,76,0.07)",
-              border: "1px solid rgba(201,168,76,0.2)",
+              background: "rgba(156,122,60,0.07)",
+              border: "1px solid rgba(156,122,60,0.2)",
             }}
           >
             <p
-              className="text-[#C9A84C] font-semibold mb-3 text-sm tracking-wide"
+              className="text-[#B89050] font-semibold mb-3 text-sm tracking-wide"
               style={{ fontFamily: "'Cairo', sans-serif" }}
             >
               ماذا حدث الآن؟
@@ -428,7 +428,7 @@ export default function RequestService() {
                 تم إرسال تفاصيل طلبك إلى فريق مركز بدر عبر واتساب
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-[#C9A84C]">↗</span>
+                <span className="text-[#B89050]">↗</span>
                 فُتح واتساب لإرسال رسالة تأكيد على رقمك — تأكد من الضغط على "إرسال"
               </li>
             </ul>
@@ -458,7 +458,7 @@ export default function RequestService() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D0B08" }}>
+    <div className="min-h-screen" style={{ background: "#F2EDE4" }}>
       <Navbar />
 
       {/* Hero Banner */}
@@ -466,49 +466,49 @@ export default function RequestService() {
         ref={heroRef}
         className="relative pt-20 pb-16 overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, #0D0B08 0%, #1A1208 50%, #0D0B08 100%)",
+          background: "linear-gradient(180deg, #D4C9B0 0%, #C8BC9E 50%, #D4C9B0 100%)",
         }}
       >
         <div className="absolute inset-0 islamic-pattern opacity-20" />
         {/* Decorative gold lines */}
         <div
           className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: "linear-gradient(to right, transparent, #C9A84C, transparent)" }}
+          style={{ background: "linear-gradient(to right, transparent, #B89050, transparent)" }}
         />
         <div
           className="absolute bottom-0 left-0 right-0 h-px"
-          style={{ background: "linear-gradient(to right, transparent, #C9A84C, transparent)" }}
+          style={{ background: "linear-gradient(to right, transparent, #B89050, transparent)" }}
         />
 
         <div className="container mx-auto px-4 lg:px-8 relative z-10 text-center pt-12">
           {/* Breadcrumb */}
           <div
             className="flex items-center justify-center gap-2 mb-6 text-sm"
-            style={{ fontFamily: "'Cairo', sans-serif", color: "#6B5A3E" }}
+            style={{ fontFamily: "'Cairo', sans-serif", color: "#4A3F2F" }}
           >
-            <button onClick={() => navigate("/")} className="hover:text-[#C9A84C] transition-colors">
+            <button onClick={() => navigate("/")} className="hover:text-[#9C7A3C] transition-colors" style={{ color: "#4A3F2F" }}>
               الرئيسية
             </button>
             <span>/</span>
-            <span style={{ color: "#C9A84C" }}>طلب خدمة</span>
+            <span style={{ color: "#9C7A3C" }}>طلب خدمة</span>
           </div>
 
           <p
-            className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            className="text-xs tracking-[0.3em] uppercase mb-4"
+            style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}
           >
             ✦ BADER CENTER ✦
           </p>
           <h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4"
-            style={{ fontFamily: "'Amiri', serif" }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4"
+            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
           >
             اطلب خدمتك الآن
           </h1>
           <div className="gold-divider max-w-xs mx-auto mb-6" />
           <p
             className="max-w-xl mx-auto text-lg"
-            style={{ fontFamily: "'Cairo', sans-serif", color: "#6B5E4A" }}
+            style={{ fontFamily: "'Cairo', sans-serif", color: "#4A3F2F" }}
           >
             أخبرنا عن مناسبتك وسنتواصل معك لتحويل فكرتك إلى واقع فاخر
           </p>
@@ -525,7 +525,7 @@ export default function RequestService() {
                   className="text-2xl font-bold"
                   style={{
                     fontFamily: "'Cormorant Garamond', serif",
-                    background: "linear-gradient(135deg, #C9A84C, #E8C96A)",
+                    background: "linear-gradient(135deg, #B89050, #D4B070)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                   }}
@@ -533,8 +533,8 @@ export default function RequestService() {
                   {stat.value}
                 </div>
                 <div
-                  className="text-xs text-[#6B5A3E]"
-                  style={{ fontFamily: "'Cairo', sans-serif" }}
+                  className="text-xs"
+                  style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
                 >
                   {stat.label}
                 </div>
@@ -561,8 +561,8 @@ export default function RequestService() {
               className="rounded-xl p-8 sm:p-10"
               style={{
                 background: "linear-gradient(135deg, rgba(26,21,16,0.95) 0%, rgba(13,11,8,0.98) 100%)",
-                border: "1px solid rgba(201,168,76,0.2)",
-                boxShadow: "0 20px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201,168,76,0.1)",
+                border: "1px solid rgba(156,122,60,0.2)",
+                boxShadow: "0 20px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(156,122,60,0.1)",
               }}
             >
               {/* Card header */}
@@ -571,11 +571,11 @@ export default function RequestService() {
                   src={LOGO_URL}
                   alt="مركز بدر"
                   className="w-12 h-12 rounded-full object-cover"
-                  style={{ border: "1.5px solid rgba(201,168,76,0.5)" }}
+                  style={{ border: "1.5px solid rgba(156,122,60,0.5)" }}
                 />
                 <div>
                   <p
-                    className="text-xs text-[#C9A84C] tracking-widest"
+                    className="text-xs text-[#B89050] tracking-widest"
                     style={{ fontFamily: "'Cormorant Garamond', serif" }}
                   >
                     BADER CENTER
@@ -591,7 +591,7 @@ export default function RequestService() {
 
               <div
                 className="h-px mb-8"
-                style={{ background: "linear-gradient(to right, #C9A84C, transparent)" }}
+                style={{ background: "linear-gradient(to right, #B89050, transparent)" }}
               />
 
               <form onSubmit={handleSubmit} noValidate>
@@ -656,7 +656,7 @@ export default function RequestService() {
                           paddingLeft: "2.75rem",
                           borderColor: errors.date
                             ? "rgba(239,68,68,0.6)"
-                            : "rgba(201,168,76,0.25)",
+                            : "rgba(156,122,60,0.25)",
                           colorScheme: "dark",
                         }}
                       />
@@ -691,11 +691,11 @@ export default function RequestService() {
                           minHeight: "100px",
                         }}
                         onFocus={(e) => {
-                          e.target.style.borderColor = "rgba(201,168,76,0.7)";
-                          e.target.style.boxShadow = "0 0 0 3px rgba(201,168,76,0.1)";
+                          e.target.style.borderColor = "rgba(156,122,60,0.7)";
+                          e.target.style.boxShadow = "0 0 0 3px rgba(156,122,60,0.1)";
                         }}
                         onBlur={(e) => {
-                          e.target.style.borderColor = "rgba(201,168,76,0.25)";
+                          e.target.style.borderColor = "rgba(156,122,60,0.25)";
                           e.target.style.boxShadow = "none";
                         }}
                       />
@@ -706,18 +706,18 @@ export default function RequestService() {
                 {/* Divider */}
                 <div
                   className="h-px my-8"
-                  style={{ background: "linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent)" }}
+                  style={{ background: "linear-gradient(to right, transparent, rgba(156,122,60,0.3), transparent)" }}
                 />
 
                 {/* WhatsApp note */}
                 <div
                   className="flex items-start gap-3 p-4 rounded-lg mb-6"
                   style={{
-                    background: "rgba(201,168,76,0.05)",
-                    border: "1px solid rgba(201,168,76,0.15)",
+                    background: "rgba(156,122,60,0.05)",
+                    border: "1px solid rgba(156,122,60,0.15)",
                   }}
                 >
-                  <div className="text-[#C9A84C] mt-0.5 flex-shrink-0">
+                  <div className="text-[#B89050] mt-0.5 flex-shrink-0">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                     </svg>
@@ -763,19 +763,19 @@ export default function RequestService() {
                   className="text-center p-4 rounded-lg"
                   style={{
                     background: "rgba(26,21,16,0.6)",
-                    border: "1px solid rgba(201,168,76,0.1)",
+                    border: "1px solid rgba(156,122,60,0.1)",
                   }}
                 >
                   <div className="text-2xl mb-1">{badge.icon}</div>
                   <div
-                    className="text-sm font-bold text-[#C9A84C]"
+                    className="text-sm font-bold text-[#B89050]"
                     style={{ fontFamily: "'Cairo', sans-serif" }}
                   >
                     {badge.title}
                   </div>
                   <div
-                    className="text-xs text-[#6B5A3E]"
-                    style={{ fontFamily: "'Cairo', sans-serif" }}
+                    className="text-xs"
+                    style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
                   >
                     {badge.desc}
                   </div>
@@ -789,7 +789,7 @@ export default function RequestService() {
       {/* Footer note */}
       <div
         className="text-center py-8 border-t"
-        style={{ borderColor: "rgba(201,168,76,0.1)" }}
+        style={{ borderColor: "rgba(156,122,60,0.1)" }}
       >
         <p
           className="text-[#6B5A3E] text-sm"

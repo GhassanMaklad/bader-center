@@ -62,15 +62,15 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
       ref={ref}
       className="rounded-2xl overflow-hidden group"
       style={{
-        background: "#FFFFFF",
-        border: "1px solid rgba(184,146,42,0.15)",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+        background: "#F7F3EC",
+        border: "1px solid rgba(156,122,60,0.15)",
+        boxShadow: "0 4px 24px rgba(44,36,22,0.06)",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(40px)",
         transition: `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.15}s`,
       }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 40px rgba(184,146,42,0.2)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(184,146,42,0.4)"; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(0,0,0,0.06)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(184,146,42,0.15)"; }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 40px rgba(156,122,60,0.18)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(156,122,60,0.4)"; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(44,36,22,0.06)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(156,122,60,0.15)"; }}
     >
       {/* Image */}
       <div className="relative h-56 overflow-hidden">
@@ -79,7 +79,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
           alt={service.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(255,255,255,0.95) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(247,243,236,0.95) 100%)" }} />
         <div className="absolute top-4 right-4 text-3xl bg-white/80 rounded-full w-12 h-12 flex items-center justify-center shadow-sm">
           {service.icon}
         </div>
@@ -89,7 +89,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
       <div className="p-6">
         <h3
           className="text-xl font-bold mb-3"
-          style={{ color: "#1C1810", fontFamily: "'Amiri', serif", borderBottom: "2px solid #C9A84C", paddingBottom: "8px", display: "inline-block" }}
+          style={{ color: "#2C2416", fontFamily: "'Amiri', serif", borderBottom: "2px solid #9C7A3C", paddingBottom: "8px", display: "inline-block" }}
         >
           {service.title}
         </h3>
@@ -106,7 +106,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
             <span
               key={f}
               className="text-xs px-3 py-1 rounded-full font-medium"
-              style={{ background: "rgba(184,146,42,0.08)", color: "#B8922A", border: "1px solid rgba(184,146,42,0.25)", fontFamily: "'Cairo', sans-serif" }}
+              style={{ background: "rgba(156,122,60,0.08)", color: "#7A5C28", border: "1px solid rgba(156,122,60,0.25)", fontFamily: "'Cairo', sans-serif" }}
             >
               {f}
             </span>
@@ -140,7 +140,7 @@ export default function ServicesSection() {
   }, []);
 
   return (
-    <section id="services" className="py-24 relative" style={{ background: "#F5F3EE" }}>
+    <section id="services" className="py-24 relative" style={{ background: "#EDE8DF" }}>
       {/* Islamic pattern */}
       <div className="absolute inset-0 islamic-pattern opacity-25" />
 
@@ -155,12 +155,12 @@ export default function ServicesSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ خدماتنا ✦
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
           >
             ما نقدمه لك
           </h2>

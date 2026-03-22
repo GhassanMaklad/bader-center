@@ -1,6 +1,6 @@
 /**
- * Navbar Component - Light Luxury Theme
- * Colors: White bg, #B8922A gold, #1C1810 dark text
+ * Navbar Component - Warm Beige / Greige Luxury Theme
+ * Colors: Beige bg #F2EDE4, dark brown #2C2416, warm gold #9C7A3C
  * Font: Cairo (Arabic), Cormorant Garamond (English)
  * Direction: RTL
  */
@@ -59,15 +59,14 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed right-0 left-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-white/97 backdrop-blur-md shadow-md"
-          : "bg-white/90 backdrop-blur-sm"
-      }`}
+      className={`fixed right-0 left-0 z-50 transition-all duration-500`}
       style={{
         top: `${bannerHeight}px`,
-        borderBottom: "1px solid rgba(201,168,76,0.25)",
-        transition: "top 0.3s ease, background 0.5s ease",
+        background: scrolled ? "rgba(242,237,228,0.97)" : "rgba(242,237,228,0.92)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid rgba(156,122,60,0.2)",
+        boxShadow: scrolled ? "0 2px 20px rgba(44,36,22,0.08)" : "none",
+        transition: "top 0.3s ease, background 0.5s ease, box-shadow 0.5s ease",
       }}
     >
       <div className="container mx-auto px-4 lg:px-8">
@@ -78,13 +77,13 @@ export default function Navbar() {
               src={LOGO_URL}
               alt="مركز بدر"
               className="h-14 w-14 rounded-full object-cover"
-              style={{ border: "2px solid rgba(184,146,42,0.5)", boxShadow: "0 2px 12px rgba(184,146,42,0.15)" }}
+              style={{ border: "2px solid rgba(156,122,60,0.4)", boxShadow: "0 2px 12px rgba(44,36,22,0.1)" }}
             />
             <div className="hidden sm:block">
-              <p className="text-xs font-light tracking-widest" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
+              <p className="text-xs font-light tracking-widest" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
                 BADER CENTER
               </p>
-              <p className="font-bold text-lg leading-tight" style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}>
+              <p className="font-bold text-lg leading-tight" style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}>
                 مركز بدر
               </p>
             </div>
@@ -98,11 +97,11 @@ export default function Navbar() {
                 onClick={() => handleNavClick(link.href)}
                 className="transition-colors duration-300 text-sm font-medium relative group"
                 style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "#B8922A")}
+                onMouseEnter={e => (e.currentTarget.style.color = "#2C2416")}
                 onMouseLeave={e => (e.currentTarget.style.color = "#4A3F2F")}
               >
                 {link.label}
-                <span className="absolute -bottom-1 right-0 w-0 h-px bg-[#C9A84C] transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-1 right-0 w-0 h-px transition-all duration-300 group-hover:w-full" style={{ background: "#9C7A3C" }} />
               </button>
             ))}
             <Link
@@ -111,7 +110,7 @@ export default function Navbar() {
               style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
             >
               كتالوج
-              <span className="absolute -bottom-1 right-0 w-0 h-px bg-[#C9A84C] transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-1 right-0 w-0 h-px transition-all duration-300 group-hover:w-full" style={{ background: "#9C7A3C" }} />
             </Link>
           </div>
 
@@ -122,9 +121,9 @@ export default function Navbar() {
                 href="/admin"
                 className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition-all duration-300 border"
                 style={{
-                  color: "#B8922A",
-                  borderColor: "rgba(184,146,42,0.4)",
-                  background: "rgba(184,146,42,0.06)",
+                  color: "#9C7A3C",
+                  borderColor: "rgba(156,122,60,0.4)",
+                  background: "rgba(156,122,60,0.06)",
                   fontFamily: "'Cairo', sans-serif",
                 }}
               >
@@ -144,7 +143,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             className="lg:hidden p-2"
-            style={{ color: "#B8922A" }}
+            style={{ color: "#2C2416" }}
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -157,11 +156,11 @@ export default function Navbar() {
         <div
           className="lg:hidden absolute top-full right-0 left-0 py-6 px-4"
           style={{
-            background: "rgba(255,255,255,0.98)",
+            background: "rgba(242,237,228,0.98)",
             backdropFilter: "blur(20px)",
-            borderTop: "1px solid rgba(201,168,76,0.2)",
-            borderBottom: "1px solid rgba(201,168,76,0.2)",
-            boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
+            borderTop: "1px solid rgba(156,122,60,0.15)",
+            borderBottom: "1px solid rgba(156,122,60,0.15)",
+            boxShadow: "0 8px 30px rgba(44,36,22,0.08)",
           }}
         >
           <div className="flex flex-col gap-4">
@@ -170,7 +169,7 @@ export default function Navbar() {
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
                 className="transition-colors text-base font-medium text-right py-2"
-                style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(201,168,76,0.1)" }}
+                style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(156,122,60,0.1)" }}
               >
                 {link.label}
               </button>
@@ -178,7 +177,7 @@ export default function Navbar() {
             <Link
               href="/catalog"
               className="transition-colors text-base font-medium text-right py-2 block"
-              style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(201,168,76,0.1)" }}
+              style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(156,122,60,0.1)" }}
               onClick={() => setIsOpen(false)}
             >
               كتالوج المنتجات
@@ -188,9 +187,9 @@ export default function Navbar() {
                 href="/admin"
                 className="flex items-center gap-2 text-base font-medium text-right py-2"
                 style={{
-                  color: "#B8922A",
+                  color: "#9C7A3C",
                   fontFamily: "'Cairo', sans-serif",
-                  borderBottom: "1px solid rgba(201,168,76,0.1)",
+                  borderBottom: "1px solid rgba(156,122,60,0.1)",
                 }}
                 onClick={() => setIsOpen(false)}
               >

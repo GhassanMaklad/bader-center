@@ -70,7 +70,7 @@ const products: Product[] = [
     priceNote: "حسب الحجم",
     image: INSTAGRAM_IMAGES.dazza,
     badge: "الأكثر طلباً",
-    badgeColor: "#C9A84C",
+    badgeColor: "#B89050",
     description: "دزة ورود طبيعية فاخرة مع تغليف مخصص وبطاقة إهداء بالخط العربي",
     rating: 5,
     inStock: true,
@@ -161,7 +161,7 @@ const products: Product[] = [
     priceNote: "يشمل النقش",
     image: INSTAGRAM_IMAGES.product6,
     badge: "الأكثر مبيعاً",
-    badgeColor: "#C9A84C",
+    badgeColor: "#B89050",
     description: "درع تكريم ذهبي فاخر بنقش ليزر دقيق — مثالي للمدارس والشركات والجهات الحكومية",
     rating: 5,
     inStock: true,
@@ -266,7 +266,7 @@ const products: Product[] = [
     priceNote: "للطفل الواحد",
     image: INSTAGRAM_IMAGES.qargian,
     badge: "2026",
-    badgeColor: "#C9A84C",
+    badgeColor: "#B89050",
     description: "حقيبة قرقيعان مميزة بتصميم حصري لعام 2026 مع حلويات وألعاب مختارة",
     rating: 5,
     inStock: true,
@@ -341,9 +341,9 @@ function ProductCard({ product }: { product: Product }) {
     <div
       className="group relative rounded-xl overflow-hidden transition-all duration-500"
       style={{
-        background: "#FFFFFF",
-        border: hovered ? "1px solid rgba(184,146,42,0.5)" : "1px solid rgba(184,146,42,0.15)",
-        boxShadow: hovered ? "0 20px 50px rgba(0,0,0,0.12), 0 0 20px rgba(184,146,42,0.1)" : "0 4px 16px rgba(0,0,0,0.06)",
+        background: "#F7F3EC",
+        border: hovered ? "1px solid rgba(156,122,60,0.5)" : "1px solid rgba(156,122,60,0.15)",
+        boxShadow: hovered ? "0 20px 50px rgba(0,0,0,0.12), 0 0 20px rgba(156,122,60,0.1)" : "0 4px 16px rgba(0,0,0,0.06)",
         transform: hovered ? "translateY(-6px)" : "translateY(0)",
       }}
       onMouseEnter={() => setHovered(true)}
@@ -374,7 +374,7 @@ function ProductCard({ product }: { product: Product }) {
             className="absolute top-3 right-3 text-xs font-bold px-3 py-1 rounded-full"
             style={{
               background: product.badgeColor,
-              color: product.badgeColor === "#C9A84C" ? "#0D0B08" : "#fff",
+              color: product.badgeColor === "#B89050" ? "#2C2416" : "#F7F3EC",
               fontFamily: "'Cairo', sans-serif",
             }}
           >
@@ -400,7 +400,7 @@ function ProductCard({ product }: { product: Product }) {
         {/* Rating stars */}
         <div className="absolute bottom-3 right-3 flex gap-0.5">
           {Array.from({ length: product.rating }).map((_, i) => (
-            <Star key={i} size={12} fill="#C9A84C" color="#C9A84C" />
+            <Star key={i} size={12} fill="#B89050" color="#B89050" />
           ))}
         </div>
       </div>
@@ -414,9 +414,9 @@ function ProductCard({ product }: { product: Product }) {
               key={tag}
               className="text-xs px-2 py-0.5 rounded-full"
               style={{
-                background: "rgba(201,168,76,0.1)",
-                color: "#C9A84C",
-                border: "1px solid rgba(201,168,76,0.2)",
+                background: "rgba(156,122,60,0.1)",
+                color: "#B89050",
+                border: "1px solid rgba(156,122,60,0.2)",
                 fontFamily: "'Cairo', sans-serif",
               }}
             >
@@ -428,7 +428,7 @@ function ProductCard({ product }: { product: Product }) {
         {/* Name */}
         <h3
           className="font-bold text-lg mb-1 leading-snug"
-          style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+          style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
         >
           {product.name}
         </h3>
@@ -444,7 +444,7 @@ function ProductCard({ product }: { product: Product }) {
           <div>
             <span
               className="text-xl font-bold"
-              style={{ color: "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
             >
               {product.price}
             </span>
@@ -465,10 +465,10 @@ function ProductCard({ product }: { product: Product }) {
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all duration-300"
             style={{
               background: hovered
-                ? "linear-gradient(135deg, #C9A84C, #E8C96A)"
-                : "rgba(201,168,76,0.15)",
-              color: hovered ? "#1C1810" : "#B8922A",
-              border: "1px solid rgba(201,168,76,0.4)",
+                ? "linear-gradient(135deg, #B89050, #D4B070)"
+                : "rgba(156,122,60,0.15)",
+              color: hovered ? "#2C2416" : "#9C7A3C",
+              border: "1px solid rgba(156,122,60,0.4)",
               fontFamily: "'Cairo', sans-serif",
             }}
           >
@@ -479,9 +479,9 @@ function ProductCard({ product }: { product: Product }) {
             href="/request"
             className="flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-300"
             style={{
-              background: "rgba(201,168,76,0.1)",
-              border: "1px solid rgba(201,168,76,0.2)",
-              color: "#C9A84C",
+              background: "rgba(156,122,60,0.1)",
+              border: "1px solid rgba(156,122,60,0.2)",
+              color: "#B89050",
             }}
             title="طلب مخصص"
           >
@@ -577,7 +577,7 @@ export default function Catalog() {
 
   if (productsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#FAFAF8" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#F2EDE4" }}>
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-yellow-500 mx-auto mb-4" />
           <p style={{ color: "#A09070", fontFamily: "'Cairo', sans-serif" }}>جاري تحميل الكتالوج...</p>
@@ -587,7 +587,7 @@ export default function Catalog() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#FAFAF8", direction: "rtl" }}>
+    <div className="min-h-screen" style={{ background: "#F2EDE4", direction: "rtl" }}>
       <AnnouncementBanner />
       <Navbar />
 
@@ -595,24 +595,24 @@ export default function Catalog() {
       <section
         className="relative pt-36 pb-16 overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, #F5F3EE 0%, #FAFAF8 100%)",
-          borderBottom: "1px solid rgba(184,146,42,0.15)",
+          background: "linear-gradient(180deg, #EDE8DF 0%, #F2EDE4 100%)",
+          borderBottom: "1px solid rgba(156,122,60,0.15)",
         }}
       >
         {/* Decorative pattern */}
         <div className="absolute inset-0 islamic-pattern opacity-10" />
-        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(to right, transparent, #C9A84C, transparent)" }} />
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(to right, transparent, #B89050, transparent)" }} />
 
         <div className="container mx-auto px-4 relative z-10 text-center">
           <p
-            className="text-[#C9A84C] text-xs tracking-[0.3em] uppercase mb-4"
+            className="text-[#B89050] text-xs tracking-[0.3em] uppercase mb-4"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
             ✦ BADER CENTER ✦ CATALOG ✦
           </p>
           <h1
             className="text-5xl sm:text-6xl font-bold mb-4"
-            style={{ fontFamily: "'Amiri', serif", color: "#1C1810" }}
+            style={{ fontFamily: "'Amiri', serif", color: "#2C2416" }}
           >
             كتالوج <span className="gold-shimmer">منتجاتنا</span>
           </h1>
@@ -621,7 +621,7 @@ export default function Catalog() {
             style={{
               width: "80px",
               height: "2px",
-              background: "linear-gradient(to left, transparent, #C9A84C, transparent)",
+              background: "linear-gradient(to left, transparent, #B89050, transparent)",
             }}
           />
           <p
@@ -641,7 +641,7 @@ export default function Catalog() {
               <div key={s.label} className="text-center">
                 <div
                   className="text-2xl font-bold"
-                  style={{ color: "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
                 >
                   {s.value}
                 </div>
@@ -658,7 +658,7 @@ export default function Catalog() {
       </section>
 
       {/* Filters & Search */}
-      <section className="sticky top-[40px] z-40 py-4" style={{ background: "rgba(250,250,248,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(184,146,42,0.15)" }}>
+      <section className="sticky top-[40px] z-40 py-4" style={{ background: "rgba(250,250,248,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(156,122,60,0.15)" }}>
         <div className="container mx-auto px-4">
           {/* Category Tabs */}
           <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
@@ -670,13 +670,13 @@ export default function Catalog() {
                 style={{
                   fontFamily: "'Cairo', sans-serif",
                   background: activeCategory === cat.id
-                    ? "linear-gradient(135deg, #C9A84C, #E8C96A)"
-                    : "rgba(201,168,76,0.08)",
-                  color: activeCategory === cat.id ? "#1C1810" : "#6B5E4A",
+                    ? "linear-gradient(135deg, #B89050, #D4B070)"
+                    : "rgba(156,122,60,0.08)",
+                  color: activeCategory === cat.id ? "#2C2416" : "#6B5E4A",
                   border: activeCategory === cat.id
-                    ? "1px solid #C9A84C"
-                    : "1px solid rgba(201,168,76,0.15)",
-                  boxShadow: activeCategory === cat.id ? "0 4px 15px rgba(201,168,76,0.3)" : "none",
+                    ? "1px solid #B89050"
+                    : "1px solid rgba(156,122,60,0.15)",
+                  boxShadow: activeCategory === cat.id ? "0 4px 15px rgba(156,122,60,0.3)" : "none",
                 }}
               >
                 <span>{cat.icon}</span>
@@ -684,8 +684,8 @@ export default function Catalog() {
                 <span
                   className="text-xs px-1.5 py-0.5 rounded-full"
                   style={{
-                    background: activeCategory === cat.id ? "rgba(28,24,16,0.15)" : "rgba(184,146,42,0.12)",
-                    color: activeCategory === cat.id ? "#1C1810" : "#B8922A",
+                    background: activeCategory === cat.id ? "rgba(28,24,16,0.15)" : "rgba(156,122,60,0.12)",
+                    color: activeCategory === cat.id ? "#2C2416" : "#9C7A3C",
                   }}
                 >
                   {cat.count}
@@ -710,9 +710,9 @@ export default function Catalog() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pr-10 pl-4 py-2.5 rounded-lg text-sm outline-none transition-all duration-300"
                 style={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(184,146,42,0.2)",
-                  color: "#1C1810",
+                  background: "#F7F3EC",
+                  border: "1px solid rgba(156,122,60,0.2)",
+                  color: "#2C2416",
                   fontFamily: "'Cairo', sans-serif",
                 }}
               />
@@ -726,8 +726,8 @@ export default function Catalog() {
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                 className="pr-8 pl-4 py-2.5 rounded-lg text-sm outline-none appearance-none cursor-pointer"
                 style={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(184,146,42,0.2)",
+                  background: "#F7F3EC",
+                  border: "1px solid rgba(156,122,60,0.2)",
                   color: "#6B5E4A",
                   fontFamily: "'Cairo', sans-serif",
                 }}
@@ -749,10 +749,10 @@ export default function Catalog() {
           <div className="flex items-center justify-between mb-8">
             <p style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif", fontSize: "0.875rem" }}>
               يعرض{" "}
-              <span style={{ color: "#C9A84C", fontWeight: "bold" }}>{filtered.length}</span>{" "}
+              <span style={{ color: "#B89050", fontWeight: "bold" }}>{filtered.length}</span>{" "}
               منتج
               {searchQuery && (
-                <span> · نتائج البحث عن "<span style={{ color: "#C9A84C" }}>{searchQuery}</span>"</span>
+                <span> · نتائج البحث عن "<span style={{ color: "#B89050" }}>{searchQuery}</span>"</span>
               )}
             </p>
             {searchQuery && (
@@ -760,8 +760,8 @@ export default function Catalog() {
                 onClick={() => setSearchQuery("")}
                 className="text-xs px-3 py-1 rounded-full transition-colors"
                 style={{
-                  color: "#C9A84C",
-                  border: "1px solid rgba(201,168,76,0.3)",
+                  color: "#B89050",
+                  border: "1px solid rgba(156,122,60,0.3)",
                   fontFamily: "'Cairo', sans-serif",
                 }}
               >
@@ -775,7 +775,7 @@ export default function Catalog() {
               <div className="text-6xl mb-6">🔍</div>
               <h3
                 className="text-2xl font-bold mb-3"
-                style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+                style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
               >
                 لا توجد نتائج
               </h3>
@@ -806,20 +806,20 @@ export default function Catalog() {
             className="text-center p-12 rounded-2xl relative overflow-hidden"
             style={{
               background: "linear-gradient(135deg, #FEFCF5 0%, #FFF5D6 100%)",
-              border: "1px solid rgba(184,146,42,0.25)",
+              border: "1px solid rgba(156,122,60,0.25)",
             }}
           >
             <div className="absolute inset-0 islamic-pattern opacity-20" />
             <div className="relative z-10">
               <p
-                className="text-[#C9A84C] text-xs tracking-widest uppercase mb-4"
+                className="text-[#B89050] text-xs tracking-widest uppercase mb-4"
                 style={{ fontFamily: "'Cormorant Garamond', serif" }}
               >
                 ✦ طلب مخصص ✦
               </p>
               <h3
                 className="text-3xl sm:text-4xl font-bold mb-4"
-                style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+                style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
               >
                 لم تجد ما تبحث عنه؟
               </h3>

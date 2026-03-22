@@ -16,8 +16,8 @@ export default function Footer() {
     <footer
       className="relative pt-16 pb-8"
       style={{
-        background: "#1C1810",
-        borderTop: "3px solid #C9A84C",
+        background: "#2C2416",
+        borderTop: "3px solid #B89050",
       }}
     >
       <div className="absolute inset-0 islamic-pattern opacity-15" />
@@ -31,13 +31,13 @@ export default function Footer() {
                 src={LOGO_URL}
                 alt="مركز بدر"
                 className="h-16 w-16 rounded-full object-cover"
-                style={{ border: "2px solid rgba(201,168,76,0.6)" }}
+                style={{ border: "2px solid rgba(156,122,60,0.6)" }}
               />
               <div>
-                <p className="text-xs tracking-widest" style={{ color: "#C9A84C", fontFamily: "'Cormorant Garamond', serif" }}>
+                <p className="text-xs tracking-widest" style={{ color: "#B89050", fontFamily: "'Cormorant Garamond', serif" }}>
                   BADER CENTER
                 </p>
-                <p className="font-bold text-xl" style={{ color: "#FFFFFF", fontFamily: "'Amiri', serif" }}>
+                <p className="font-bold text-xl" style={{ color: "#F7F3EC", fontFamily: "'Amiri', serif" }}>
                   مركز بدر
                 </p>
               </div>
@@ -82,7 +82,7 @@ export default function Footer() {
           <div>
             <h4
               className="font-semibold mb-4 text-sm"
-              style={{ color: "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
             >
               روابط سريعة
             </h4>
@@ -99,7 +99,7 @@ export default function Footer() {
                     onClick={() => scrollTo(link.id)}
                     className="text-sm transition-colors"
                     style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
-                    onMouseEnter={e => (e.currentTarget.style.color = "#C9A84C")}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#B89050")}
                     onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
                   >
                     {link.label}
@@ -131,7 +131,7 @@ export default function Footer() {
           <div>
             <h4
               className="font-semibold mb-4 text-sm"
-              style={{ color: "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
             >
               خدماتنا
             </h4>
@@ -157,31 +157,31 @@ export default function Footer() {
           <div>
             <h4
               className="font-semibold mb-4 text-sm"
-              style={{ color: "#C9A84C", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
             >
               تواصل معنا
             </h4>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm">
-                <Phone size={14} className="shrink-0" style={{ color: "#C9A84C" }} />
+                <Phone size={14} className="shrink-0" style={{ color: "#B89050" }} />
                 <a href="tel:+96522675826" className="transition-colors" style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif", direction: "ltr" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = "#C9A84C")}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#B89050")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
                 >
                   +965 2267 5826
                 </a>
               </li>
               <li className="flex items-center gap-2 text-sm">
-                <Mail size={14} className="shrink-0" style={{ color: "#C9A84C" }} />
+                <Mail size={14} className="shrink-0" style={{ color: "#B89050" }} />
                 <a href="mailto:badercenterco@gmail.com" className="transition-colors text-xs" style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = "#C9A84C")}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#B89050")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
                 >
                   badercenterco@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-2 text-sm">
-                <MapPin size={14} className="shrink-0" style={{ color: "#C9A84C" }} />
+                <MapPin size={14} className="shrink-0" style={{ color: "#B89050" }} />
                 <span style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}>الفحيحيل، الكويت</span>
               </li>
             </ul>

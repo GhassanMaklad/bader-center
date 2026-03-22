@@ -78,13 +78,13 @@ export default function ContactSection() {
     <section
       id="contact"
       className="py-24 relative overflow-hidden"
-      style={{ background: "#F5F3EE" }}
+      style={{ background: "#EDE8DF" }}
     >
       {/* Background */}
       <div className="absolute inset-0 islamic-pattern opacity-15" />
       <div
         className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-10"
-        style={{ background: "radial-gradient(circle, #D4AF37 0%, transparent 70%)", transform: "translate(50%, 50%)" }}
+        style={{ background: "radial-gradient(circle, #B89050 0%, transparent 70%)", transform: "translate(50%, 50%)" }}
       />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10" ref={ref}>
@@ -97,12 +97,12 @@ export default function ContactSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ تواصل معنا ✦
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
           >
             نحن هنا لخدمتك
           </h2>
@@ -126,26 +126,26 @@ export default function ContactSection() {
               key={info.title}
               className="rounded-2xl p-6 text-center"
               style={{
-                background: "#FFFFFF",
-                border: "1px solid rgba(184,146,42,0.15)",
+                background: "#F7F3EC",
+                border: "1px solid rgba(156,122,60,0.15)",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
               }}
             >
               <div
                 className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-                style={{ background: "rgba(184,146,42,0.1)", border: "1px solid rgba(184,146,42,0.3)", color: "#B8922A" }}
+                style={{ background: "rgba(156,122,60,0.1)", border: "1px solid rgba(156,122,60,0.3)", color: "#9C7A3C" }}
               >
                 {info.icon}
               </div>
               <h3
                 className="font-semibold mb-2 text-sm"
-                style={{ color: "#B8922A", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#9C7A3C", fontFamily: "'Cairo', sans-serif" }}
               >
                 {info.title}
               </h3>
               <p
                 className="mb-3 text-sm"
-                style={{ color: "#1C1810", fontFamily: "'Cairo', sans-serif", direction: "ltr" }}
+                style={{ color: "#2C2416", fontFamily: "'Cairo', sans-serif", direction: "ltr" }}
               >
                 {info.value}
               </p>
@@ -154,9 +154,9 @@ export default function ContactSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs transition-colors"
-                style={{ color: "#B8922A", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#9C7A3C", fontFamily: "'Cairo', sans-serif" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#8A6A1A")}
-                onMouseLeave={e => (e.currentTarget.style.color = "#B8922A")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#9C7A3C")}
               >
                 {info.linkText} ←
               </a>
@@ -175,7 +175,7 @@ export default function ContactSection() {
         >
           <h3
             className="text-center text-2xl font-bold mb-8"
-            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
           >
             تابعنا على وسائل التواصل
           </h3>
@@ -188,8 +188,8 @@ export default function ContactSection() {
                 rel="noopener noreferrer"
                 className="rounded-2xl p-6 text-center group"
                 style={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(184,146,42,0.15)",
+                  background: "#F7F3EC",
+                  border: "1px solid rgba(156,122,60,0.15)",
                   boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
                   textDecoration: "none",
                   display: "block",
@@ -204,7 +204,7 @@ export default function ContactSection() {
                 >
                   {social.icon}
                 </div>
-                <p className="font-semibold mb-1" style={{ color: "#1C1810", fontFamily: "'Cairo', sans-serif" }}>
+                <p className="font-semibold mb-1" style={{ color: "#2C2416", fontFamily: "'Cairo', sans-serif" }}>
                   {social.name}
                 </p>
                 <p className="text-xs mb-2" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
@@ -226,20 +226,20 @@ export default function ContactSection() {
           className="text-center p-12 rounded-2xl relative overflow-hidden"
           style={{
             background: "linear-gradient(135deg, #FEFCF5 0%, #FFF5D6 100%)",
-            border: "1px solid rgba(184,146,42,0.3)",
-            boxShadow: "0 8px 40px rgba(184,146,42,0.12)",
+            border: "1px solid rgba(156,122,60,0.3)",
+            boxShadow: "0 8px 40px rgba(156,122,60,0.12)",
             opacity: visible ? 1 : 0,
             transition: "all 0.8s ease 0.6s",
           }}
         >
           <div className="absolute inset-0 islamic-pattern opacity-20" />
           <div className="relative z-10">
-            <p className="text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
+            <p className="text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
               ابدأ رحلتك معنا
             </p>
             <h3
               className="text-3xl sm:text-4xl font-bold mb-4"
-              style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+              style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
             >
               جاهز لتجهيز مناسبتك؟
             </h3>

@@ -86,7 +86,7 @@ const emptyForm: ProductForm = {
   priceNote: "",
   image: "",
   badge: "",
-  badgeColor: "#C9A84C",
+  badgeColor: "#B89050",
   description: "",
   rating: 5,
   inStock: true,
@@ -183,7 +183,7 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#FAFAF8" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#F2EDE4" }}>
         <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
       </div>
     );
@@ -218,7 +218,7 @@ export default function AdminDashboard() {
       priceNote: p.priceNote ?? "",
       image: p.image,
       badge: p.badge ?? "",
-      badgeColor: p.badgeColor ?? "#C9A84C",
+      badgeColor: p.badgeColor ?? "#B89050",
       description: p.description,
       rating: p.rating,
       inStock: p.inStock,
@@ -254,17 +254,17 @@ export default function AdminDashboard() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: "#FAFAF8", direction: "rtl", fontFamily: "'Cairo', sans-serif" }}
+      style={{ background: "#F2EDE4", direction: "rtl", fontFamily: "'Cairo', sans-serif" }}
     >
       {/* Header */}
       <header
         className="sticky top-0 z-40 border-b px-6 py-4 flex items-center justify-between"
-        style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.2)", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+        style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.2)", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
       >
         <div className="flex items-center gap-3">
           <ShieldCheck className="w-6 h-6 text-yellow-500" />
           <div>
-            <h1 className="text-lg font-bold" style={{ fontFamily: "'Amiri', serif", color: "#B8922A" }}>
+            <h1 className="text-lg font-bold" style={{ fontFamily: "'Amiri', serif", color: "#9C7A3C" }}>
               لوحة تحكم مركز بدر
             </h1>
             <p className="text-xs" style={{ color: "#8A7560" }}>إدارة الموقع والطلبات</p>
@@ -293,14 +293,14 @@ export default function AdminDashboard() {
       </header>
 
       {/* Tab Navigation */}
-      <div className="border-b px-6" style={{ borderColor: "rgba(184,146,42,0.2)", background: "#FFFFFF" }}>
+      <div className="border-b px-6" style={{ borderColor: "rgba(156,122,60,0.2)", background: "#F7F3EC" }}>
         <div className="flex gap-1">
           <button
             onClick={() => setActiveTab("products")}
             className="px-5 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-2"
             style={{
-              color: activeTab === "products" ? "#C9A84C" : "#6B5A3E",
-              borderBottom: activeTab === "products" ? "2px solid #C9A84C" : "2px solid transparent",
+              color: activeTab === "products" ? "#B89050" : "#6B5A3E",
+              borderBottom: activeTab === "products" ? "2px solid #B89050" : "2px solid transparent",
             }}
           >
             <Package className="w-4 h-4" />
@@ -310,8 +310,8 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("requests")}
             className="px-5 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-2 relative"
             style={{
-              color: activeTab === "requests" ? "#C9A84C" : "#6B5A3E",
-              borderBottom: activeTab === "requests" ? "2px solid #C9A84C" : "2px solid transparent",
+              color: activeTab === "requests" ? "#B89050" : "#6B5A3E",
+              borderBottom: activeTab === "requests" ? "2px solid #B89050" : "2px solid transparent",
             }}
           >
             <Bell className="w-4 h-4" />
@@ -337,11 +337,11 @@ export default function AdminDashboard() {
             { label: "غير متوفر", value: products?.filter(p => !p.inStock).length ?? 0, icon: Star, color: "text-red-400" },
             { label: "الفئات", value: 5, icon: ShieldCheck, color: "text-yellow-400" },
           ].map((stat) => (
-            <Card key={stat.label} style={{ background: "#FFFFFF", border: "1px solid rgba(184,146,42,0.15)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+            <Card key={stat.label} style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.15)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
               <CardContent className="p-4 flex items-center gap-3">
                 <stat.icon className={`w-8 h-8 ${stat.color ?? "text-yellow-500"}`} />
                 <div>
-                  <p className="text-2xl font-bold" style={{ color: "#1C1810" }}>{stat.value}</p>
+                  <p className="text-2xl font-bold" style={{ color: "#2C2416" }}>{stat.value}</p>
                   <p className="text-xs" style={{ color: "#8A7560" }}>{stat.label}</p>
                 </div>
               </CardContent>
@@ -356,13 +356,13 @@ export default function AdminDashboard() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 text-right"
-            style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+            style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
           />
           <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810", width: "200px" }}>
+            <SelectTrigger style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416", width: "200px" }}>
               <SelectValue placeholder="كل الفئات" />
             </SelectTrigger>
-            <SelectContent style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)" }}>
+            <SelectContent style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)" }}>
               <SelectItem value="all">كل الفئات</SelectItem>
               {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
                 <SelectItem key={k} value={k}>{v}</SelectItem>
@@ -387,9 +387,9 @@ export default function AdminDashboard() {
             <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
           </div>
         ) : (
-          <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(184,146,42,0.2)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+          <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(156,122,60,0.2)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
             <table className="w-full text-sm">
-              <thead style={{ background: "rgba(184,146,42,0.08)" }}>
+              <thead style={{ background: "rgba(156,122,60,0.08)" }}>
                 <tr>
                   <th className="text-right p-3 text-yellow-400 font-semibold">المنتج</th>
                   <th className="text-right p-3 text-yellow-400 font-semibold hidden md:table-cell">الفئة</th>
@@ -403,8 +403,8 @@ export default function AdminDashboard() {
                   <tr
                     key={product.id}
                     style={{
-                      background: idx % 2 === 0 ? "#FFFFFF" : "#FAFAF8",
-                      borderBottom: "1px solid rgba(184,146,42,0.08)",
+                      background: idx % 2 === 0 ? "#F7F3EC" : "#F2EDE4",
+                      borderBottom: "1px solid rgba(156,122,60,0.08)",
                     }}
                   >
                     {/* Product Info */}
@@ -414,15 +414,15 @@ export default function AdminDashboard() {
                           src={product.image}
                           alt={product.name}
                           className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                          style={{ border: "1px solid rgba(201,168,76,0.2)" }}
+                          style={{ border: "1px solid rgba(156,122,60,0.2)" }}
                         />
                         <div>
-                          <p className="font-semibold text-sm" style={{ color: "#1C1810" }}>{product.name}</p>
+                          <p className="font-semibold text-sm" style={{ color: "#2C2416" }}>{product.name}</p>
                           <p className="text-xs" style={{ color: "#8A7560" }}>{product.nameEn}</p>
                           {product.badge && (
                             <span
                               className="text-xs px-2 py-0.5 rounded-full mt-1 inline-block"
-                              style={{ background: `${product.badgeColor}22`, color: product.badgeColor ?? "#C9A84C" }}
+                              style={{ background: `${product.badgeColor}22`, color: product.badgeColor ?? "#B89050" }}
                             >
                               {product.badge}
                             </span>
@@ -497,7 +497,7 @@ export default function AdminDashboard() {
         {activeTab === "requests" && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold" style={{ fontFamily: "'Amiri', serif", color: "#B8922A" }}>
+              <h2 className="text-lg font-bold" style={{ fontFamily: "'Amiri', serif", color: "#9C7A3C" }}>
                 طلبات الخدمة الواردة
               </h2>
               <Button
@@ -539,12 +539,12 @@ export default function AdminDashboard() {
                     <div
                       key={req.id}
                       className="rounded-xl p-5"
-                      style={{ background: "#FFFFFF", border: "1px solid rgba(184,146,42,0.2)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
+                      style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.2)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-3">
-                            <h3 className="font-bold text-lg" style={{ color: "#1C1810" }}>{req.name}</h3>
+                            <h3 className="font-bold text-lg" style={{ color: "#2C2416" }}>{req.name}</h3>
                             <span className={`text-xs px-2 py-1 rounded-full border ${statusColors[req.status]}`}>
                               {statusLabels[req.status]}
                             </span>
@@ -596,10 +596,10 @@ export default function AdminDashboard() {
                             value={req.status}
                             onValueChange={(v) => updateStatusMutation.mutate({ id: req.id, status: v as "new" | "contacted" | "completed" | "cancelled" })}
                           >
-                            <SelectTrigger className="h-8 text-xs w-32" style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}>
+                            <SelectTrigger className="h-8 text-xs w-32" style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}>
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)" }}>
+                            <SelectContent style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)" }}>
                               <SelectItem value="new">جديد</SelectItem>
                               <SelectItem value="contacted">تم التواصل</SelectItem>
                               <SelectItem value="completed">مكتمل</SelectItem>
@@ -621,10 +621,10 @@ export default function AdminDashboard() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent
           className="max-w-2xl max-h-[90vh] overflow-y-auto"
-          style={{ background: "#FFFFFF", border: "1px solid rgba(184,146,42,0.3)", direction: "rtl" }}
+          style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.3)", direction: "rtl" }}
         >
           <DialogHeader>
-            <DialogTitle className="text-right" style={{ fontFamily: "'Amiri', serif", color: "#B8922A" }}>
+            <DialogTitle className="text-right" style={{ fontFamily: "'Amiri', serif", color: "#9C7A3C" }}>
               {editingId !== null ? "تعديل المنتج" : "إضافة منتج جديد"}
             </DialogTitle>
           </DialogHeader>
@@ -637,7 +637,7 @@ export default function AdminDashboard() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="مثال: دزة الورود الفاخرة"
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Name EN */}
@@ -648,17 +648,17 @@ export default function AdminDashboard() {
                 onChange={(e) => setForm({ ...form, nameEn: e.target.value })}
                 placeholder="Luxury Rose Dazza"
                 dir="ltr"
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Category */}
             <div className="space-y-1">
               <Label className="text-sm" style={{ color: "#4A3D2A" }}>الفئة *</Label>
               <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v as Category })}>
-                <SelectTrigger style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}>
+                <SelectTrigger style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)" }}>
+                <SelectContent style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)" }}>
                   {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
                     <SelectItem key={k} value={k}>{v}</SelectItem>
                   ))}
@@ -672,7 +672,7 @@ export default function AdminDashboard() {
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
                 placeholder="من 45 د.ك"
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Price Value */}
@@ -683,7 +683,7 @@ export default function AdminDashboard() {
                 value={form.priceValue}
                 onChange={(e) => setForm({ ...form, priceValue: Number(e.target.value) })}
                 placeholder="45"
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Price Note */}
@@ -693,7 +693,7 @@ export default function AdminDashboard() {
                 value={form.priceNote}
                 onChange={(e) => setForm({ ...form, priceNote: e.target.value })}
                 placeholder="يشمل التوصيل"
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Image Upload */}
@@ -704,8 +704,8 @@ export default function AdminDashboard() {
                 <label
                   className="flex flex-col items-center justify-center w-28 h-28 rounded-xl cursor-pointer transition-all duration-200 flex-shrink-0"
                   style={{
-                    background: uploadingImage ? "rgba(201,168,76,0.05)" : "rgba(201,168,76,0.08)",
-                    border: "2px dashed rgba(201,168,76,0.4)",
+                    background: uploadingImage ? "rgba(156,122,60,0.05)" : "rgba(156,122,60,0.08)",
+                    border: "2px dashed rgba(156,122,60,0.4)",
                   }}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -742,7 +742,7 @@ export default function AdminDashboard() {
                         src={form.image}
                         alt="preview"
                         className="w-28 h-28 rounded-xl object-cover"
-                        style={{ border: "1px solid rgba(201,168,76,0.3)" }}
+                        style={{ border: "1px solid rgba(156,122,60,0.3)" }}
                       />
                       <button
                         type="button"
@@ -761,7 +761,7 @@ export default function AdminDashboard() {
                       onChange={(e) => setForm({ ...form, image: e.target.value })}
                       placeholder="https://..."
                       dir="ltr"
-                      style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810", fontSize: "0.75rem" }}
+                      style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416", fontSize: "0.75rem" }}
                     />
                   </div>
                 </div>
@@ -776,7 +776,7 @@ export default function AdminDashboard() {
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="وصف مختصر للمنتج..."
                 rows={2}
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Badge */}
@@ -786,7 +786,7 @@ export default function AdminDashboard() {
                 value={form.badge}
                 onChange={(e) => setForm({ ...form, badge: e.target.value })}
                 placeholder="الأكثر طلباً"
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Badge Color */}
@@ -796,9 +796,9 @@ export default function AdminDashboard() {
                 <Input
                   value={form.badgeColor}
                   onChange={(e) => setForm({ ...form, badgeColor: e.target.value })}
-                  placeholder="#C9A84C"
+                  placeholder="#B89050"
                   dir="ltr"
-                  style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                  style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
                 />
                 <input
                   type="color"
@@ -816,7 +816,7 @@ export default function AdminDashboard() {
                 onChange={(e) => setForm({ ...form, tags: e.target.value })}
                 placeholder='["هدايا","أفراح"]'
                 dir="ltr"
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Sort Order */}
@@ -826,7 +826,7 @@ export default function AdminDashboard() {
                 type="number"
                 value={form.sortOrder}
                 onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })}
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Rating */}
@@ -838,7 +838,7 @@ export default function AdminDashboard() {
                 max={5}
                 value={form.rating}
                 onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })}
-                style={{ background: "#FFFFFF", borderColor: "rgba(184,146,42,0.3)", color: "#1C1810" }}
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
             {/* Stock */}

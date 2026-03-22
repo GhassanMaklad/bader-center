@@ -45,12 +45,12 @@ export default function StatsSection() {
   return (
     <section
       className="py-24 relative overflow-hidden"
-      style={{ background: "#FFFFFF" }}
+      style={{ background: "#F7F3EC" }}
     >
       {/* Subtle gold glow */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10"
-        style={{ background: "radial-gradient(circle, #D4AF37 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, #B89050 0%, transparent 70%)" }}
       />
       <div className="absolute inset-0 islamic-pattern opacity-15" />
 
@@ -70,8 +70,8 @@ export default function StatsSection() {
               className="text-center p-6 rounded-2xl"
               style={{
                 background: "linear-gradient(135deg, #FEFCF5 0%, #FFF9EC 100%)",
-                border: "1px solid rgba(184,146,42,0.2)",
-                boxShadow: "0 4px 20px rgba(184,146,42,0.08)",
+                border: "1px solid rgba(156,122,60,0.2)",
+                boxShadow: "0 4px 20px rgba(156,122,60,0.08)",
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateY(0)" : "translateY(20px)",
                 transition: `all 0.8s ease ${i * 0.15}s`,
@@ -99,12 +99,12 @@ export default function StatsSection() {
             transition: "all 0.8s ease 0.4s",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#B8922A", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
             ✦ آراء عملائنا ✦
           </p>
           <h2
             className="text-3xl sm:text-4xl font-bold"
-            style={{ color: "#1C1810", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
           >
             ماذا يقول عملاؤنا
           </h2>
@@ -124,15 +124,15 @@ export default function StatsSection() {
               key={i}
               className="rounded-2xl p-6 relative"
               style={{
-                background: "#FAFAF8",
-                border: "1px solid rgba(184,146,42,0.15)",
+                background: "#F2EDE4",
+                border: "1px solid rgba(156,122,60,0.15)",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
               }}
             >
               {/* Quote mark */}
               <div
                 className="text-6xl leading-none mb-4 opacity-40"
-                style={{ color: "#C9A84C", fontFamily: "'Amiri', serif" }}
+                style={{ color: "#B89050", fontFamily: "'Amiri', serif" }}
               >
                 "
               </div>
@@ -145,12 +145,12 @@ export default function StatsSection() {
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center font-bold"
-                  style={{ background: "rgba(184,146,42,0.1)", border: "1px solid rgba(184,146,42,0.3)", color: "#B8922A" }}
+                  style={{ background: "rgba(156,122,60,0.1)", border: "1px solid rgba(156,122,60,0.3)", color: "#9C7A3C" }}
                 >
                   {t.name[0]}
                 </div>
                 <div>
-                  <p className="font-semibold text-sm" style={{ color: "#1C1810", fontFamily: "'Cairo', sans-serif" }}>
+                  <p className="font-semibold text-sm" style={{ color: "#2C2416", fontFamily: "'Cairo', sans-serif" }}>
                     {t.name}
                   </p>
                   <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>

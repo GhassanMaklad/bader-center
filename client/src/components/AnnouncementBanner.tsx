@@ -1,6 +1,6 @@
 /**
  * AnnouncementBanner - Animated seasonal offers ticker
- * Design: Light Luxury Theme - Gold gradient background
+ * Design: Warm Beige / Greige Luxury Theme
  */
 import { useState } from "react";
 import { X, Star } from "lucide-react";
@@ -29,21 +29,21 @@ export default function AnnouncementBanner() {
       data-banner="true"
       className="relative z-[60] overflow-hidden"
       style={{
-        background: "linear-gradient(90deg, #B8922A 0%, #D4AF37 30%, #E8C96A 50%, #D4AF37 70%, #B8922A 100%)",
-        borderBottom: "1px solid rgba(184,146,42,0.4)",
+        background: "#2C2416",
+        borderBottom: "1px solid rgba(184,144,80,0.3)",
         height: "40px",
       }}
     >
       {/* Left fade */}
       <div
         className="absolute top-0 bottom-0 left-0 w-20 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to right, #B8922A, transparent)" }}
+        style={{ background: "linear-gradient(to right, #2C2416, transparent)" }}
       />
 
       {/* Right fade — leave space for close button */}
       <div
         className="absolute top-0 bottom-0 right-10 w-20 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to left, #B8922A, transparent)" }}
+        style={{ background: "linear-gradient(to left, #2C2416, transparent)" }}
       />
 
       {/* Scrolling track */}
@@ -64,7 +64,7 @@ export default function AnnouncementBanner() {
             <span className="text-base leading-none">{offer.icon}</span>
             <span
               className="text-sm font-semibold"
-              style={{ color: "#3D2B00" }}
+              style={{ color: "#D4C9B0" }}
             >
               {offer.text}
             </span>
@@ -73,18 +73,18 @@ export default function AnnouncementBanner() {
                 href="/request"
                 className="inline-flex items-center gap-1 text-xs font-bold px-3 py-0.5 rounded-full transition-all duration-200 hover:opacity-80"
                 style={{
-                  background: "rgba(61,43,0,0.15)",
-                  color: "#3D2B00",
-                  border: "1px solid rgba(61,43,0,0.3)",
+                  background: "rgba(212,192,160,0.15)",
+                  color: "#D4C9B0",
+                  border: "1px solid rgba(212,192,160,0.35)",
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 {offer.cta} ←
               </Link>
             )}
-            <Star size={8} className="opacity-60" style={{ color: "#3D2B00" }} />
-            <Star size={8} className="opacity-60" style={{ color: "#3D2B00" }} />
-            <Star size={8} className="opacity-60" style={{ color: "#3D2B00" }} />
+            <Star size={8} className="opacity-40" style={{ color: "#B89050" }} />
+            <Star size={8} className="opacity-40" style={{ color: "#B89050" }} />
+            <Star size={8} className="opacity-40" style={{ color: "#B89050" }} />
           </span>
         ))}
       </div>
@@ -93,7 +93,7 @@ export default function AnnouncementBanner() {
       <button
         onClick={() => setDismissed(true)}
         className="absolute top-0 bottom-0 left-0 w-10 flex items-center justify-center z-20 transition-opacity duration-200 hover:opacity-70"
-        style={{ color: "#3D2B00" }}
+        style={{ color: "#D4C9B0" }}
         aria-label="إغلاق الشريط"
       >
         <X size={14} strokeWidth={2.5} />

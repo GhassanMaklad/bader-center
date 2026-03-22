@@ -32,43 +32,46 @@
 }
 
 :root {
-  /* Bright White/Gray/Gold Luxury Theme */
+  /* Warm Beige / Greige Luxury Theme */
   --radius: 0.5rem;
-  --background: oklch(0.98 0.005 80);
-  --foreground: oklch(0.18 0.015 60);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.015 60);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.015 60);
-  --primary: oklch(0.65 0.12 75);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.94 0.008 80);
-  --secondary-foreground: oklch(0.25 0.015 60);
-  --muted: oklch(0.95 0.006 80);
-  --muted-foreground: oklch(0.5 0.015 70);
-  --accent: oklch(0.65 0.12 75);
-  --accent-foreground: oklch(1 0 0);
+  --background: oklch(0.955 0.012 75);
+  --foreground: oklch(0.2 0.018 55);
+  --card: oklch(0.97 0.01 78);
+  --card-foreground: oklch(0.2 0.018 55);
+  --popover: oklch(0.97 0.01 78);
+  --popover-foreground: oklch(0.2 0.018 55);
+  --primary: oklch(0.28 0.022 55);
+  --primary-foreground: oklch(0.97 0.01 78);
+  --secondary: oklch(0.88 0.018 75);
+  --secondary-foreground: oklch(0.28 0.022 55);
+  --muted: oklch(0.91 0.014 76);
+  --muted-foreground: oklch(0.48 0.02 65);
+  --accent: oklch(0.75 0.06 78);
+  --accent-foreground: oklch(0.2 0.018 55);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0.01 80);
-  --input: oklch(0.94 0.008 80);
-  --ring: oklch(0.65 0.12 75);
+  --border: oklch(0.84 0.022 74);
+  --input: oklch(0.91 0.014 76);
+  --ring: oklch(0.28 0.022 55);
 
-  /* Gold palette */
-  --gold: oklch(0.65 0.12 75);
-  --gold-light: oklch(0.78 0.1 80);
-  --gold-dark: oklch(0.5 0.1 65);
-  --gold-hex: #B8922A;
-  --gold-mid-hex: #C9A84C;
-  --gold-light-hex: #E8C96A;
+  /* Gold palette - muted warm gold to match beige */
+  --gold: oklch(0.62 0.09 72);
+  --gold-light: oklch(0.75 0.07 76);
+  --gold-dark: oklch(0.45 0.08 62);
+  --gold-hex: #9C7A3C;
+  --gold-mid-hex: #B89050;
+  --gold-light-hex: #D4B070;
 
-  /* Light theme palette */
-  --light-bg: #FAFAF8;
-  --light-section: #F5F3EE;
-  --light-card: #FFFFFF;
-  --light-border: #E8E0D0;
-  --text-dark: #1C1810;
+  /* Warm beige palette */
+  --light-bg: #F2EDE4;
+  --light-section: #EDE8DF;
+  --light-card: #F7F3EC;
+  --light-border: #D8CFBE;
+  --text-dark: #1E1A12;
   --text-mid: #4A3F2F;
   --text-light: #8A7A60;
+  --beige-deep: #C8B99A;
+  --beige-mid: #D4C9B0;
+  --dark-brown: #2C2416;
 }
 
 @layer base {
@@ -84,7 +87,7 @@
     @apply bg-background text-foreground;
     font-family: 'Cairo', 'Amiri', sans-serif;
     direction: rtl;
-    background-color: #FAFAF8;
+    background-color: #F2EDE4;
   }
 
   h1, h2, h3 {
@@ -130,9 +133,9 @@
     }
   }
 
-  /* Gold gradient text */
+  /* Gold gradient text - warm muted gold */
   .gold-text {
-    background: linear-gradient(135deg, #B8922A 0%, #C9A84C 40%, #E8C96A 60%, #C9A84C 100%);
+    background: linear-gradient(135deg, #7A5C28 0%, #9C7A3C 40%, #B89050 60%, #9C7A3C 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -140,71 +143,72 @@
 
   /* Gold border */
   .gold-border {
-    border: 1px solid #C9A84C;
+    border: 1px solid #B89050;
   }
 
-  /* Gold glow effect */
+  /* Gold glow effect - subtle for beige */
   .gold-glow {
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.25), 0 0 40px rgba(201, 168, 76, 0.08);
+    box-shadow: 0 0 20px rgba(156, 122, 60, 0.2), 0 0 40px rgba(156, 122, 60, 0.06);
   }
 
-  /* Islamic pattern overlay - light version */
+  /* Islamic pattern overlay - beige version */
   .islamic-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A84C' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C7A3C' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
   /* Section divider */
   .gold-divider {
     height: 1px;
-    background: linear-gradient(to right, transparent, #C9A84C, transparent);
+    background: linear-gradient(to right, transparent, #B89050, transparent);
   }
 
-  /* Light luxury card */
+  /* Warm beige luxury card */
   .luxury-card {
-    background: #FFFFFF;
-    border: 1px solid rgba(201, 168, 76, 0.2);
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+    background: #F7F3EC;
+    border: 1px solid rgba(156, 122, 60, 0.18);
+    box-shadow: 0 2px 16px rgba(44, 36, 22, 0.06);
     transition: all 0.4s ease;
   }
 
   .luxury-card:hover {
-    border-color: rgba(201, 168, 76, 0.5);
-    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.15);
+    border-color: rgba(156, 122, 60, 0.4);
+    box-shadow: 0 8px 40px rgba(156, 122, 60, 0.12);
     transform: translateY(-4px);
   }
 
-  /* Gold button */
+  /* Dark brown button (like reference) */
   .btn-gold {
-    background: linear-gradient(135deg, #B8922A 0%, #C9A84C 40%, #E8C96A 70%, #C9A84C 100%);
-    color: #FFFFFF;
+    background: #2C2416;
+    color: #F2EDE4;
     font-weight: 700;
     padding: 0.75rem 2rem;
-    border-radius: 0.375rem;
+    border-radius: 2rem;
     transition: all 0.3s ease;
     font-family: 'Cairo', sans-serif;
-    box-shadow: 0 4px 15px rgba(184, 146, 42, 0.3);
+    box-shadow: 0 4px 15px rgba(44, 36, 22, 0.25);
   }
 
   .btn-gold:hover {
-    box-shadow: 0 6px 25px rgba(184, 146, 42, 0.45);
+    background: #3D3220;
+    box-shadow: 0 6px 25px rgba(44, 36, 22, 0.35);
     transform: translateY(-2px);
   }
 
-  /* Outline gold button */
+  /* Outline warm button */
   .btn-gold-outline {
     background: transparent;
-    color: #B8922A;
+    color: #2C2416;
     font-weight: 600;
     padding: 0.75rem 2rem;
-    border: 2px solid #C9A84C;
-    border-radius: 0.375rem;
+    border: 2px solid #2C2416;
+    border-radius: 2rem;
     transition: all 0.3s ease;
     font-family: 'Cairo', sans-serif;
   }
 
   .btn-gold-outline:hover {
-    background: rgba(201, 168, 76, 0.08);
-    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.2);
+    background: rgba(44, 36, 22, 0.06);
+    box-shadow: 0 4px 20px rgba(44, 36, 22, 0.15);
   }
 
   /* Animated underline */
