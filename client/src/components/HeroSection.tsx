@@ -63,16 +63,16 @@ export default function HeroSection() {
       >
         {/* Tagline */}
         <p
-          className="text-sm tracking-[0.3em] uppercase mb-6 font-semibold"
-          style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif", textShadow: "0 1px 3px rgba(237,232,223,0.9)" }}
+          className="text-xs tracking-[0.45em] uppercase mb-6 font-medium"
+          style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', 'Cormorant Garamond', serif", textShadow: "0 1px 3px rgba(237,232,223,0.9)", fontStyle: "italic" }}
         >
-          ✦ BADER CENTER ✦ KUWAIT ✦ SINCE 2004 ✦
+          ✦ Bader Center ✦ Kuwait ✦ Since 2004 ✦
         </p>
 
         {/* Main Headline */}
         <h1
-          className="text-5xl sm:text-6xl lg:text-8xl font-bold mb-6 leading-tight"
-          style={{ fontFamily: "'Amiri', serif" }}
+          className="text-5xl sm:text-6xl lg:text-8xl font-bold mb-6"
+          style={{ fontFamily: "'Noto Naskh Arabic', serif", lineHeight: "1.2", letterSpacing: "-0.02em" }}
         >
           <span className="gold-shimmer">للفخامة</span>
           <br />
@@ -81,8 +81,8 @@ export default function HeroSection() {
 
         {/* Sub headline */}
         <p
-          className="text-xl sm:text-2xl mb-4 font-light"
-          style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", textShadow: "0 1px 4px rgba(237,232,223,0.9)" }}
+          className="text-xl sm:text-2xl mb-4"
+          style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", textShadow: "0 1px 4px rgba(237,232,223,0.9)", fontWeight: 300, letterSpacing: "0.02em" }}
         >
           نجسدها منذ <span className="font-semibold" style={{ color: "#9C7A3C" }}>20 عاماً</span>
         </p>
@@ -92,7 +92,7 @@ export default function HeroSection() {
           className="text-base sm:text-lg max-w-2xl mx-auto mb-12 leading-relaxed"
           style={{
             color: "#5A4E3A",
-            fontFamily: "'Cairo', sans-serif",
+            fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
             textShadow: "0 1px 4px rgba(237,232,223,0.9)",
             opacity: visible ? 1 : 0,
             transition: "opacity 1.5s ease 0.4s",
@@ -146,11 +146,11 @@ export default function HeroSection() {
                 className="inline-block px-4 py-2 rounded-xl mb-1"
                 style={{ background: "rgba(247,243,236,0.8)", backdropFilter: "blur(8px)", boxShadow: "0 2px 12px rgba(44,36,22,0.1)" }}
               >
-                <p className="text-2xl sm:text-3xl font-bold" style={{ color: "#9C7A3C", fontFamily: "'Amiri', serif" }}>
+                <p className="text-2xl sm:text-3xl font-bold" style={{ color: "#9C7A3C", fontFamily: "'Noto Naskh Arabic', serif" }}>
                   {stat.num}
                 </p>
               </div>
-              <p className="text-xs mt-1 font-medium" style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}>
+              <p className="text-xs mt-1 font-medium" style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                 {stat.label}
               </p>
             </div>

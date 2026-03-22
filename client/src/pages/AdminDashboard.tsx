@@ -254,7 +254,7 @@ export default function AdminDashboard() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: "#F2EDE4", direction: "rtl", fontFamily: "'Cairo', sans-serif" }}
+      style={{ background: "#F2EDE4", direction: "rtl", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
     >
       {/* Header */}
       <header
@@ -264,7 +264,7 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-3">
           <ShieldCheck className="w-6 h-6 text-yellow-500" />
           <div>
-            <h1 className="text-lg font-bold" style={{ fontFamily: "'Amiri', serif", color: "#9C7A3C" }}>
+            <h1 className="text-lg font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
               لوحة تحكم مركز بدر
             </h1>
             <p className="text-xs" style={{ color: "#8A7560" }}>إدارة الموقع والطلبات</p>
@@ -497,7 +497,7 @@ export default function AdminDashboard() {
         {activeTab === "requests" && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold" style={{ fontFamily: "'Amiri', serif", color: "#9C7A3C" }}>
+              <h2 className="text-lg font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
                 طلبات الخدمة الواردة
               </h2>
               <Button
@@ -624,7 +624,7 @@ export default function AdminDashboard() {
           style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.3)", direction: "rtl" }}
         >
           <DialogHeader>
-            <DialogTitle className="text-right" style={{ fontFamily: "'Amiri', serif", color: "#9C7A3C" }}>
+            <DialogTitle className="text-right" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
               {editingId !== null ? "تعديل المنتج" : "إضافة منتج جديد"}
             </DialogTitle>
           </DialogHeader>

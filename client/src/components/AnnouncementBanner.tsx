@@ -59,7 +59,7 @@ export default function AnnouncementBanner() {
           <span
             key={i}
             className="inline-flex items-center gap-2 px-8"
-            style={{ fontFamily: "'Cairo', sans-serif" }}
+            style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
           >
             <span className="text-base leading-none">{offer.icon}</span>
             <span

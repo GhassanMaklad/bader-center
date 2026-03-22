@@ -85,13 +85,25 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Cairo', 'Amiri', sans-serif;
+    font-family: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
     direction: rtl;
     background-color: #F2EDE4;
+    font-size: 15px;
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3 {
-    font-family: 'Amiri', 'Cairo', serif;
+  h1, h2, h3, h4 {
+    font-family: 'Noto Naskh Arabic', 'IBM Plex Sans Arabic', serif;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  /* English headings use Playfair Display */
+  :lang(en) h1, :lang(en) h2, :lang(en) h3 {
+    font-family: 'Playfair Display', 'Cormorant Garamond', serif;
   }
 
   button:not(:disabled),
@@ -180,11 +192,13 @@
   .btn-gold {
     background: #2C2416;
     color: #F2EDE4;
-    font-weight: 700;
+    font-weight: 600;
     padding: 0.75rem 2rem;
     border-radius: 2rem;
     transition: all 0.3s ease;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
     box-shadow: 0 4px 15px rgba(44, 36, 22, 0.25);
   }
 
@@ -203,7 +217,9 @@
     border: 2px solid #2C2416;
     border-radius: 2rem;
     transition: all 0.3s ease;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
   }
 
   .btn-gold-outline:hover {

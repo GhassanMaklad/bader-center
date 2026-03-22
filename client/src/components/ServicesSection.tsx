@@ -88,14 +88,14 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
       {/* Content */}
       <div className="p-6">
         <h3
-          className="text-xl font-bold mb-3"
-          style={{ color: "#2C2416", fontFamily: "'Amiri', serif", borderBottom: "2px solid #9C7A3C", paddingBottom: "8px", display: "inline-block" }}
+          className="text-lg font-semibold mb-3"
+          style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif", borderBottom: "1.5px solid rgba(156,122,60,0.5)", paddingBottom: "8px", display: "inline-block", letterSpacing: "0.01em" }}
         >
           {service.title}
         </h3>
         <p
-          className="text-sm leading-relaxed mb-4 mt-3"
-          style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
+          className="text-sm leading-loose mb-4 mt-3"
+          style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
         >
           {service.description}
         </p>
@@ -106,7 +106,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
             <span
               key={f}
               className="text-xs px-3 py-1 rounded-full font-medium"
-              style={{ background: "rgba(156,122,60,0.08)", color: "#7A5C28", border: "1px solid rgba(156,122,60,0.25)", fontFamily: "'Cairo', sans-serif" }}
+              style={{ background: "rgba(156,122,60,0.08)", color: "#7A5C28", border: "1px solid rgba(156,122,60,0.25)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               {f}
             </span>
@@ -155,17 +155,17 @@ export default function ServicesSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
-            ✦ خدماتنا ✦
+          <p className="text-xs tracking-[0.4em] uppercase mb-4 font-normal" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>
+            Our Services
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif", letterSpacing: "-0.01em", lineHeight: "1.3" }}
           >
             ما نقدمه لك
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
             نقدم خدمات متكاملة لجميع مناسباتك بأعلى معايير الجودة والفخامة
           </p>
         </div>

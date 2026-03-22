@@ -119,14 +119,14 @@ function GalleryCard({ item, index }: { item: typeof galleryItems[0]; index: num
       >
         <span
           className="text-xs mb-1 tracking-wider font-semibold"
-          style={{ color: "#D4B070", fontFamily: "'Cairo', sans-serif" }}
+          style={{ color: "#D4B070", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
         >
           {item.category}
         </span>
         <div className="flex items-center justify-between gap-2">
           <h3
             className="text-white font-bold text-sm sm:text-base leading-snug"
-            style={{ fontFamily: "'Amiri', serif" }}
+            style={{ fontFamily: "'Noto Naskh Arabic', serif" }}
           >
             {item.title}
           </h3>
@@ -193,17 +193,17 @@ export default function GallerySection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.4em] uppercase mb-4 font-normal" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>
             ✦ من حساب الإنستغرام ✦
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
           >
             معرض أعمالنا الحقيقية
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
             صور حقيقية من أعمالنا على إنستغرام — كل صورة تحكي قصة نجاح
           </p>
 
@@ -213,7 +213,7 @@ export default function GallerySection() {
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 mt-4 transition-colors text-sm"
-            style={{ color: "#9C7A3C", fontFamily: "'Cairo', sans-serif" }}
+            style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
           >
             <Instagram size={16} />
             <span>@badercenterco</span>
@@ -260,7 +260,7 @@ export default function GallerySection() {
             <Instagram size={20} />
             شاهد المزيد على إنستغرام
           </a>
-          <p className="text-sm mt-3" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
+          <p className="text-sm mt-3" style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
             أكثر من 2,767 منشور على حسابنا
           </p>
         </div>

@@ -78,12 +78,12 @@ export default function StatsSection() {
               }}
             >
               <div className="text-3xl mb-3">{stat.icon}</div>
-              <span className="gold-shimmer text-4xl sm:text-5xl font-bold" style={{ fontFamily: "'Amiri', serif" }}>
+              <span className="gold-shimmer text-4xl sm:text-5xl font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>
                 {stat.num}
               </span>
               <p
                 className="text-sm mt-2"
-                style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
               >
                 {stat.label}
               </p>
@@ -99,12 +99,12 @@ export default function StatsSection() {
             transition: "all 0.8s ease 0.4s",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.4em] uppercase mb-4 font-normal" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>
             ✦ آراء عملائنا ✦
           </p>
           <h2
             className="text-3xl sm:text-4xl font-bold"
-            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
           >
             ماذا يقول عملاؤنا
           </h2>
@@ -132,13 +132,13 @@ export default function StatsSection() {
               {/* Quote mark */}
               <div
                 className="text-6xl leading-none mb-4 opacity-40"
-                style={{ color: "#B89050", fontFamily: "'Amiri', serif" }}
+                style={{ color: "#B89050", fontFamily: "'Noto Naskh Arabic', serif" }}
               >
                 "
               </div>
               <p
-                className="text-sm leading-relaxed mb-6"
-                style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
+                className="text-sm leading-loose mb-6"
+                style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
               >
                 {t.text}
               </p>
@@ -150,10 +150,10 @@ export default function StatsSection() {
                   {t.name[0]}
                 </div>
                 <div>
-                  <p className="font-semibold text-sm" style={{ color: "#2C2416", fontFamily: "'Cairo', sans-serif" }}>
+                  <p className="font-semibold text-sm" style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                     {t.name}
                   </p>
-                  <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
+                  <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                     {t.role}
                   </p>
                 </div>

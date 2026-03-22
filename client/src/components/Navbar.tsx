@@ -80,10 +80,10 @@ export default function Navbar() {
               style={{ border: "2px solid rgba(156,122,60,0.4)", boxShadow: "0 2px 12px rgba(44,36,22,0.1)" }}
             />
             <div className="hidden sm:block">
-              <p className="text-xs font-light tracking-widest" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
-                BADER CENTER
+              <p className="text-xs font-normal tracking-[0.35em]" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic", letterSpacing: "0.3em" }}>
+                Bader Center
               </p>
-              <p className="font-bold text-lg leading-tight" style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}>
+              <p className="font-semibold text-base leading-tight" style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif", letterSpacing: "0.01em" }}>
                 مركز بدر
               </p>
             </div>
@@ -95,8 +95,8 @@ export default function Navbar() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className="transition-colors duration-300 text-sm font-medium relative group"
-                style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
+                className="transition-colors duration-300 text-sm font-normal relative group"
+                style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", letterSpacing: "0.02em" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#2C2416")}
                 onMouseLeave={e => (e.currentTarget.style.color = "#4A3F2F")}
               >
@@ -107,7 +107,7 @@ export default function Navbar() {
             <Link
               href="/catalog"
               className="transition-colors duration-300 text-sm font-medium relative group"
-              style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               كتالوج
               <span className="absolute -bottom-1 right-0 w-0 h-px transition-all duration-300 group-hover:w-full" style={{ background: "#9C7A3C" }} />
@@ -124,7 +124,7 @@ export default function Navbar() {
                   color: "#9C7A3C",
                   borderColor: "rgba(156,122,60,0.4)",
                   background: "rgba(156,122,60,0.06)",
-                  fontFamily: "'Cairo', sans-serif",
+                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
                 }}
               >
                 <LayoutDashboard size={15} />
@@ -169,7 +169,7 @@ export default function Navbar() {
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
                 className="transition-colors text-base font-medium text-right py-2"
-                style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(156,122,60,0.1)" }}
+                style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", borderBottom: "1px solid rgba(156,122,60,0.1)" }}
               >
                 {link.label}
               </button>
@@ -177,7 +177,7 @@ export default function Navbar() {
             <Link
               href="/catalog"
               className="transition-colors text-base font-medium text-right py-2 block"
-              style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif", borderBottom: "1px solid rgba(156,122,60,0.1)" }}
+              style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", borderBottom: "1px solid rgba(156,122,60,0.1)" }}
               onClick={() => setIsOpen(false)}
             >
               كتالوج المنتجات
@@ -188,7 +188,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 text-base font-medium text-right py-2"
                 style={{
                   color: "#9C7A3C",
-                  fontFamily: "'Cairo', sans-serif",
+                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
                   borderBottom: "1px solid rgba(156,122,60,0.1)",
                 }}
                 onClick={() => setIsOpen(false)}

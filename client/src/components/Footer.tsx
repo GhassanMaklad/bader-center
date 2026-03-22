@@ -34,17 +34,17 @@ export default function Footer() {
                 style={{ border: "2px solid rgba(156,122,60,0.6)" }}
               />
               <div>
-                <p className="text-xs tracking-widest" style={{ color: "#B89050", fontFamily: "'Cormorant Garamond', serif" }}>
+                <p className="text-xs tracking-widest" style={{ color: "#B89050", fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}>
                   BADER CENTER
                 </p>
-                <p className="font-bold text-xl" style={{ color: "#F7F3EC", fontFamily: "'Amiri', serif" }}>
+                <p className="font-bold text-xl" style={{ color: "#F7F3EC", fontFamily: "'Noto Naskh Arabic', serif" }}>
                   مركز بدر
                 </p>
               </div>
             </div>
             <p
-              className="text-sm leading-relaxed mb-4"
-              style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
+              className="text-sm leading-loose mb-4"
+              style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               للفخامة أصول.. نجسدها منذ 20 عاماً
               <br />
@@ -82,7 +82,7 @@ export default function Footer() {
           <div>
             <h4
               className="font-semibold mb-4 text-sm"
-              style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#B89050", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               روابط سريعة
             </h4>
@@ -98,7 +98,7 @@ export default function Footer() {
                   <button
                     onClick={() => scrollTo(link.id)}
                     className="text-sm transition-colors"
-                    style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
+                    style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                     onMouseEnter={e => (e.currentTarget.style.color = "#B89050")}
                     onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
                   >
@@ -110,7 +110,7 @@ export default function Footer() {
                 <Link
                   href="/catalog"
                   className="text-sm transition-colors"
-                  style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   كتالوج المنتجات
                 </Link>
@@ -119,7 +119,7 @@ export default function Footer() {
                 <Link
                   href="/request"
                   className="text-sm transition-colors"
-                  style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   طلب خدمة
                 </Link>
@@ -131,7 +131,7 @@ export default function Footer() {
           <div>
             <h4
               className="font-semibold mb-4 text-sm"
-              style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#B89050", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               خدماتنا
             </h4>
@@ -145,7 +145,7 @@ export default function Footer() {
                 "الطباعة والتصميم",
               ].map((s) => (
                 <li key={s}>
-                  <span className="text-sm" style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}>
+                  <span className="text-sm" style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                     {s}
                   </span>
                 </li>
@@ -157,14 +157,14 @@ export default function Footer() {
           <div>
             <h4
               className="font-semibold mb-4 text-sm"
-              style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#B89050", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               تواصل معنا
             </h4>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm">
                 <Phone size={14} className="shrink-0" style={{ color: "#B89050" }} />
-                <a href="tel:+96522675826" className="transition-colors" style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif", direction: "ltr" }}
+                <a href="tel:+96522675826" className="transition-colors" style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", direction: "ltr" }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#B89050")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
                 >
@@ -173,7 +173,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2 text-sm">
                 <Mail size={14} className="shrink-0" style={{ color: "#B89050" }} />
-                <a href="mailto:badercenterco@gmail.com" className="transition-colors text-xs" style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
+                <a href="mailto:badercenterco@gmail.com" className="transition-colors text-xs" style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#B89050")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#9A8A70")}
                 >
@@ -182,7 +182,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2 text-sm">
                 <MapPin size={14} className="shrink-0" style={{ color: "#B89050" }} />
-                <span style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}>الفحيحيل، الكويت</span>
+                <span style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>الفحيحيل، الكويت</span>
               </li>
             </ul>
 
@@ -204,13 +204,13 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p
             className="text-xs"
-            style={{ color: "#6A5A40", fontFamily: "'Cairo', sans-serif" }}
+            style={{ color: "#6A5A40", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
           >
             © 2024 مركز بدر - Bader Center. جميع الحقوق محفوظة.
           </p>
           <p
             className="text-xs"
-            style={{ color: "#6A5A40", fontFamily: "'Cormorant Garamond', serif" }}
+            style={{ color: "#6A5A40", fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}
           >
             للفخامة أصول ✦ Luxury Has Its Origins
           </p>

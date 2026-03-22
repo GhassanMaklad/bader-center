@@ -375,7 +375,7 @@ function ProductCard({ product }: { product: Product }) {
             style={{
               background: product.badgeColor,
               color: product.badgeColor === "#B89050" ? "#2C2416" : "#F7F3EC",
-              fontFamily: "'Cairo', sans-serif",
+              fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
             }}
           >
             {product.badge}
@@ -389,7 +389,7 @@ function ProductCard({ product }: { product: Product }) {
             style={{
               background: product.inStock ? "rgba(22,101,52,0.8)" : "rgba(185,28,28,0.8)",
               color: "#fff",
-              fontFamily: "'Cairo', sans-serif",
+              fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
               border: "1px solid rgba(255,255,255,0.2)",
             }}
           >
@@ -417,7 +417,7 @@ function ProductCard({ product }: { product: Product }) {
                 background: "rgba(156,122,60,0.1)",
                 color: "#B89050",
                 border: "1px solid rgba(156,122,60,0.2)",
-                fontFamily: "'Cairo', sans-serif",
+                fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
               }}
             >
               {tag}
@@ -428,13 +428,13 @@ function ProductCard({ product }: { product: Product }) {
         {/* Name */}
         <h3
           className="font-bold text-lg mb-1 leading-snug"
-          style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+          style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
         >
           {product.name}
         </h3>
         <p
           className="text-xs mb-3 leading-relaxed line-clamp-2"
-          style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
+          style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
         >
           {product.description}
         </p>
@@ -444,12 +444,12 @@ function ProductCard({ product }: { product: Product }) {
           <div>
             <span
               className="text-xl font-bold"
-              style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#B89050", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               {product.price}
             </span>
             {product.priceNote && (
-              <p className="text-xs mt-0.5" style={{ color: "#5A4A30", fontFamily: "'Cairo', sans-serif" }}>
+              <p className="text-xs mt-0.5" style={{ color: "#5A4A30", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                 {product.priceNote}
               </p>
             )}
@@ -469,7 +469,7 @@ function ProductCard({ product }: { product: Product }) {
                 : "rgba(156,122,60,0.15)",
               color: hovered ? "#2C2416" : "#9C7A3C",
               border: "1px solid rgba(156,122,60,0.4)",
-              fontFamily: "'Cairo', sans-serif",
+              fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
             }}
           >
             <Phone size={14} />
@@ -580,7 +580,7 @@ export default function Catalog() {
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#F2EDE4" }}>
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-yellow-500 mx-auto mb-4" />
-          <p style={{ color: "#A09070", fontFamily: "'Cairo', sans-serif" }}>جاري تحميل الكتالوج...</p>
+          <p style={{ color: "#A09070", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>جاري تحميل الكتالوج...</p>
         </div>
       </div>
     );
@@ -606,13 +606,13 @@ export default function Catalog() {
         <div className="container mx-auto px-4 relative z-10 text-center">
           <p
             className="text-[#B89050] text-xs tracking-[0.3em] uppercase mb-4"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}
           >
             ✦ BADER CENTER ✦ CATALOG ✦
           </p>
           <h1
             className="text-5xl sm:text-6xl font-bold mb-4"
-            style={{ fontFamily: "'Amiri', serif", color: "#2C2416" }}
+            style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#2C2416" }}
           >
             كتالوج <span className="gold-shimmer">منتجاتنا</span>
           </h1>
@@ -626,7 +626,7 @@ export default function Catalog() {
           />
           <p
             className="max-w-xl mx-auto text-lg"
-            style={{ fontFamily: "'Cairo', sans-serif", color: "#6B5E4A" }}
+            style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", color: "#6B5E4A" }}
           >
             اكتشف مجموعتنا الفاخرة من الهدايا والدروع والتجهيزات — كل قطعة تحكي قصة
           </p>
@@ -641,13 +641,13 @@ export default function Catalog() {
               <div key={s.label} className="text-center">
                 <div
                   className="text-2xl font-bold"
-                  style={{ color: "#B89050", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#B89050", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   {s.value}
                 </div>
                 <div
                   className="text-xs mt-1"
-                  style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   {s.label}
                 </div>
@@ -668,7 +668,7 @@ export default function Catalog() {
                 onClick={() => setActiveCategory(cat.id)}
                 className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300"
                 style={{
-                  fontFamily: "'Cairo', sans-serif",
+                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
                   background: activeCategory === cat.id
                     ? "linear-gradient(135deg, #B89050, #D4B070)"
                     : "rgba(156,122,60,0.08)",
@@ -713,7 +713,7 @@ export default function Catalog() {
                   background: "#F7F3EC",
                   border: "1px solid rgba(156,122,60,0.2)",
                   color: "#2C2416",
-                  fontFamily: "'Cairo', sans-serif",
+                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
                 }}
               />
             </div>
@@ -729,7 +729,7 @@ export default function Catalog() {
                   background: "#F7F3EC",
                   border: "1px solid rgba(156,122,60,0.2)",
                   color: "#6B5E4A",
-                  fontFamily: "'Cairo', sans-serif",
+                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
                 }}
               >
                 <option value="default">الترتيب الافتراضي</option>
@@ -747,7 +747,7 @@ export default function Catalog() {
         <div className="container mx-auto px-4">
           {/* Results count */}
           <div className="flex items-center justify-between mb-8">
-            <p style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif", fontSize: "0.875rem" }}>
+            <p style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontSize: "0.875rem" }}>
               يعرض{" "}
               <span style={{ color: "#B89050", fontWeight: "bold" }}>{filtered.length}</span>{" "}
               منتج
@@ -762,7 +762,7 @@ export default function Catalog() {
                 style={{
                   color: "#B89050",
                   border: "1px solid rgba(156,122,60,0.3)",
-                  fontFamily: "'Cairo', sans-serif",
+                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
                 }}
               >
                 مسح البحث ✕
@@ -775,11 +775,11 @@ export default function Catalog() {
               <div className="text-6xl mb-6">🔍</div>
               <h3
                 className="text-2xl font-bold mb-3"
-                style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+                style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
               >
                 لا توجد نتائج
               </h3>
-              <p style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
+              <p style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                 جرب كلمة بحث مختلفة أو اختر فئة أخرى
               </p>
               <button
@@ -813,19 +813,19 @@ export default function Catalog() {
             <div className="relative z-10">
               <p
                 className="text-[#B89050] text-xs tracking-widest uppercase mb-4"
-                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}
               >
                 ✦ طلب مخصص ✦
               </p>
               <h3
                 className="text-3xl sm:text-4xl font-bold mb-4"
-                style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+                style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
               >
                 لم تجد ما تبحث عنه؟
               </h3>
               <p
                 className="mb-8 max-w-md mx-auto"
-                style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
               >
                 نصمم ونجهز أي طلب مخصص حسب رؤيتك — تواصل معنا وسنحول فكرتك إلى واقع فاخر
               </p>

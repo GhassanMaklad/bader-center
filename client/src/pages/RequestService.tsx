@@ -82,13 +82,13 @@ function FloatingLabel({
       <label
         htmlFor={id}
         className="block text-sm font-medium mb-2"
-        style={{ color: error ? "#ef4444" : "#B89050", fontFamily: "'Cairo', sans-serif" }}
+        style={{ color: error ? "#ef4444" : "#B89050", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
       >
         {label}
       </label>
       {children}
       {error && (
-        <p className="mt-1.5 text-xs text-red-400" style={{ fontFamily: "'Cairo', sans-serif" }}>
+        <p className="mt-1.5 text-xs text-red-400" style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
           {error}
         </p>
       )}
@@ -103,7 +103,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: "0.375rem",
   padding: "0.875rem 1rem",
   color: "#F0E6CC",
-  fontFamily: "'Cairo', sans-serif",
+  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
   fontSize: "0.95rem",
   outline: "none",
   transition: "border-color 0.3s, box-shadow 0.3s",
@@ -389,14 +389,14 @@ export default function RequestService() {
           </div>
           <h1
             className="text-4xl font-bold text-white mb-4"
-            style={{ fontFamily: "'Amiri', serif" }}
+            style={{ fontFamily: "'Noto Naskh Arabic', serif" }}
           >
             تم إرسال طلبك بنجاح!
           </h1>
           <div className="gold-divider max-w-xs mx-auto mb-6" />
           <p
             className="text-[#A09070] text-lg mb-6 leading-relaxed"
-            style={{ fontFamily: "'Cairo', sans-serif" }}
+            style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
           >
             شكراً لك! تم إرسال طلبك إلى مركز بدر، كما فُتح واتساب لإرسال رسالة تأكيد إليك على رقمك المسجّل.
           </p>
@@ -411,13 +411,13 @@ export default function RequestService() {
           >
             <p
               className="text-[#B89050] font-semibold mb-3 text-sm tracking-wide"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               ماذا حدث الآن؟
             </p>
             <ul
               className="space-y-2 text-[#A09070] text-sm"
-              style={{ fontFamily: "'Cairo', sans-serif" }}
+              style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               <li className="flex items-center gap-2">
                 <span className="text-green-400">✓</span>
@@ -484,7 +484,7 @@ export default function RequestService() {
           {/* Breadcrumb */}
           <div
             className="flex items-center justify-center gap-2 mb-6 text-sm"
-            style={{ fontFamily: "'Cairo', sans-serif", color: "#4A3F2F" }}
+            style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", color: "#4A3F2F" }}
           >
             <button onClick={() => navigate("/")} className="hover:text-[#9C7A3C] transition-colors" style={{ color: "#4A3F2F" }}>
               الرئيسية
@@ -495,20 +495,20 @@ export default function RequestService() {
 
           <p
             className="text-xs tracking-[0.3em] uppercase mb-4"
-            style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}
+            style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}
           >
             ✦ BADER CENTER ✦
           </p>
           <h1
             className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4"
-            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
           >
             اطلب خدمتك الآن
           </h1>
           <div className="gold-divider max-w-xs mx-auto mb-6" />
           <p
             className="max-w-xl mx-auto text-lg"
-            style={{ fontFamily: "'Cairo', sans-serif", color: "#4A3F2F" }}
+            style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", color: "#4A3F2F" }}
           >
             أخبرنا عن مناسبتك وسنتواصل معك لتحويل فكرتك إلى واقع فاخر
           </p>
@@ -524,7 +524,7 @@ export default function RequestService() {
                 <div
                   className="text-2xl font-bold"
                   style={{
-                    fontFamily: "'Cormorant Garamond', serif",
+                    fontFamily: "'Playfair Display', 'Cormorant Garamond', serif",
                     background: "linear-gradient(135deg, #B89050, #D4B070)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
@@ -534,7 +534,7 @@ export default function RequestService() {
                 </div>
                 <div
                   className="text-xs"
-                  style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   {stat.label}
                 </div>
@@ -576,13 +576,13 @@ export default function RequestService() {
                 <div>
                   <p
                     className="text-xs text-[#B89050] tracking-widest"
-                    style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                    style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}
                   >
                     BADER CENTER
                   </p>
                   <h2
                     className="text-xl font-bold text-white"
-                    style={{ fontFamily: "'Amiri', serif" }}
+                    style={{ fontFamily: "'Noto Naskh Arabic', serif" }}
                   >
                     نموذج طلب الخدمة
                   </h2>
@@ -724,7 +724,7 @@ export default function RequestService() {
                   </div>
                   <p
                     className="text-sm text-[#A09070] leading-relaxed"
-                    style={{ fontFamily: "'Cairo', sans-serif" }}
+                    style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                   >
                     بعد الضغط على "إرسال الطلب"، سيُفتح تطبيق واتساب مع رسالة جاهزة تحتوي على تفاصيل طلبك. أرسل الرسالة وسيتواصل معك فريقنا في أقرب وقت.
                   </p>
@@ -734,7 +734,7 @@ export default function RequestService() {
                 <button
                   type="submit"
                   className="w-full btn-gold flex items-center justify-center gap-3 py-4 text-lg font-bold"
-                  style={{ fontFamily: "'Cairo', sans-serif" }}
+                  style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -744,7 +744,7 @@ export default function RequestService() {
 
                 <p
                   className="text-center text-xs text-[#6B5A3E] mt-4"
-                  style={{ fontFamily: "'Cairo', sans-serif" }}
+                  style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   بياناتك محمية ولن تُشارك مع أي طرف ثالث
                 </p>
@@ -769,13 +769,13 @@ export default function RequestService() {
                   <div className="text-2xl mb-1">{badge.icon}</div>
                   <div
                     className="text-sm font-bold text-[#B89050]"
-                    style={{ fontFamily: "'Cairo', sans-serif" }}
+                    style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                   >
                     {badge.title}
                   </div>
                   <div
                     className="text-xs"
-                    style={{ color: "#4A3F2F", fontFamily: "'Cairo', sans-serif" }}
+                    style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                   >
                     {badge.desc}
                   </div>
@@ -793,7 +793,7 @@ export default function RequestService() {
       >
         <p
           className="text-[#6B5A3E] text-sm"
-          style={{ fontFamily: "'Cairo', sans-serif" }}
+          style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
         >
           © 2024 مركز بدر — الفحيحيل، الكويت
         </p>

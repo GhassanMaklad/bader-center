@@ -122,7 +122,7 @@ export default function ChatbotWidget() {
             <div className="flex-1 min-w-0">
               <p
                 className="font-semibold text-sm leading-tight"
-                style={{ color: "#F7F3EC", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#F7F3EC", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
               >
                 مساعد مركز بدر
               </p>
@@ -130,7 +130,7 @@ export default function ChatbotWidget() {
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
                 <span
                   className="text-xs"
-                  style={{ color: "#9A8A70", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#9A8A70", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   متاح الآن
                 </span>
@@ -168,7 +168,7 @@ export default function ChatbotWidget() {
                 <div
                   className="max-w-[78%] rounded-2xl px-3 py-2 text-sm leading-relaxed"
                   style={{
-                    fontFamily: "'Cairo', sans-serif",
+                    fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
                     ...(msg.role === "assistant"
                       ? {
                           background: "#F7F3EC",
@@ -226,7 +226,7 @@ export default function ChatbotWidget() {
               <div className="pt-1">
                 <p
                   className="text-xs mb-2 text-right"
-                  style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
+                  style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   أسئلة شائعة:
                 </p>
@@ -240,7 +240,7 @@ export default function ChatbotWidget() {
                         background: "rgba(156,122,60,0.08)",
                         border: "1px solid rgba(156,122,60,0.25)",
                         color: "#9C7A3C",
-                        fontFamily: "'Cairo', sans-serif",
+                        fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
                       }}
                     >
                       {q}
@@ -283,7 +283,7 @@ export default function ChatbotWidget() {
               placeholder="اكتب سؤالك هنا..."
               disabled={chatMutation.isPending}
               className="flex-1 bg-transparent text-sm outline-none disabled:opacity-60"
-              style={{ fontFamily: "'Cairo', sans-serif", color: "#2C2416" }}
+              style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", color: "#2C2416" }}
               maxLength={500}
             />
           </form>

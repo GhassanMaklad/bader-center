@@ -97,17 +97,17 @@ export default function ContactSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.4em] uppercase mb-4 font-normal" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>
             ✦ تواصل معنا ✦
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
           >
             نحن هنا لخدمتك
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
             تواصل معنا الآن لتحويل مناسبتك إلى تجربة لا تُنسى
           </p>
         </div>
@@ -139,13 +139,13 @@ export default function ContactSection() {
               </div>
               <h3
                 className="font-semibold mb-2 text-sm"
-                style={{ color: "#9C7A3C", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
               >
                 {info.title}
               </h3>
               <p
                 className="mb-3 text-sm"
-                style={{ color: "#2C2416", fontFamily: "'Cairo', sans-serif", direction: "ltr" }}
+                style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", direction: "ltr" }}
               >
                 {info.value}
               </p>
@@ -154,7 +154,7 @@ export default function ContactSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs transition-colors"
-                style={{ color: "#9C7A3C", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#8A6A1A")}
                 onMouseLeave={e => (e.currentTarget.style.color = "#9C7A3C")}
               >
@@ -175,7 +175,7 @@ export default function ContactSection() {
         >
           <h3
             className="text-center text-2xl font-bold mb-8"
-            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
           >
             تابعنا على وسائل التواصل
           </h3>
@@ -204,15 +204,15 @@ export default function ContactSection() {
                 >
                   {social.icon}
                 </div>
-                <p className="font-semibold mb-1" style={{ color: "#2C2416", fontFamily: "'Cairo', sans-serif" }}>
+                <p className="font-semibold mb-1" style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                   {social.name}
                 </p>
-                <p className="text-xs mb-2" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
+                <p className="text-xs mb-2" style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                   {social.handle}
                 </p>
                 <span
                   className="text-xs px-3 py-1 rounded-full"
-                  style={{ background: `${social.color}18`, color: social.color, fontFamily: "'Cairo', sans-serif" }}
+                  style={{ background: `${social.color}18`, color: social.color, fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
                 >
                   {social.followers} متابع
                 </span>
@@ -234,18 +234,18 @@ export default function ContactSection() {
         >
           <div className="absolute inset-0 islamic-pattern opacity-20" />
           <div className="relative z-10">
-            <p className="text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
+            <p className="text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}>
               ابدأ رحلتك معنا
             </p>
             <h3
               className="text-3xl sm:text-4xl font-bold mb-4"
-              style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+              style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
             >
               جاهز لتجهيز مناسبتك؟
             </h3>
             <p
               className="mb-8 max-w-md mx-auto"
-              style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               تواصل معنا الآن عبر واتساب وسنساعدك في تحويل فكرتك إلى واقع فاخر
             </p>

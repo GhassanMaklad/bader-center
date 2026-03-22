@@ -86,10 +86,10 @@ export default function AboutSection() {
                 boxShadow: "0 4px 20px rgba(156,122,60,0.4)",
               }}
             >
-              <p className="font-bold text-sm" style={{ color: "#3D2B00", fontFamily: "'Cairo', sans-serif" }}>
+              <p className="font-bold text-sm" style={{ color: "#3D2B00", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                 +20 عاماً
               </p>
-              <p className="text-xs" style={{ color: "#3D2B00", fontFamily: "'Cairo', sans-serif" }}>
+              <p className="text-xs" style={{ color: "#3D2B00", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                 من الخبرة
               </p>
             </div>
@@ -103,12 +103,12 @@ export default function AboutSection() {
               transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s",
             }}
           >
-            <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
+            <p className="text-xs tracking-[0.4em] uppercase mb-4 font-normal" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>
               ✦ من نحن ✦
             </p>
             <h2
               className="text-4xl sm:text-5xl font-bold mb-6 leading-tight"
-              style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+              style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
             >
               قصتنا مع
               <br />
@@ -118,13 +118,13 @@ export default function AboutSection() {
 
             <p
               className="leading-relaxed mb-6 text-base"
-              style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               مركز بدر هو وجهتك الأولى للفخامة والأناقة في الكويت. منذ أكثر من 20 عاماً، ونحن نجسّد أحلام عملائنا في كل مناسبة — من الأعراس الفاخرة إلى الاحتفالات الوطنية، ومن الهدايا المميزة إلى التكريمات الرسمية.
             </p>
             <p
               className="leading-relaxed mb-8 text-base"
-              style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}
+              style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
               نؤمن أن كل مناسبة تستحق لمسة استثنائية. لذلك نعمل بشغف وإتقان لنقدم لك تجربة لا تُنسى، مع توصيل لجميع مناطق الكويت.
             </p>
@@ -139,10 +139,10 @@ export default function AboutSection() {
                 >
                   <span className="text-2xl">{v.icon}</span>
                   <div>
-                    <p className="font-semibold text-sm" style={{ color: "#9C7A3C", fontFamily: "'Cairo', sans-serif" }}>
+                    <p className="font-semibold text-sm" style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                       {v.title}
                     </p>
-                    <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
+                    <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
                       {v.desc}
                     </p>
                   </div>

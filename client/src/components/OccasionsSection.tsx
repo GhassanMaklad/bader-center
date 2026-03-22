@@ -49,17 +49,17 @@ export default function OccasionsSection() {
             transition: "all 0.8s ease",
           }}
         >
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold" style={{ color: "#9C7A3C", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-xs tracking-[0.4em] uppercase mb-4 font-normal" style={{ color: "#9C7A3C", fontFamily: "'Playfair Display', serif", fontStyle: "italic" }}>
             ✦ مناسباتنا ✦
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold mb-4"
-            style={{ color: "#2C2416", fontFamily: "'Amiri', serif" }}
+            style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}
           >
             نكون معك في كل مناسبة
           </h2>
           <div className="gold-divider max-w-xs mx-auto mb-4" />
-          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'Cairo', sans-serif" }}>
+          <p className="max-w-xl mx-auto" style={{ color: "#6B5E4A", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
             من رمضان إلى الأعراس، من التخرج إلى العيد الوطني — مركز بدر يجهز مناسبتك بأسلوب لا يُنسى
           </p>
         </div>
@@ -94,13 +94,13 @@ export default function OccasionsSection() {
               <div className="text-4xl mb-3">{occ.icon}</div>
               <h3
                 className="font-semibold text-sm mb-2"
-                style={{ color: "#2C2416", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
               >
                 {occ.title}
               </h3>
               <p
                 className="text-xs leading-relaxed"
-                style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
+                style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
               >
                 {occ.desc}
               </p>
