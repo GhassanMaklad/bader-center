@@ -17,6 +17,11 @@ import {
   createServiceRequest,
   getAllServiceRequests,
   updateServiceRequestStatus,
+  createOrder,
+  getOrderById,
+  updateOrderStatus,
+  updateOrderInvoice,
+  getAllOrders,
 } from "./db";
 
 // ─── Admin middleware ──────────────────────────────────────────────────────────
@@ -87,6 +92,37 @@ const BADER_SYSTEM_PROMPT = `أنت مساعد ذكي لـ "مركز بدر" —
 - إذا لم تعرف الإجابة، قل ذلك بأدب وشجّع على التواصل المباشر
 - الردود يجب أن تكون قصيرة ومفيدة (3-5 جمل كحد أقصى)
 `;
+
+// ─── MyFatoorah helpers ────────────────────────────────────────────────────────
+const MF_BASE_URL = "https://api.myfatoorah.com";
+
+async function myfatoorahRequest(path: string, body: unknown) {
+  const apiKey = process.env.MYFATOORAH_API_KEY;
+  if (!apiKey) throw new Error("MYFATOORAH_API_KEY not configured");
+
+  const res = await fetch(`${MF_BASE_URL}${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const json = (await res.json()) as { IsSuccess: boolean; Message?: string; Data?: unknown };
+  if (!json.IsSuccess) {
+    throw new Error(json.Message ?? "MyFatoorah request failed");
+  }
+  return json.Data;
+}
+
+// ─── Cart item schema ──────────────────────────────────────────────────────────
+const cartItemSchema = z.object({
+  productId: z.number(),
+  name: z.string(),
+  qty: z.number().min(1),
+  price: z.number().min(0),
+});
 
 // ─── App Router ────────────────────────────────────────────────────────────────
 export const appRouter = router({
@@ -287,6 +323,190 @@ export const appRouter = router({
       )
       .mutation(async ({ input }) => {
         await updateServiceRequestStatus(input.id, input.status);
+        return { success: true };
+      }),
+  }),
+
+  // ─── Orders & Payments (MyFatoorah) ───────────────────────────────────────
+  orders: router({
+    /**
+     * Initiate a payment: create an order in DB, call MyFatoorah SendPayment,
+     * return the payment URL to redirect the user.
+     */
+    initiatePayment: publicProcedure
+      .input(
+        z.object({
+          customerName: z.string().min(1),
+          customerEmail: z.string().email().optional(),
+          customerPhone: z.string().min(7),
+          cartItems: z.array(cartItemSchema).min(1),
+          notes: z.string().optional(),
+          origin: z.string().url(), // frontend origin for callback URLs
+        })
+      )
+      .mutation(async ({ input }) => {
+        const totalAmount = input.cartItems.reduce(
+          (sum, item) => sum + item.price * item.qty,
+          0
+        );
+
+        if (totalAmount <= 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "المبلغ الإجمالي يجب أن يكون أكبر من صفر",
+          });
+        }
+
+        // Create order in DB first
+        const result = await createOrder({
+          customerName: input.customerName,
+          customerEmail: input.customerEmail ?? null,
+          customerPhone: input.customerPhone,
+          totalAmount: String(totalAmount.toFixed(3)),
+          currency: "KWD",
+          status: "pending",
+          cartItems: JSON.stringify(input.cartItems),
+          notes: input.notes ?? null,
+        });
+
+        const orderId = (result as { insertId: number }).insertId;
+
+        // Call MyFatoorah SendPayment API
+        try {
+          const callbackUrl = `${input.origin}/payment/callback?orderId=${orderId}`;
+          const errorUrl = `${input.origin}/payment/error?orderId=${orderId}`;
+
+          const mfData = (await myfatoorahRequest("/v2/SendPayment", {
+            NotificationOption: "LNK",
+            InvoiceValue: Number(totalAmount.toFixed(3)),
+            CustomerName: input.customerName,
+            CustomerEmail: input.customerEmail ?? "",
+            CustomerMobile: input.customerPhone,
+            Language: "AR",
+            CallBackUrl: callbackUrl,
+            ErrorUrl: errorUrl,
+            UserDefinedField: String(orderId),
+            DisplayCurrencyIso: "KWD",
+            InvoiceItems: input.cartItems.map((item) => ({
+              ItemName: item.name,
+              Quantity: item.qty,
+              UnitPrice: Number(item.price.toFixed(3)),
+            })),
+          })) as { InvoiceId: number; InvoiceURL: string };
+
+          // Save invoice info
+          await updateOrderInvoice(
+            orderId,
+            String(mfData.InvoiceId),
+            mfData.InvoiceURL
+          );
+
+          return {
+            orderId,
+            invoiceUrl: mfData.InvoiceURL,
+            invoiceId: mfData.InvoiceId,
+          };
+        } catch (err) {
+          console.error("[MyFatoorah] Payment initiation failed:", err);
+          await updateOrderStatus(orderId, "failed");
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: err instanceof Error ? err.message : "فشل في إنشاء الفاتورة. يرجى المحاولة مجدداً.",
+          });
+        }
+      }),
+
+    /**
+     * Verify payment after user returns from MyFatoorah gateway.
+     * Called by the frontend on the callback page.
+     */
+    verifyPayment: publicProcedure
+      .input(
+        z.object({
+          paymentId: z.string().min(1), // PaymentId from MyFatoorah callback query param
+          orderId: z.number(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const order = await getOrderById(input.orderId);
+        if (!order) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "الطلب غير موجود" });
+        }
+
+        // Already confirmed
+        if (order.status === "paid") {
+          return { success: true, status: "paid" as const };
+        }
+
+        try {
+          const mfData = (await myfatoorahRequest("/v2/GetPaymentStatus", {
+            Key: input.paymentId,
+            KeyType: "PaymentId",
+          })) as {
+            InvoiceStatus: string;
+            InvoiceTransactions?: Array<{ TransactionId: string; PaymentGateway: string }>;
+          };
+
+          const isPaid = mfData.InvoiceStatus === "Paid";
+          const status = isPaid ? "paid" : "failed";
+          const txId = mfData.InvoiceTransactions?.[0]?.TransactionId;
+
+          await updateOrderStatus(input.orderId, status, {
+            myfatoorahPaymentId: txId ?? input.paymentId,
+          });
+
+          if (isPaid) {
+            notifyOwner({
+              title: `💳 دفعة جديدة — طلب #${input.orderId}`,
+              content: [
+                `👤 العميل: ${order.customerName}`,
+                `📞 الهاتف: ${order.customerPhone ?? "—"}`,
+                `💰 المبلغ: ${order.totalAmount} ${order.currency}`,
+                `🧾 رقم الطلب: ${input.orderId}`,
+              ].join("\n"),
+            }).catch((err) => console.warn("[Notification] Failed:", err));
+          }
+
+          return { success: true, status };
+        } catch (err) {
+          console.error("[MyFatoorah] Verify payment failed:", err);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "فشل في التحقق من الدفع. يرجى التواصل معنا.",
+          });
+        }
+      }),
+
+    /**
+     * Get order details (public, by ID — for confirmation page).
+     */
+    getOrder: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const order = await getOrderById(input.id);
+        if (!order) throw new TRPCError({ code: "NOT_FOUND" });
+        return order;
+      }),
+
+    /**
+     * Admin: list all orders.
+     */
+    list: adminProcedure.query(async () => {
+      return getAllOrders();
+    }),
+
+    /**
+     * Admin: update order status manually.
+     */
+    updateStatus: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          status: z.enum(["pending", "paid", "failed", "cancelled"]),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await updateOrderStatus(input.id, input.status);
         return { success: true };
       }),
   }),

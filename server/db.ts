@@ -1,6 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertProduct, InsertServiceRequest, InsertUser, products, serviceRequests, users } from "../drizzle/schema";
+import { InsertOrder, InsertProduct, InsertServiceRequest, InsertUser, orders, products, serviceRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -151,4 +151,46 @@ export async function updateServiceRequestStatus(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(serviceRequests).set({ status }).where(eq(serviceRequests.id, id));
+}
+
+// ─── Order Queries ────────────────────────────────────────────────────────────
+
+export async function createOrder(data: InsertOrder) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(orders).values(data);
+  return result;
+}
+
+export async function getOrderById(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.select().from(orders).where(eq(orders.id, id)).limit(1);
+  return result[0] ?? null;
+}
+
+export async function updateOrderStatus(
+  id: number,
+  status: "pending" | "paid" | "failed" | "cancelled",
+  extra?: { myfatoorahPaymentId?: string; invoiceUrl?: string }
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(orders).set({ status, ...extra }).where(eq(orders.id, id));
+}
+
+export async function updateOrderInvoice(
+  id: number,
+  myfatoorahInvoiceId: string,
+  invoiceUrl: string
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(orders).set({ myfatoorahInvoiceId, invoiceUrl }).where(eq(orders.id, id));
+}
+
+export async function getAllOrders() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(orders).orderBy(desc(orders.createdAt));
 }

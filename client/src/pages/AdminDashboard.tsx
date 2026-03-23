@@ -24,6 +24,7 @@ import { trpc } from "@/lib/trpc";
 import {
   Bell,
   CheckCircle,
+  CreditCard,
   Edit,
   ImagePlus,
   Loader2,
@@ -32,6 +33,7 @@ import {
   Phone,
   Plus,
   ShieldCheck,
+  ShoppingCart,
   Star,
   Trash2,
   Upload,
@@ -102,12 +104,18 @@ export default function AdminDashboard() {
   const [form, setForm] = useState<ProductForm>(emptyForm);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<"products" | "requests">("products");
+  const [activeTab, setActiveTab] = useState<"products" | "requests" | "orders">("products");
 
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const { data: products, refetch, isLoading } = trpc.products.list.useQuery();
   const { data: serviceRequests, refetch: refetchRequests, isLoading: requestsLoading } = trpc.serviceRequests.list.useQuery();
+  const { data: orders, refetch: refetchOrders, isLoading: ordersLoading } = trpc.orders.list.useQuery();
+
+  const updateOrderStatusMutation = trpc.orders.updateStatus.useMutation({
+    onSuccess: () => { toast.success("تم تحديث حالة الطلب"); refetchOrders(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
 
   const updateStatusMutation = trpc.serviceRequests.updateStatus.useMutation({
     onSuccess: () => { toast.success("تم تحديث حالة الطلب"); refetchRequests(); },
@@ -115,6 +123,7 @@ export default function AdminDashboard() {
   });
 
   const newRequestsCount = serviceRequests?.filter(r => r.status === "new").length ?? 0;
+  const pendingOrdersCount = orders?.filter(o => o.status === "pending").length ?? 0;
 
   const uploadImageMutation = trpc.upload.productImage.useMutation({
     onSuccess: ({ url }) => {
@@ -325,6 +334,25 @@ export default function AdminDashboard() {
               </span>
             )}
           </button>
+          <button
+            onClick={() => setActiveTab("orders")}
+            className="px-5 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-2 relative"
+            style={{
+              color: activeTab === "orders" ? "#B89050" : "#6B5A3E",
+              borderBottom: activeTab === "orders" ? "2px solid #B89050" : "2px solid transparent",
+            }}
+          >
+            <CreditCard className="w-4 h-4" />
+            الطلبات والمدفوعات
+            {pendingOrdersCount > 0 && (
+              <span
+                className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center"
+                style={{ background: "#f59e0b", color: "#fff" }}
+              >
+                {pendingOrdersCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -493,7 +521,118 @@ export default function AdminDashboard() {
         </>
         )}
 
-        {/* ─── Service Requests Tab ─────────────────────────────────────── */}
+        {/* ─── Orders Tab ─────────────────────────────────────────────────────────────── */}
+        {activeTab === "orders" && (
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
+                الطلبات والمدفوعات
+              </h2>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetchOrders()}
+                className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10"
+              >
+                تحديث
+              </Button>
+            </div>
+
+            {ordersLoading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
+              </div>
+            ) : !orders?.length ? (
+              <div className="text-center py-20" style={{ color: "#8A7560" }}>
+                <ShoppingCart className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p className="text-lg">لا توجد طلبات حتى الآن</p>
+                <p className="text-sm mt-1">ستظهر طلبات الدفع هنا عند إتمام عمليات الدفع</p>
+              </div>
+            ) : (
+              <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(156,122,60,0.2)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+                <table className="w-full text-sm">
+                  <thead style={{ background: "rgba(156,122,60,0.08)" }}>
+                    <tr>
+                      <th className="text-right p-3 text-yellow-400 font-semibold">#</th>
+                      <th className="text-right p-3 text-yellow-400 font-semibold">العميل</th>
+                      <th className="text-right p-3 text-yellow-400 font-semibold hidden md:table-cell">المبلغ</th>
+                      <th className="text-center p-3 text-yellow-400 font-semibold">الحالة</th>
+                      <th className="text-right p-3 text-yellow-400 font-semibold hidden lg:table-cell">التاريخ</th>
+                      <th className="text-center p-3 text-yellow-400 font-semibold">إجراء</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.map((order, idx) => {
+                      const orderStatusColors: Record<string, string> = {
+                        pending: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+                        paid: "bg-green-500/20 text-green-300 border-green-500/30",
+                        failed: "bg-red-500/20 text-red-300 border-red-500/30",
+                        cancelled: "bg-gray-500/20 text-gray-300 border-gray-500/30",
+                      };
+                      const orderStatusLabels: Record<string, string> = {
+                        pending: "معلق",
+                        paid: "مدفوع",
+                        failed: "فشل",
+                        cancelled: "ملغي",
+                      };
+                      let cartItems: Array<{ name: string; qty: number; price: number }> = [];
+                      try { cartItems = JSON.parse(order.cartItems); } catch {}
+                      return (
+                        <tr
+                          key={order.id}
+                          style={{
+                            background: idx % 2 === 0 ? "#F7F3EC" : "#F2EDE4",
+                            borderBottom: "1px solid rgba(156,122,60,0.08)",
+                          }}
+                        >
+                          <td className="p-3 font-mono text-xs" style={{ color: "#9C7A3C" }}>#{order.id}</td>
+                          <td className="p-3">
+                            <p className="font-semibold" style={{ color: "#2C2416" }}>{order.customerName}</p>
+                            <p className="text-xs" style={{ color: "#8A7560" }}>{order.customerPhone}</p>
+                            <p className="text-xs mt-1" style={{ color: "#6B5A3E" }}>
+                              {cartItems.map(i => `${i.name} ×${i.qty}`).join(" · ")}
+                            </p>
+                          </td>
+                          <td className="p-3 hidden md:table-cell">
+                            <span className="font-bold" style={{ color: "#B89050" }}>
+                              {Number(order.totalAmount).toFixed(3)} {order.currency}
+                            </span>
+                          </td>
+                          <td className="p-3 text-center">
+                            <span className={`text-xs px-2 py-1 rounded-full border ${orderStatusColors[order.status]}`}>
+                              {orderStatusLabels[order.status]}
+                            </span>
+                          </td>
+                          <td className="p-3 hidden lg:table-cell text-xs" style={{ color: "#8A7560" }}>
+                            {new Date(order.createdAt).toLocaleString("ar-KW", { dateStyle: "short", timeStyle: "short" })}
+                          </td>
+                          <td className="p-3">
+                            <Select
+                              value={order.status}
+                              onValueChange={(v) => updateOrderStatusMutation.mutate({ id: order.id, status: v as "pending" | "paid" | "failed" | "cancelled" })}
+                            >
+                              <SelectTrigger className="h-8 text-xs w-28" style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)" }}>
+                                <SelectItem value="pending">معلق</SelectItem>
+                                <SelectItem value="paid">مدفوع</SelectItem>
+                                <SelectItem value="failed">فشل</SelectItem>
+                                <SelectItem value="cancelled">ملغي</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ─── Service Requests Tab ───────────────────────────────── */}
         {activeTab === "requests" && (
           <div>
             <div className="flex items-center justify-between mb-4">

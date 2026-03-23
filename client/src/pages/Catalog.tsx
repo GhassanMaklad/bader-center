@@ -8,10 +8,12 @@
  */
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
-import { Search, Filter, ShoppingBag, ArrowRight, Star, Phone, Loader2 } from "lucide-react";
+import { Search, Filter, ShoppingBag, ArrowRight, Star, Phone, Loader2, ShoppingCart, Check } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
+import CartDrawer from "@/components/CartDrawer";
+import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
 
 // ─── Product Data ──────────────────────────────────────────────────────────────
@@ -332,10 +334,25 @@ const CATEGORY_DEFS = [
 // ─── Product Card ───────────────────────────────────────────────────────────────
 function ProductCard({ product }: { product: Product }) {
   const [hovered, setHovered] = useState(false);
+  const [added, setAdded] = useState(false);
+  const { addItem } = useCart();
 
   const waMsg = encodeURIComponent(
     `مرحباً مركز بدر 👋\nأريد الاستفسار عن: ${product.name}\nالسعر المذكور: ${product.price}\n\nأرجو التواصل معي.`
   );
+
+  const handleAddToCart = () => {
+    if (product.priceValue === 0) return; // contact-for-price items can't be added
+    addItem({
+      productId: product.id,
+      name: product.name,
+      price: product.priceValue,
+      qty: 1,
+      image: product.image,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
 
   return (
     <div
@@ -458,46 +475,70 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* CTA Buttons */}
         <div className="flex gap-2">
+          {product.priceValue > 0 ? (
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all duration-300"
+              style={{
+                background: added
+                  ? "linear-gradient(135deg, #22c55e, #16a34a)"
+                  : hovered
+                  ? "linear-gradient(135deg, #B89050, #D4B070)"
+                  : "rgba(156,122,60,0.15)",
+                color: added ? "#fff" : hovered ? "#2C2416" : "#9C7A3C",
+                border: "1px solid rgba(156,122,60,0.4)",
+                fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+              }}
+            >
+              {added ? <Check size={14} /> : <ShoppingCart size={14} />}
+              {added ? "تمت الإضافة" : "أضف للسلة"}
+            </button>
+          ) : (
+            <a
+              href={`https://wa.me/96522675826?text=${waMsg}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all duration-300"
+              style={{
+                background: hovered
+                  ? "linear-gradient(135deg, #B89050, #D4B070)"
+                  : "rgba(156,122,60,0.15)",
+                color: hovered ? "#2C2416" : "#9C7A3C",
+                border: "1px solid rgba(156,122,60,0.4)",
+                fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+              }}
+            >
+              <Phone size={14} />
+              تواصل للسعر
+            </a>
+          )}
           <a
             href={`https://wa.me/96522675826?text=${waMsg}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all duration-300"
-            style={{
-              background: hovered
-                ? "linear-gradient(135deg, #B89050, #D4B070)"
-                : "rgba(156,122,60,0.15)",
-              color: hovered ? "#2C2416" : "#9C7A3C",
-              border: "1px solid rgba(156,122,60,0.4)",
-              fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
-            }}
-          >
-            <Phone size={14} />
-            اطلب الآن
-          </a>
-          <Link
-            href="/request"
             className="flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-300"
             style={{
               background: "rgba(156,122,60,0.1)",
               border: "1px solid rgba(156,122,60,0.2)",
               color: "#B89050",
             }}
-            title="طلب مخصص"
+            title="استفسار واتساب"
           >
-            <ShoppingBag size={16} />
-          </Link>
+            <Phone size={16} />
+          </a>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Main Catalog Page ──────────────────────────────────────────────────────────
+//// ─── Main Catalog Page ────────────────────────────────────────────────────────
 export default function Catalog() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
+  const [cartOpen, setCartOpen] = useState(false);
+  const { totalItems } = useCart();
 
   // Fetch products from database
   const { data: dbProducts, isLoading: productsLoading } = trpc.products.list.useQuery();
@@ -850,6 +891,27 @@ export default function Catalog() {
       </section>
 
       <Footer />
+
+      {/* Cart Drawer */}
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+
+      {/* Floating Cart Button */}
+      {totalItems > 0 && (
+        <button
+          onClick={() => setCartOpen(true)}
+          className="fixed bottom-24 left-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
+          style={{ background: "#2C2416", boxShadow: "0 4px 20px rgba(44,36,22,0.4)" }}
+          aria-label="سلة التسوق"
+        >
+          <ShoppingCart size={24} color="#F7F2E8" />
+          <span
+            className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center"
+            style={{ background: "#9C7A3C", color: "#F7F2E8" }}
+          >
+            {totalItems}
+          </span>
+        </button>
+      )}
 
       {/* Floating WhatsApp */}
       <a

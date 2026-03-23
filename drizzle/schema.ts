@@ -64,3 +64,29 @@ export const serviceRequests = mysqlTable("service_requests", {
 
 export type ServiceRequest = typeof serviceRequests.$inferSelect;
 export type InsertServiceRequest = typeof serviceRequests.$inferInsert;
+
+/**
+ * Orders table for MyFatoorah payment tracking.
+ */
+export const orders = mysqlTable("orders", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),                                          // nullable for guest orders
+  customerName: varchar("customerName", { length: 255 }).notNull(),
+  customerEmail: varchar("customerEmail", { length: 320 }),
+  customerPhone: varchar("customerPhone", { length: 30 }),
+  totalAmount: decimal("totalAmount", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency", { length: 10 }).default("KWD").notNull(),
+  status: mysqlEnum("status", ["pending", "paid", "failed", "cancelled"]).default("pending").notNull(),
+  // MyFatoorah identifiers
+  myfatoorahInvoiceId: varchar("myfatoorahInvoiceId", { length: 100 }),
+  myfatoorahPaymentId: varchar("myfatoorahPaymentId", { length: 100 }),
+  invoiceUrl: text("invoiceUrl"),
+  // Cart snapshot (JSON)
+  cartItems: text("cartItems").notNull(),                         // JSON array of {productId, name, qty, price}
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Order = typeof orders.$inferSelect;
+export type InsertOrder = typeof orders.$inferInsert;

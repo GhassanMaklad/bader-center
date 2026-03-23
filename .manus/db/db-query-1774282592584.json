@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `orders` (\n  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,\n  `userId` int,\n  `customerName` varchar(255) NOT NULL,\n  `customerEmail` varchar(320),\n  `customerPhone` varchar(30),\n  `totalAmount` decimal(10,2) NOT NULL,\n  `currency` varchar(10) NOT NULL DEFAULT 'KWD',\n  `status` enum('pending','paid','failed','cancelled') NOT NULL DEFAULT 'pending',\n  `myfatoorahInvoiceId` varchar(100),\n  `myfatoorahPaymentId` varchar(100),\n  `invoiceUrl` text,\n  `cartItems` text NOT NULL,\n  `notes` text,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute CREATE TABLE IF NOT EXISTS `orders` (\n  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,\n  `userId` int,\n  `customerName` varchar(255) NOT NULL,\n  `customerEmail` varchar(320),\n  `customerPhone` varchar(30),\n  `totalAmount` decimal(10,2) NOT NULL,\n  `currency` varchar(10) NOT NULL DEFAULT 'KWD',\n  `status` enum('pending','paid','failed','cancelled') NOT NULL DEFAULT 'pending',\n  `myfatoorahInvoiceId` varchar(100),\n  `myfatoorahPaymentId` varchar(100),\n  `invoiceUrl` text,\n  `cartItems` text NOT NULL,\n  `notes` text,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1800
+}
