@@ -1,0 +1,9 @@
+{
+  "query": "SELECT id, name, tags FROM products WHERE tags IS NOT NULL AND tags NOT LIKE '[%' AND tags != '';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute SELECT id, name, tags FROM products WHERE tags IS NOT NULL AND tags NOT LIKE '[%' AND tags != '';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1557
+}

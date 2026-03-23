@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, name, tags FROM products WHERE id = 60001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute SELECT id, name, tags FROM products WHERE id = 60001;",
+  "rows": [
+    {
+      "id": "60001",
+      "name": "كيترينج كانفوس",
+      "tags": "[\"مشاريع صغيرة\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\ttags\n60001\tكيترينج كانفوس\t[\"مشاريع صغيرة\"]\n",
+  "stderr": "",
+  "execution_time_ms": 1516
+}

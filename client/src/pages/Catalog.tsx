@@ -519,7 +519,7 @@ export default function Catalog() {
       description: p.description,
       rating: p.rating,
       inStock: p.inStock,
-      tags: p.tags ? JSON.parse(p.tags) : [],
+      tags: p.tags ? (() => { try { return JSON.parse(p.tags!); } catch { return []; } })() : [],
     }));
   }, [dbProducts]);
 
