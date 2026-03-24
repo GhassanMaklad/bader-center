@@ -1,32 +1,15 @@
 /**
- * Tests for the orders router (MyFatoorah payment integration).
- * These tests focus on input validation and business logic that does NOT
- * require a live database or MyFatoorah API call.
+ * Tests for the orders router (WhatsApp-based order flow).
+ * Orders are saved to DB for admin tracking; the actual order message
+ * is sent to WhatsApp by the frontend.
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { TRPCError } from "@trpc/server";
 import type { TrpcContext } from "./_core/context";
 
 // ── Mock DB helpers so tests don't need a real database ──────────────────────
 vi.mock("./db", () => ({
   createOrder: vi.fn().mockResolvedValue({ insertId: 42 }),
-  getOrderById: vi.fn().mockResolvedValue({
-    id: 42,
-    customerName: "Test Customer",
-    customerPhone: "96512345678",
-    totalAmount: "10.000",
-    currency: "KWD",
-    status: "pending",
-    cartItems: JSON.stringify([{ productId: 1, name: "Test Product", qty: 1, price: 10 }]),
-    notes: null,
-    myfatoorahInvoiceId: null,
-    myfatoorahPaymentId: null,
-    invoiceUrl: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }),
   updateOrderStatus: vi.fn().mockResolvedValue(undefined),
-  updateOrderInvoice: vi.fn().mockResolvedValue(undefined),
   getAllOrders: vi.fn().mockResolvedValue([]),
   // other db helpers used by the router
   getAllProducts: vi.fn().mockResolvedValue([]),
@@ -90,91 +73,87 @@ function makeAdminCtx(): TrpcContext {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-describe("orders.initiatePayment", () => {
+describe("orders.saveOrder", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("throws BAD_REQUEST when cart is empty", async () => {
+  it("throws when cart is empty (zod min(1))", async () => {
     const caller = appRouter.createCaller(makeCtx());
     await expect(
-      caller.orders.initiatePayment({
+      caller.orders.saveOrder({
         customerName: "Test",
         customerPhone: "96512345678",
-        cartItems: [], // empty cart — zod min(1) should reject
-        origin: "https://example.com",
+        totalAmount: 0,
+        cartItems: [], // empty — zod min(1) should reject
       })
     ).rejects.toThrow();
   });
 
-  it("throws BAD_REQUEST when totalAmount is zero", async () => {
+  it("throws when customerName is empty", async () => {
     const caller = appRouter.createCaller(makeCtx());
     await expect(
-      caller.orders.initiatePayment({
-        customerName: "Test",
+      caller.orders.saveOrder({
+        customerName: "",
         customerPhone: "96512345678",
-        cartItems: [{ productId: 1, name: "Free Item", qty: 1, price: 0 }],
-        origin: "https://example.com",
-      })
-    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
-  });
-
-  it("throws when MyFatoorah API key is missing", async () => {
-    const originalKey = process.env.MYFATOORAH_API_KEY;
-    delete process.env.MYFATOORAH_API_KEY;
-
-    const caller = appRouter.createCaller(makeCtx());
-    await expect(
-      caller.orders.initiatePayment({
-        customerName: "Test Customer",
-        customerPhone: "96512345678",
+        totalAmount: 10,
         cartItems: [{ productId: 1, name: "Product", qty: 1, price: 10 }],
-        origin: "https://example.com",
       })
     ).rejects.toThrow();
-
-    process.env.MYFATOORAH_API_KEY = originalKey;
-  });
-});
-
-describe("orders.verifyPayment", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
   });
 
-  it("throws NOT_FOUND when order does not exist", async () => {
-    const { getOrderById } = await import("./db");
-    vi.mocked(getOrderById).mockResolvedValueOnce(null);
-
+  it("throws when customerPhone is too short", async () => {
     const caller = appRouter.createCaller(makeCtx());
     await expect(
-      caller.orders.verifyPayment({ paymentId: "pay_123", orderId: 9999 })
-    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+      caller.orders.saveOrder({
+        customerName: "Test",
+        customerPhone: "123", // too short (min 7)
+        totalAmount: 10,
+        cartItems: [{ productId: 1, name: "Product", qty: 1, price: 10 }],
+      })
+    ).rejects.toThrow();
   });
 
-  it("returns paid immediately if order is already paid", async () => {
-    const { getOrderById } = await import("./db");
-    vi.mocked(getOrderById).mockResolvedValueOnce({
-      id: 42,
-      customerName: "Test",
+  it("saves order and returns orderId on valid input", async () => {
+    const { createOrder } = await import("./db");
+    vi.mocked(createOrder).mockResolvedValueOnce({ insertId: 99 });
+
+    const caller = appRouter.createCaller(makeCtx());
+    const result = await caller.orders.saveOrder({
+      customerName: "أحمد الكويتي",
       customerPhone: "96512345678",
-      totalAmount: "10.000",
-      currency: "KWD",
-      status: "paid",
-      cartItems: "[]",
-      notes: null,
-      myfatoorahInvoiceId: "INV123",
-      myfatoorahPaymentId: "PAY123",
-      invoiceUrl: "https://myfatoorah.com/invoice/123",
-      userId: null,
-      customerEmail: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      totalAmount: 25.5,
+      cartItems: [{ productId: 1, name: "درع فاخر", qty: 2, price: 12.75 }],
+      notes: "يرجى التغليف الفاخر",
     });
 
+    expect(result).toEqual({ success: true, orderId: 99 });
+    expect(createOrder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        customerName: "أحمد الكويتي",
+        customerPhone: "96512345678",
+        status: "pending",
+        currency: "KWD",
+      })
+    );
+  });
+
+  it("notifies owner after saving order", async () => {
+    const { notifyOwner } = await import("./_core/notification");
     const caller = appRouter.createCaller(makeCtx());
-    const result = await caller.orders.verifyPayment({ paymentId: "pay_123", orderId: 42 });
-    expect(result).toEqual({ success: true, status: "paid" });
+
+    await caller.orders.saveOrder({
+      customerName: "فاطمة",
+      customerPhone: "96598765432",
+      totalAmount: 15,
+      cartItems: [{ productId: 2, name: "صندوق هدايا", qty: 1, price: 15 }],
+    });
+
+    expect(notifyOwner).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: expect.stringContaining("فاطمة"),
+      })
+    );
   });
 });
 
@@ -195,6 +174,11 @@ describe("orders.list (admin only)", () => {
     });
     const caller = appRouter.createCaller(userCtx);
     await expect(caller.orders.list()).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("throws UNAUTHORIZED for unauthenticated users", async () => {
+    const caller = appRouter.createCaller(makeCtx());
+    await expect(caller.orders.list()).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   });
 
   it("returns empty array for admin when no orders exist", async () => {
@@ -228,13 +212,33 @@ describe("orders.updateStatus (admin only)", () => {
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
-  it("allows admin to update order status", async () => {
+  it("allows admin to mark order as confirmed", async () => {
     const { updateOrderStatus } = await import("./db");
     vi.mocked(updateOrderStatus).mockResolvedValueOnce(undefined);
 
     const caller = appRouter.createCaller(makeAdminCtx());
-    const result = await caller.orders.updateStatus({ id: 1, status: "cancelled" });
+    const result = await caller.orders.updateStatus({ id: 1, status: "confirmed" });
     expect(result).toEqual({ success: true });
-    expect(updateOrderStatus).toHaveBeenCalledWith(1, "cancelled");
+    expect(updateOrderStatus).toHaveBeenCalledWith(1, "confirmed");
+  });
+
+  it("allows admin to mark order as paid", async () => {
+    const { updateOrderStatus } = await import("./db");
+    vi.mocked(updateOrderStatus).mockResolvedValueOnce(undefined);
+
+    const caller = appRouter.createCaller(makeAdminCtx());
+    const result = await caller.orders.updateStatus({ id: 5, status: "paid" });
+    expect(result).toEqual({ success: true });
+    expect(updateOrderStatus).toHaveBeenCalledWith(5, "paid");
+  });
+
+  it("allows admin to cancel an order", async () => {
+    const { updateOrderStatus } = await import("./db");
+    vi.mocked(updateOrderStatus).mockResolvedValueOnce(undefined);
+
+    const caller = appRouter.createCaller(makeAdminCtx());
+    const result = await caller.orders.updateStatus({ id: 3, status: "cancelled" });
+    expect(result).toEqual({ success: true });
+    expect(updateOrderStatus).toHaveBeenCalledWith(3, "cancelled");
   });
 });

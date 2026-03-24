@@ -171,22 +171,11 @@ export async function getOrderById(id: number) {
 
 export async function updateOrderStatus(
   id: number,
-  status: "pending" | "paid" | "failed" | "cancelled",
-  extra?: { myfatoorahPaymentId?: string; invoiceUrl?: string }
+  status: "pending" | "confirmed" | "paid" | "cancelled"
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  await db.update(orders).set({ status, ...extra }).where(eq(orders.id, id));
-}
-
-export async function updateOrderInvoice(
-  id: number,
-  myfatoorahInvoiceId: string,
-  invoiceUrl: string
-) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  await db.update(orders).set({ myfatoorahInvoiceId, invoiceUrl }).where(eq(orders.id, id));
+  await db.update(orders).set({ status }).where(eq(orders.id, id));
 }
 
 export async function getAllOrders() {

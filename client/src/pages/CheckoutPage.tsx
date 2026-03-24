@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { ShoppingBag, ArrowRight, CreditCard, Trash2, Plus, Minus } from "lucide-react";
+import { ShoppingBag, ArrowRight, MessageCircle, Trash2, Plus, Minus, CheckCircle2 } from "lucide-react";
+
+const WHATSAPP_NUMBER = "96522675826"; // Bader Center WhatsApp
 
 export default function CheckoutPage() {
   const { items, totalAmount, removeItem, updateQty, clearCart } = useCart();
@@ -10,22 +12,14 @@ export default function CheckoutPage() {
 
   const [form, setForm] = useState({
     customerName: "",
-    customerEmail: "",
     customerPhone: "",
     notes: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
 
-  const initiate = trpc.orders.initiatePayment.useMutation({
-    onSuccess: (data) => {
-      clearCart();
-      // Redirect to MyFatoorah payment page
-      window.location.href = data.invoiceUrl;
-    },
-    onError: (err) => {
-      alert(`خطأ في الدفع: ${err.message}`);
-    },
-  });
+  // Save order to DB for admin tracking
+  const saveOrder = trpc.orders.saveOrder.useMutation();
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -33,21 +27,42 @@ export default function CheckoutPage() {
     if (!form.customerPhone.trim()) newErrors.customerPhone = "رقم الهاتف مطلوب";
     else if (!/^\+?[\d\s\-]{7,}$/.test(form.customerPhone))
       newErrors.customerPhone = "رقم الهاتف غير صحيح";
-    if (form.customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.customerEmail))
-      newErrors.customerEmail = "البريد الإلكتروني غير صحيح";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const buildWhatsAppMessage = () => {
+    const lines: string[] = [];
+    lines.push("🛒 *طلب جديد من موقع مركز بدر*");
+    lines.push("─────────────────────");
+    lines.push(`👤 *الاسم:* ${form.customerName}`);
+    lines.push(`📞 *الهاتف:* ${form.customerPhone}`);
+    lines.push("─────────────────────");
+    lines.push("📦 *المنتجات:*");
+    items.forEach((item) => {
+      lines.push(`• ${item.name} × ${item.qty} — ${(item.price * item.qty).toFixed(3)} د.ك`);
+    });
+    lines.push("─────────────────────");
+    lines.push(`💰 *الإجمالي: ${totalAmount.toFixed(3)} د.ك*`);
+    if (form.notes.trim()) {
+      lines.push("─────────────────────");
+      lines.push(`📝 *ملاحظات:* ${form.notes}`);
+    }
+    lines.push("─────────────────────");
+    lines.push("أرجو تأكيد الطلب وإرسال رابط الدفع. شكراً 🙏");
+    return lines.join("\n");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
     if (items.length === 0) return;
 
-    initiate.mutate({
+    // Save order to DB silently (don't block on failure)
+    saveOrder.mutate({
       customerName: form.customerName,
-      customerEmail: form.customerEmail || undefined,
       customerPhone: form.customerPhone,
+      totalAmount: totalAmount,
       cartItems: items.map((i) => ({
         productId: i.productId,
         name: i.name,
@@ -55,11 +70,20 @@ export default function CheckoutPage() {
         price: i.price,
       })),
       notes: form.notes || undefined,
-      origin: window.location.origin,
     });
+
+    // Build WhatsApp URL and open it
+    const message = buildWhatsAppMessage();
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+
+    // Clear cart and show confirmation
+    clearCart();
+    setSubmitted(true);
   };
 
-  if (items.length === 0) {
+  // ── Empty cart state ──────────────────────────────────────────────────────
+  if (items.length === 0 && !submitted) {
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center gap-6"
@@ -81,6 +105,59 @@ export default function CheckoutPage() {
     );
   }
 
+  // ── Success state ─────────────────────────────────────────────────────────
+  if (submitted) {
+    return (
+      <div
+        className="min-h-screen flex flex-col items-center justify-center gap-6 px-4 text-center"
+        style={{ background: "#F2EDE4", direction: "rtl" }}
+      >
+        <div
+          className="w-20 h-20 rounded-full flex items-center justify-center"
+          style={{ background: "#E8F5E9" }}
+        >
+          <CheckCircle2 size={44} style={{ color: "#4CAF50" }} />
+        </div>
+        <h2 className="text-2xl font-bold" style={{ color: "#2C2416" }}>
+          تم إرسال طلبك!
+        </h2>
+        <p className="max-w-sm" style={{ color: "#6B5D4F" }}>
+          تم فتح واتساب مع تفاصيل طلبك. سيقوم فريقنا بمراجعة الطلب والتواصل معك لتأكيده وإرسال رابط الدفع.
+        </p>
+        <div
+          className="rounded-2xl p-4 max-w-sm w-full text-sm"
+          style={{ background: "#EDE8DF", color: "#6B5D4F" }}
+        >
+          <p className="font-semibold mb-1" style={{ color: "#2C2416" }}>
+            الخطوات التالية:
+          </p>
+          <ol className="space-y-1 list-decimal list-inside text-right">
+            <li>أرسل الرسالة التي ظهرت في واتساب</li>
+            <li>سيتواصل معك فريق مركز بدر لتأكيد الطلب</li>
+            <li>ستصلك رابط الدفع بعد الموافقة</li>
+          </ol>
+        </div>
+        <div className="flex gap-3 flex-wrap justify-center">
+          <button
+            onClick={() => navigate("/")}
+            className="px-6 py-2 rounded-full font-bold transition-all hover:opacity-90"
+            style={{ background: "#9C7A3C", color: "#F7F2E8" }}
+          >
+            الرئيسية
+          </button>
+          <button
+            onClick={() => navigate("/catalog")}
+            className="px-6 py-2 rounded-full font-bold transition-all hover:opacity-90"
+            style={{ background: "#2C2416", color: "#F7F2E8" }}
+          >
+            تصفح المزيد
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Main checkout form ────────────────────────────────────────────────────
   return (
     <div
       className="min-h-screen py-8 px-4"
@@ -101,7 +178,7 @@ export default function CheckoutPage() {
               إتمام الطلب
             </h1>
             <p className="text-sm" style={{ color: "#6B5D4F" }}>
-              أدخل بياناتك لإتمام عملية الدفع
+              أدخل بياناتك وسيُرسل طلبك مباشرة عبر واتساب
             </p>
           </div>
         </div>
@@ -109,16 +186,10 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Order Summary */}
           <div>
-            <h2
-              className="text-lg font-bold mb-4"
-              style={{ color: "#2C2416" }}
-            >
+            <h2 className="text-lg font-bold mb-4" style={{ color: "#2C2416" }}>
               ملخص الطلب
             </h2>
-            <div
-              className="rounded-2xl p-4 space-y-3"
-              style={{ background: "#EDE8DF" }}
-            >
+            <div className="rounded-2xl p-4 space-y-3" style={{ background: "#EDE8DF" }}>
               {items.map((item) => (
                 <div
                   key={item.productId}
@@ -135,10 +206,7 @@ export default function CheckoutPage() {
                     }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p
-                      className="font-semibold text-sm truncate"
-                      style={{ color: "#2C2416" }}
-                    >
+                    <p className="font-semibold text-sm truncate" style={{ color: "#2C2416" }}>
                       {item.name}
                     </p>
                     <p className="text-sm font-bold" style={{ color: "#9C7A3C" }}>
@@ -183,7 +251,7 @@ export default function CheckoutPage() {
                 style={{ borderColor: "#D8D0C0" }}
               >
                 <span className="font-bold" style={{ color: "#2C2416" }}>
-                  الإجمالي
+                  الإجمالي التقديري
                 </span>
                 <span className="text-xl font-bold" style={{ color: "#9C7A3C" }}>
                   {totalAmount.toFixed(3)} د.ك
@@ -191,21 +259,18 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Payment methods note */}
+            {/* WhatsApp info note */}
             <div
               className="mt-4 p-4 rounded-xl flex items-start gap-3"
-              style={{ background: "#EDE8DF" }}
+              style={{ background: "#E8F5E9" }}
             >
-              <CreditCard size={20} style={{ color: "#9C7A3C", flexShrink: 0, marginTop: 2 }} />
+              <MessageCircle size={20} style={{ color: "#25D366", flexShrink: 0, marginTop: 2 }} />
               <div>
-                <p className="font-semibold text-sm" style={{ color: "#2C2416" }}>
-                  طرق الدفع المتاحة
+                <p className="font-semibold text-sm" style={{ color: "#1B5E20" }}>
+                  الطلب عبر واتساب
                 </p>
-                <p className="text-xs mt-1" style={{ color: "#6B5D4F" }}>
-                  KNET · Visa · Mastercard · Apple Pay
-                </p>
-                <p className="text-xs mt-1" style={{ color: "#6B5D4F" }}>
-                  الدفع آمن عبر بوابة MyFatoorah المعتمدة
+                <p className="text-xs mt-1" style={{ color: "#388E3C" }}>
+                  سيُرسل طلبك لفريق مركز بدر عبر واتساب. بعد مراجعة الطلب والموافقة عليه، ستصلك رابط الدفع.
                 </p>
               </div>
             </div>
@@ -213,11 +278,8 @@ export default function CheckoutPage() {
 
           {/* Customer Info Form */}
           <div>
-            <h2
-              className="text-lg font-bold mb-4"
-              style={{ color: "#2C2416" }}
-            >
-              بيانات العميل
+            <h2 className="text-lg font-bold mb-4" style={{ color: "#2C2416" }}>
+              بياناتك
             </h2>
             <form
               onSubmit={handleSubmit}
@@ -226,18 +288,13 @@ export default function CheckoutPage() {
             >
               {/* Name */}
               <div>
-                <label
-                  className="block text-sm font-semibold mb-1"
-                  style={{ color: "#2C2416" }}
-                >
+                <label className="block text-sm font-semibold mb-1" style={{ color: "#2C2416" }}>
                   الاسم الكامل <span style={{ color: "#9C7A3C" }}>*</span>
                 </label>
                 <input
                   type="text"
                   value={form.customerName}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, customerName: e.target.value }))
-                  }
+                  onChange={(e) => setForm((f) => ({ ...f, customerName: e.target.value }))}
                   placeholder="أدخل اسمك الكامل"
                   className="w-full px-4 py-3 rounded-xl outline-none transition-all text-sm"
                   style={{
@@ -253,18 +310,13 @@ export default function CheckoutPage() {
 
               {/* Phone */}
               <div>
-                <label
-                  className="block text-sm font-semibold mb-1"
-                  style={{ color: "#2C2416" }}
-                >
-                  رقم الهاتف <span style={{ color: "#9C7A3C" }}>*</span>
+                <label className="block text-sm font-semibold mb-1" style={{ color: "#2C2416" }}>
+                  رقم الهاتف (واتساب) <span style={{ color: "#9C7A3C" }}>*</span>
                 </label>
                 <input
                   type="tel"
                   value={form.customerPhone}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, customerPhone: e.target.value }))
-                  }
+                  onChange={(e) => setForm((f) => ({ ...f, customerPhone: e.target.value }))}
                   placeholder="مثال: 96512345678"
                   className="w-full px-4 py-3 rounded-xl outline-none transition-all text-sm"
                   style={{
@@ -279,43 +331,9 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Email */}
-              <div>
-                <label
-                  className="block text-sm font-semibold mb-1"
-                  style={{ color: "#2C2416" }}
-                >
-                  البريد الإلكتروني{" "}
-                  <span className="text-xs font-normal" style={{ color: "#6B5D4F" }}>
-                    (اختياري)
-                  </span>
-                </label>
-                <input
-                  type="email"
-                  value={form.customerEmail}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, customerEmail: e.target.value }))
-                  }
-                  placeholder="example@email.com"
-                  className="w-full px-4 py-3 rounded-xl outline-none transition-all text-sm"
-                  style={{
-                    background: "#F7F2E8",
-                    border: `1px solid ${errors.customerEmail ? "#ef4444" : "#D8D0C0"}`,
-                    color: "#2C2416",
-                  }}
-                  dir="ltr"
-                />
-                {errors.customerEmail && (
-                  <p className="text-xs mt-1 text-red-500">{errors.customerEmail}</p>
-                )}
-              </div>
-
               {/* Notes */}
               <div>
-                <label
-                  className="block text-sm font-semibold mb-1"
-                  style={{ color: "#2C2416" }}
-                >
+                <label className="block text-sm font-semibold mb-1" style={{ color: "#2C2416" }}>
                   ملاحظات{" "}
                   <span className="text-xs font-normal" style={{ color: "#6B5D4F" }}>
                     (اختياري)
@@ -323,10 +341,8 @@ export default function CheckoutPage() {
                 </label>
                 <textarea
                   value={form.notes}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, notes: e.target.value }))
-                  }
-                  placeholder="أي تعليمات خاصة بالطلب..."
+                  onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+                  placeholder="أي تفاصيل إضافية عن طلبك..."
                   rows={3}
                   className="w-full px-4 py-3 rounded-xl outline-none transition-all text-sm resize-none"
                   style={{
@@ -340,25 +356,16 @@ export default function CheckoutPage() {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={initiate.isPending}
-                className="w-full py-4 rounded-full font-bold text-base transition-all hover:opacity-90 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                style={{ background: "#2C2416", color: "#F7F2E8" }}
+                disabled={saveOrder.isPending}
+                className="w-full py-4 rounded-full font-bold text-base transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60"
+                style={{ background: "#25D366", color: "#fff" }}
               >
-                {initiate.isPending ? (
-                  <>
-                    <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                    جارٍ إنشاء الفاتورة...
-                  </>
-                ) : (
-                  <>
-                    <CreditCard size={18} />
-                    الدفع الآن — {totalAmount.toFixed(3)} د.ك
-                  </>
-                )}
+                <MessageCircle size={20} />
+                {saveOrder.isPending ? "جاري الإرسال..." : "إرسال الطلب عبر واتساب"}
               </button>
 
               <p className="text-xs text-center" style={{ color: "#6B5D4F" }}>
-                بالضغط على "الدفع الآن" ستنتقل إلى صفحة الدفع الآمنة
+                سيُفتح تطبيق واتساب تلقائياً مع تفاصيل طلبك
               </p>
             </form>
           </div>

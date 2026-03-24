@@ -66,21 +66,18 @@ export type ServiceRequest = typeof serviceRequests.$inferSelect;
 export type InsertServiceRequest = typeof serviceRequests.$inferInsert;
 
 /**
- * Orders table for MyFatoorah payment tracking.
+ * Orders table — WhatsApp-based order flow.
+ * Customer submits order via WhatsApp; staff confirms and sends payment link manually.
  */
 export const orders = mysqlTable("orders", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId"),                                          // nullable for guest orders
   customerName: varchar("customerName", { length: 255 }).notNull(),
-  customerEmail: varchar("customerEmail", { length: 320 }),
   customerPhone: varchar("customerPhone", { length: 30 }),
   totalAmount: decimal("totalAmount", { precision: 10, scale: 2 }).notNull(),
   currency: varchar("currency", { length: 10 }).default("KWD").notNull(),
-  status: mysqlEnum("status", ["pending", "paid", "failed", "cancelled"]).default("pending").notNull(),
-  // MyFatoorah identifiers
-  myfatoorahInvoiceId: varchar("myfatoorahInvoiceId", { length: 100 }),
-  myfatoorahPaymentId: varchar("myfatoorahPaymentId", { length: 100 }),
-  invoiceUrl: text("invoiceUrl"),
+  // pending = waiting for staff review, confirmed = staff confirmed via WhatsApp,
+  // paid = payment received, cancelled = cancelled
+  status: mysqlEnum("status", ["pending", "confirmed", "paid", "cancelled"]).default("pending").notNull(),
   // Cart snapshot (JSON)
   cartItems: text("cartItems").notNull(),                         // JSON array of {productId, name, qty, price}
   notes: text("notes"),

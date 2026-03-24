@@ -546,7 +546,7 @@ export default function AdminDashboard() {
               <div className="text-center py-20" style={{ color: "#8A7560" }}>
                 <ShoppingCart className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p className="text-lg">لا توجد طلبات حتى الآن</p>
-                <p className="text-sm mt-1">ستظهر طلبات الدفع هنا عند إتمام عمليات الدفع</p>
+                <p className="text-sm mt-1">ستظهر طلبات الواتساب هنا بعد إرسالها من العملاء</p>
               </div>
             ) : (
               <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(156,122,60,0.2)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
@@ -565,14 +565,14 @@ export default function AdminDashboard() {
                     {orders.map((order, idx) => {
                       const orderStatusColors: Record<string, string> = {
                         pending: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+                        confirmed: "bg-blue-500/20 text-blue-300 border-blue-500/30",
                         paid: "bg-green-500/20 text-green-300 border-green-500/30",
-                        failed: "bg-red-500/20 text-red-300 border-red-500/30",
                         cancelled: "bg-gray-500/20 text-gray-300 border-gray-500/30",
                       };
                       const orderStatusLabels: Record<string, string> = {
-                        pending: "معلق",
+                        pending: "معلق — بانتظار المراجعة",
+                        confirmed: "مؤكد — تم التواصل",
                         paid: "مدفوع",
-                        failed: "فشل",
                         cancelled: "ملغي",
                       };
                       let cartItems: Array<{ name: string; qty: number; price: number }> = [];
@@ -609,15 +609,15 @@ export default function AdminDashboard() {
                           <td className="p-3">
                             <Select
                               value={order.status}
-                              onValueChange={(v) => updateOrderStatusMutation.mutate({ id: order.id, status: v as "pending" | "paid" | "failed" | "cancelled" })}
+                              onValueChange={(v) => updateOrderStatusMutation.mutate({ id: order.id, status: v as "pending" | "confirmed" | "paid" | "cancelled" })}
                             >
                               <SelectTrigger className="h-8 text-xs w-28" style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)" }}>
-                                <SelectItem value="pending">معلق</SelectItem>
+                                <SelectItem value="pending">معلق — بانتظار المراجعة</SelectItem>
+                                <SelectItem value="confirmed">مؤكد — تم التواصل</SelectItem>
                                 <SelectItem value="paid">مدفوع</SelectItem>
-                                <SelectItem value="failed">فشل</SelectItem>
                                 <SelectItem value="cancelled">ملغي</SelectItem>
                               </SelectContent>
                             </Select>
