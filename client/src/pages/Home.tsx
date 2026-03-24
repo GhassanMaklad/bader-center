@@ -8,6 +8,7 @@
 import Navbar from "@/components/Navbar";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
 import HeroSection from "@/components/HeroSection";
+import ReadyCtaSection from "@/components/ReadyCtaSection";
 import ServicesSection from "@/components/ServicesSection";
 import OccasionsSection from "@/components/OccasionsSection";
 import GallerySection from "@/components/GallerySection";
@@ -26,6 +27,7 @@ export default function Home() {
       <AnnouncementBanner />
       <Navbar />
       <HeroSection />
+      <ReadyCtaSection />
       <ServicesSection />
       <OccasionsSection />
       <GallerySection />
