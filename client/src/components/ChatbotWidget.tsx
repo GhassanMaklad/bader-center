@@ -309,7 +309,10 @@ export default function ChatbotWidget() {
         {isOpen ? (
           <ChevronDown size={20} style={{ color: "#9C7A3C" }} />
         ) : (
-          <MessageCircle size={20} className="text-black" />
+          <>
+            <MessageCircle size={16} className="text-black" />
+            <span style={{ fontSize: "10px", fontWeight: "700", color: "#fff", lineHeight: 1, marginTop: "1px" }}>AI</span>
+          </>
         )}
       </button>
 
