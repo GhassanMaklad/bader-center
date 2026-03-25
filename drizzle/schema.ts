@@ -87,3 +87,44 @@ export const orders = mysqlTable("orders", {
 
 export type Order = typeof orders.$inferSelect;
 export type InsertOrder = typeof orders.$inferInsert;
+
+/**
+ * Gallery items for the "أعمالنا" section on the homepage.
+ * Managed via admin dashboard.
+ */
+export const galleryItems = mysqlTable("gallery_items", {
+  id: int("id").autoincrement().primaryKey(),
+  image: text("image").notNull(),           // CDN URL
+  title: varchar("title", { length: 255 }).notNull(),
+  category: varchar("category", { length: 100 }).notNull(),
+  span: varchar("span", { length: 100 }).default("col-span-1 row-span-1").notNull(),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type GalleryItem = typeof galleryItems.$inferSelect;
+export type InsertGalleryItem = typeof galleryItems.$inferInsert;
+
+/**
+ * Service cards for the "خدماتنا" section on the homepage.
+ * Managed via admin dashboard.
+ */
+export const serviceCards = mysqlTable("service_cards", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  features: text("features").notNull(),     // JSON array of strings
+  bgGradient: varchar("bgGradient", { length: 255 }).default("linear-gradient(135deg, #B89050 0%, #9C7A3C 40%, #7A5C28 100%)").notNull(),
+  iconColor: varchar("iconColor", { length: 20 }).default("#FFF3D0").notNull(),
+  accentColor: varchar("accentColor", { length: 20 }).default("#F5E0A0").notNull(),
+  image: text("image"),                     // Optional: override SVG icon with a photo
+  sortOrder: int("sortOrder").default(0).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ServiceCard = typeof serviceCards.$inferSelect;
+export type InsertServiceCard = typeof serviceCards.$inferInsert;

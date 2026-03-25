@@ -246,6 +246,12 @@ export default function RequestService() {
   const formRef = useRef<HTMLDivElement>(null);
   const [formVisible, setFormVisible] = useState(false);
 
+  // Read product info from URL params (passed from Catalog "Order Now" button)
+  const urlParams = new URLSearchParams(window.location.search);
+  const prefilledProduct = urlParams.get("product") || "";
+  const prefilledImage = urlParams.get("image") || "";
+  const prefilledPrice = urlParams.get("price") || "";
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -307,6 +313,10 @@ export default function RequestService() {
     const ownerMessage = [
       "🌟 *طلب خدمة جديد — مركز بدر*",
       "",
+      prefilledProduct ? `🛎️ *المنتج المطلوب:* ${prefilledProduct}` : "",
+      prefilledPrice ? `💲 *السعر:* ${prefilledPrice}` : "",
+      prefilledImage ? `🖼️ *صورة المنتج:* ${prefilledImage}` : "",
+      prefilledProduct ? "────────────────────" : "",
       `👤 *الاسم:* ${form.name}`,
       `📞 *الهاتف:* ${form.phone}`,
       `🎉 *نوع المناسبة:* ${occasionLabel}`,
@@ -595,6 +605,48 @@ export default function RequestService() {
               />
 
               <form onSubmit={handleSubmit} noValidate>
+                {/* Product Card — shown when coming from Catalog */}
+                {prefilledProduct && (
+                  <div
+                    className="flex gap-4 p-4 rounded-xl mb-6"
+                    style={{
+                      background: "rgba(156,122,60,0.08)",
+                      border: "1px solid rgba(156,122,60,0.3)",
+                    }}
+                  >
+                    {prefilledImage && (
+                      <img
+                        src={prefilledImage}
+                        alt={prefilledProduct}
+                        className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                        style={{ border: "1px solid rgba(156,122,60,0.3)" }}
+                      />
+                    )}
+                    <div className="flex flex-col justify-center gap-1">
+                      <p
+                        className="text-xs"
+                        style={{ color: "#B89050", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+                      >
+                        المنتج المطلوب
+                      </p>
+                      <p
+                        className="font-bold text-base"
+                        style={{ color: "#F0E6CC", fontFamily: "'Noto Naskh Arabic', serif" }}
+                      >
+                        {prefilledProduct}
+                      </p>
+                      {prefilledPrice && (
+                        <p
+                          className="text-sm"
+                          style={{ color: "#A09070", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+                        >
+                          {prefilledPrice}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Name */}
                   <FloatingLabel id="name" label="الاسم الكريم *" error={errors.name}>

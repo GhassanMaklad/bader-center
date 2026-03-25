@@ -1,6 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertOrder, InsertProduct, InsertServiceRequest, InsertUser, orders, products, serviceRequests, users } from "../drizzle/schema";
+import { galleryItems, InsertGalleryItem, InsertOrder, InsertProduct, InsertServiceCard, InsertServiceRequest, InsertUser, orders, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -182,4 +182,58 @@ export async function getAllOrders() {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(orders).orderBy(desc(orders.createdAt));
+}
+
+// ─── Gallery Item Queries ───────────────────────────────────────────────────────────────
+
+export async function getAllGalleryItems() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(galleryItems).orderBy(asc(galleryItems.sortOrder));
+}
+
+export async function createGalleryItem(data: InsertGalleryItem) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(galleryItems).values(data);
+  return result;
+}
+
+export async function updateGalleryItem(id: number, data: Partial<InsertGalleryItem>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(galleryItems).set(data).where(eq(galleryItems.id, id));
+}
+
+export async function deleteGalleryItem(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(galleryItems).where(eq(galleryItems.id, id));
+}
+
+// ─── Service Card Queries ──────────────────────────────────────────────────────────────
+
+export async function getAllServiceCards() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(serviceCards).orderBy(asc(serviceCards.sortOrder));
+}
+
+export async function createServiceCard(data: InsertServiceCard) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(serviceCards).values(data);
+  return result;
+}
+
+export async function updateServiceCard(id: number, data: Partial<InsertServiceCard>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(serviceCards).set(data).where(eq(serviceCards.id, id));
+}
+
+export async function deleteServiceCard(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(serviceCards).where(eq(serviceCards.id, id));
 }

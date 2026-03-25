@@ -293,7 +293,7 @@ export default function ChatbotWidget() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen((v) => !v)}
-        className="fixed bottom-6 left-20 z-50 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+        className="fixed bottom-6 left-20 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
         style={{
           background: isOpen
             ? "#F7F3EC"

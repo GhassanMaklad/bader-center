@@ -5,6 +5,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Instagram, ExternalLink } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 // 9 unique real images from @badercenterco Instagram
 const galleryItems = [
@@ -73,7 +74,9 @@ const galleryItems = [
   },
 ];
 
-function GalleryCard({ item, index }: { item: typeof galleryItems[0]; index: number }) {
+type GalleryItemData = { id: number; image: string; title: string; category: string; span: string };
+
+function GalleryCard({ item, index }: { item: GalleryItemData; index: number }) {
   const [hovered, setHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -168,6 +171,12 @@ function GalleryCard({ item, index }: { item: typeof galleryItems[0]; index: num
 export default function GallerySection() {
   const titleRef = useRef<HTMLDivElement>(null);
   const [titleVisible, setTitleVisible] = useState(false);
+  const { data: dbItems } = trpc.gallery.list.useQuery();
+
+  // Use DB items if available, otherwise fall back to static data
+  const activeItems: GalleryItemData[] = (dbItems && dbItems.length > 0)
+    ? (dbItems as GalleryItemData[])
+    : galleryItems;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -230,7 +239,7 @@ export default function GallerySection() {
             gridTemplateRows: "repeat(2, 230px)",
           }}
         >
-          {galleryItems.slice(0, 5).map((item, i) => (
+          {activeItems.slice(0, 5).map((item, i) => (
             <GalleryCard key={item.id} item={item} index={i} />
           ))}
         </div>
@@ -244,7 +253,7 @@ export default function GallerySection() {
             gridTemplateRows: "230px",
           }}
         >
-          {galleryItems.slice(5).map((item, i) => (
+          {activeItems.slice(5).map((item, i) => (
             <GalleryCard key={item.id} item={item} index={i + 5} />
           ))}
         </div>

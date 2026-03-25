@@ -20,6 +20,14 @@ import {
   createOrder,
   updateOrderStatus,
   getAllOrders,
+  getAllGalleryItems,
+  createGalleryItem,
+  updateGalleryItem,
+  deleteGalleryItem,
+  getAllServiceCards,
+  createServiceCard,
+  updateServiceCard,
+  deleteServiceCard,
 } from "./db";
 
 // ─── Admin middleware ──────────────────────────────────────────────────────────
@@ -370,6 +378,140 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await updateOrderStatus(input.id, input.status);
         return { success: true };
+      }),
+  }),
+
+  // ─── Gallery Items (Homepage "أعمالنا" section) ────────────────────────────────────────
+  gallery: router({
+    list: publicProcedure.query(async () => {
+      return getAllGalleryItems();
+    }),
+
+    create: adminProcedure
+      .input(
+        z.object({
+          image: z.string().min(1),
+          title: z.string().min(1),
+          category: z.string().min(1),
+          span: z.string().default("col-span-1 row-span-1"),
+          sortOrder: z.number().default(0),
+          isActive: z.boolean().default(true),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await createGalleryItem(input);
+        return { success: true };
+      }),
+
+    update: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          image: z.string().optional(),
+          title: z.string().optional(),
+          category: z.string().optional(),
+          span: z.string().optional(),
+          sortOrder: z.number().optional(),
+          isActive: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateGalleryItem(id, data);
+        return { success: true };
+      }),
+
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteGalleryItem(input.id);
+        return { success: true };
+      }),
+
+    uploadImage: adminProcedure
+      .input(
+        z.object({
+          base64: z.string().min(1),
+          mimeType: z.string().default("image/jpeg"),
+          filename: z.string().default("gallery.jpg"),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { storagePut } = await import("./storage");
+        const buffer = Buffer.from(input.base64, "base64");
+        const key = `gallery/${Date.now()}-${input.filename}`;
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        return { url };
+      }),
+  }),
+
+  // ─── Service Cards (Homepage "خدماتنا" section) ─────────────────────────────────────────────
+  services: router({
+    list: publicProcedure.query(async () => {
+      return getAllServiceCards();
+    }),
+
+    create: adminProcedure
+      .input(
+        z.object({
+          title: z.string().min(1),
+          description: z.string().min(1),
+          features: z.string().min(1),  // JSON array string
+          bgGradient: z.string().default("linear-gradient(135deg, #B89050 0%, #9C7A3C 40%, #7A5C28 100%)"),
+          iconColor: z.string().default("#FFF3D0"),
+          accentColor: z.string().default("#F5E0A0"),
+          image: z.string().nullable().optional(),
+          sortOrder: z.number().default(0),
+          isActive: z.boolean().default(true),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await createServiceCard(input);
+        return { success: true };
+      }),
+
+    update: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          title: z.string().optional(),
+          description: z.string().optional(),
+          features: z.string().optional(),
+          bgGradient: z.string().optional(),
+          iconColor: z.string().optional(),
+          accentColor: z.string().optional(),
+          image: z.string().nullable().optional(),
+          sortOrder: z.number().optional(),
+          isActive: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateServiceCard(id, data);
+        return { success: true };
+      }),
+
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteServiceCard(input.id);
+        return { success: true };
+      }),
+
+    uploadImage: adminProcedure
+      .input(
+        z.object({
+          base64: z.string().min(1),
+          mimeType: z.string().default("image/jpeg"),
+          filename: z.string().default("service.jpg"),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { storagePut } = await import("./storage");
+        const buffer = Buffer.from(input.base64, "base64");
+        const key = `services/${Date.now()}-${input.filename}`;
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        return { url };
       }),
   }),
 });

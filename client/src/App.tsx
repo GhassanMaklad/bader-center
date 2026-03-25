@@ -10,6 +10,7 @@ import RequestService from "./pages/RequestService";
 import Catalog from "./pages/Catalog";
 import AdminDashboard from "./pages/AdminDashboard";
 import CheckoutPage from "./pages/CheckoutPage";
+import MediaManagerPage from "./pages/MediaManagerPage";
 
 function Router() {
   return (
@@ -19,6 +20,7 @@ function Router() {
       <Route path={"/catalog"} component={Catalog} />
       <Route path={"/checkout"} component={CheckoutPage} />
       <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/admin/media"} component={MediaManagerPage} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

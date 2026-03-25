@@ -3,6 +3,7 @@
  * Design: Warm Beige / Greige with colored gradient backgrounds and SVG icons
  */
 import { useEffect, useRef, useState } from "react";
+import { trpc } from "@/lib/trpc";
 
 // SVG icons for each service - expressive and elegant
 const CateringIcon = () => (
@@ -286,6 +287,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
 export default function ServicesSection() {
   const titleRef = useRef<HTMLDivElement>(null);
   const [titleVisible, setTitleVisible] = useState(false);
+  const { data: dbCards } = trpc.services.list.useQuery();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -335,7 +337,16 @@ export default function ServicesSection() {
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, i) => (
+          {(dbCards && dbCards.length > 0 ? dbCards.map((card: any) => ({
+            id: card.id,
+            title: card.title,
+            description: card.description,
+            features: (() => { try { return JSON.parse(card.features); } catch { return []; } })(),
+            bgGradient: card.bgGradient,
+            iconColor: card.iconColor,
+            accentColor: card.accentColor,
+            Icon: GiftIcon, // default icon for DB items
+          })) : services).map((service, i) => (
             <ServiceCard key={service.id} service={service} index={i} />
           ))}
         </div>
