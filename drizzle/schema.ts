@@ -128,3 +128,22 @@ export const serviceCards = mysqlTable("service_cards", {
 
 export type ServiceCard = typeof serviceCards.$inferSelect;
 export type InsertServiceCard = typeof serviceCards.$inferInsert;
+
+/**
+ * Occasion photos for the "مناسباتنا" section on the homepage.
+ * Each photo is linked to an occasion key (e.g. 'wedding', 'graduation').
+ * Managed via admin dashboard with S3 upload.
+ */
+export const occasionPhotos = mysqlTable("occasion_photos", {
+  id: int("id").autoincrement().primaryKey(),
+  occasionKey: varchar("occasionKey", { length: 64 }).notNull(), // e.g. 'wedding', 'graduation'
+  occasionLabel: varchar("occasionLabel", { length: 128 }).notNull(), // Arabic label e.g. 'حفلات الأعراس'
+  imageUrl: text("imageUrl").notNull(),          // CDN URL from S3
+  caption: varchar("caption", { length: 255 }),  // optional caption
+  sortOrder: int("sortOrder").default(0).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type OccasionPhoto = typeof occasionPhotos.$inferSelect;
+export type InsertOccasionPhoto = typeof occasionPhotos.$inferInsert;

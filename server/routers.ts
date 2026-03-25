@@ -28,6 +28,10 @@ import {
   createServiceCard,
   updateServiceCard,
   deleteServiceCard,
+  getOccasionPhotos,
+  createOccasionPhoto,
+  updateOccasionPhoto,
+  deleteOccasionPhoto,
 } from "./db";
 
 // ─── Admin middleware ──────────────────────────────────────────────────────────
@@ -513,7 +517,67 @@ export const appRouter = router({
         const { url } = await storagePut(key, buffer, input.mimeType);
         return { url };
       }),
+   }),
+
+  // ─── Occasion Photos Router ─────────────────────────────────────────────────
+  occasionPhotos: router({
+    // Public: list photos for a specific occasion (used in OccasionsSection)
+    list: publicProcedure
+      .input(z.object({ occasionKey: z.string().optional() }))
+      .query(async ({ input }) => {
+        return getOccasionPhotos(input.occasionKey);
+      }),
+
+    // Admin: add a new photo
+    add: adminProcedure
+      .input(
+        z.object({
+          occasionKey: z.string().min(1),
+          occasionLabel: z.string().min(1),
+          base64: z.string().min(1),
+          mimeType: z.string().default("image/jpeg"),
+          caption: z.string().optional(),
+          sortOrder: z.number().default(0),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const buffer = Buffer.from(input.base64, "base64");
+        const key = `occasions/${input.occasionKey}/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        await createOccasionPhoto({
+          occasionKey: input.occasionKey,
+          occasionLabel: input.occasionLabel,
+          imageUrl: url,
+          caption: input.caption ?? null,
+          sortOrder: input.sortOrder,
+          isActive: true,
+        });
+        return { url };
+      }),
+
+    // Admin: update caption or sortOrder
+    update: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          caption: z.string().optional(),
+          sortOrder: z.number().optional(),
+          isActive: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateOccasionPhoto(id, data);
+        return { success: true };
+      }),
+
+    // Admin: delete a photo
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteOccasionPhoto(input.id);
+        return { success: true };
+      }),
   }),
 });
-
 export type AppRouter = typeof appRouter;

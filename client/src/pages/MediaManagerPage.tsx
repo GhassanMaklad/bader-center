@@ -109,6 +109,220 @@ function useImageUpload(
   return { uploadFile, uploading };
 }
 
+// ─── Occasions Tab ───────────────────────────────────────────────────────────
+
+const OCCASION_OPTIONS = [
+  { key: "ramadan", label: "رمضان الكريم" },
+  { key: "qarqiaan", label: "قرقيعان" },
+  { key: "national", label: "العيد الوطني" },
+  { key: "graduation", label: "حفلات التخرج" },
+  { key: "newborn", label: "المواليد" },
+  { key: "wedding", label: "الأعراس" },
+  { key: "corporate", label: "الشركات" },
+  { key: "schools", label: "المدارس" },
+  { key: "birthday", label: "أعياد الميلاد" },
+  { key: "reception", label: "الاستقبالات" },
+];
+
+function OccasionsTab() {
+  const utils = trpc.useUtils();
+  const [selectedOccasion, setSelectedOccasion] = useState(OCCASION_OPTIONS[0].key);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [caption, setCaption] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const occasionLabel = OCCASION_OPTIONS.find(o => o.key === selectedOccasion)?.label || "";
+
+  const { data: photos = [], isLoading } = trpc.occasionPhotos.list.useQuery(
+    { occasionKey: selectedOccasion },
+    { enabled: !!selectedOccasion }
+  );
+
+  const addMutation = trpc.occasionPhotos.add.useMutation({
+    onSuccess: () => {
+      utils.occasionPhotos.list.invalidate();
+      setShowAddDialog(false);
+      setCaption("");
+      setPreviewUrl(null);
+      setSelectedFile(null);
+      toast.success("تمت إضافة الصورة بنجاح");
+    },
+    onError: () => toast.error("حدث خطأ أثناء رفع الصورة"),
+  });
+
+  const deleteMutation = trpc.occasionPhotos.delete.useMutation({
+    onSuccess: () => {
+      utils.occasionPhotos.list.invalidate();
+      toast.success("تم حذف الصورة");
+    },
+    onError: () => toast.error("حدث خطأ أثناء الحذف"),
+  });
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setPreviewUrl(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = (e.target?.result as string).split(",")[1];
+        await addMutation.mutateAsync({
+          occasionKey: selectedOccasion,
+          occasionLabel,
+          base64,
+          mimeType: selectedFile.type,
+          caption: caption || undefined,
+          sortOrder: photos.length,
+        });
+        setUploading(false);
+      };
+      reader.readAsDataURL(selectedFile);
+    } catch {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div dir="rtl">
+      {/* Occasion selector */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {OCCASION_OPTIONS.map((occ) => (
+          <button
+            key={occ.key}
+            onClick={() => setSelectedOccasion(occ.key)}
+            className="px-4 py-2 rounded-full text-sm font-semibold transition-all"
+            style={{
+              background: selectedOccasion === occ.key ? "#9C7A3C" : "rgba(156,122,60,0.1)",
+              color: selectedOccasion === occ.key ? "#FFF" : "#9C7A3C",
+              fontFamily: "'Noto Naskh Arabic', serif",
+            }}
+          >
+            {occ.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Header row */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold" style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}>
+          صور {occasionLabel} ({photos.length})
+        </h3>
+        <Button
+          onClick={() => setShowAddDialog(true)}
+          className="flex items-center gap-2"
+          style={{ background: "#9C7A3C", color: "#FFF" }}
+        >
+          <Plus className="w-4 h-4" />
+          إضافة صورة
+        </Button>
+      </div>
+
+      {/* Photos grid */}
+      {isLoading ? (
+        <div className="text-center py-12" style={{ color: "#9C7A3C" }}>جاري التحميل...</div>
+      ) : photos.length === 0 ? (
+        <div className="text-center py-16 rounded-2xl" style={{ background: "rgba(156,122,60,0.05)", border: "2px dashed rgba(156,122,60,0.2)" }}>
+          <ImageIcon className="w-12 h-12 mx-auto mb-3" style={{ color: "rgba(156,122,60,0.4)" }} />
+          <p style={{ color: "#9C7A3C", fontFamily: "'Noto Naskh Arabic', serif" }}>
+            لا توجد صور لهذه المناسبة بعد
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          {photos.map((photo) => (
+            <div key={photo.id} className="relative group rounded-xl overflow-hidden" style={{ aspectRatio: "1", background: "#EDE8DF" }}>
+              <img src={photo.imageUrl} alt={photo.caption || ""} className="w-full h-full object-cover" />
+              {photo.caption && (
+                <div className="absolute bottom-0 inset-x-0 px-2 py-1 text-xs text-white" style={{ background: "rgba(0,0,0,0.5)" }}>
+                  {photo.caption}
+                </div>
+              )}
+              {/* Delete overlay */}
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <button
+                  onClick={() => deleteMutation.mutate({ id: photo.id })}
+                  className="p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Add photo dialog */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent dir="rtl" className="max-w-md">
+          <DialogHeader>
+            <DialogTitle style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>
+              إضافة صورة لـ {occasionLabel}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* File picker */}
+            <div
+              className="border-2 border-dashed rounded-xl p-6 text-center cursor-pointer hover:border-amber-500 transition-colors"
+              style={{ borderColor: "rgba(156,122,60,0.3)" }}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {previewUrl ? (
+                <img src={previewUrl} alt="preview" className="max-h-48 mx-auto rounded-lg object-contain" />
+              ) : (
+                <div>
+                  <Upload className="w-8 h-8 mx-auto mb-2" style={{ color: "rgba(156,122,60,0.5)" }} />
+                  <p className="text-sm" style={{ color: "#9C7A3C", fontFamily: "'Noto Naskh Arabic', serif" }}>
+                    اضغط لاختيار صورة
+                  </p>
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+            </div>
+            {/* Caption */}
+            <div>
+              <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>وصف اختياري</Label>
+              <Input
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                placeholder="مثال: بوكس هدايا رمضانية"
+                dir="rtl"
+                style={{ fontFamily: "'Noto Naskh Arabic', serif" }}
+              />
+            </div>
+          </div>
+          <DialogFooter className="flex gap-2 mt-4">
+            <Button variant="outline" onClick={() => setShowAddDialog(false)}>إلغاء</Button>
+            <Button
+              onClick={handleUpload}
+              disabled={!selectedFile || uploading}
+              style={{ background: "#9C7A3C", color: "#FFF" }}
+            >
+              {uploading ? "جاري الرفع..." : "رفع الصورة"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 // ─── Gallery Tab ──────────────────────────────────────────────────────────────
 
 function GalleryTab() {
@@ -839,8 +1053,11 @@ export default function MediaManagerPage() {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <Tabs defaultValue="gallery" dir="rtl">
+        <Tabs defaultValue="occasions" dir="rtl">
           <TabsList className="mb-6" style={{ background: "rgba(156,122,60,0.1)" }}>
+            <TabsTrigger value="occasions" style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>
+              صور المناسبات
+            </TabsTrigger>
             <TabsTrigger value="gallery" style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>
               صور أعمالنا
             </TabsTrigger>
@@ -848,6 +1065,9 @@ export default function MediaManagerPage() {
               بطاقات الخدمات
             </TabsTrigger>
           </TabsList>
+          <TabsContent value="occasions">
+            <OccasionsTab />
+          </TabsContent>
           <TabsContent value="gallery">
             <GalleryTab />
           </TabsContent>

@@ -1,6 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { galleryItems, InsertGalleryItem, InsertOrder, InsertProduct, InsertServiceCard, InsertServiceRequest, InsertUser, orders, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
+import { galleryItems, InsertGalleryItem, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertServiceCard, InsertServiceRequest, InsertUser, occasionPhotos, orders, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -236,4 +236,34 @@ export async function deleteServiceCard(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(serviceCards).where(eq(serviceCards.id, id));
+}
+
+// ─── Occasion Photo Queries ────────────────────────────────────────────────────────────────────────────────────────
+
+export async function getOccasionPhotos(occasionKey?: string) {
+  const db = await getDb();
+  if (!db) return [];
+  const query = db.select().from(occasionPhotos)
+    .where(occasionKey ? eq(occasionPhotos.occasionKey, occasionKey) : undefined)
+    .orderBy(asc(occasionPhotos.sortOrder), asc(occasionPhotos.id));
+  return query;
+}
+
+export async function createOccasionPhoto(data: InsertOccasionPhoto) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(occasionPhotos).values(data);
+  return result;
+}
+
+export async function updateOccasionPhoto(id: number, data: Partial<InsertOccasionPhoto>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(occasionPhotos).set(data).where(eq(occasionPhotos.id, id));
+}
+
+export async function deleteOccasionPhoto(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(occasionPhotos).where(eq(occasionPhotos.id, id));
 }
