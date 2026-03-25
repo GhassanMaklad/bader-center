@@ -109,7 +109,7 @@ export default function Navbar() {
               className="transition-colors duration-300 text-sm font-semibold relative group"
               style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
-              كتالوج
+              كتالوج المنتجات
               <span className="absolute -bottom-1 right-0 w-0 h-px transition-all duration-300 group-hover:w-full" style={{ background: "#9C7A3C" }} />
             </Link>
           </div>
