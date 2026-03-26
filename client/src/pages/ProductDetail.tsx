@@ -13,6 +13,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
 import { trpc } from "@/lib/trpc";
+import { useSEO, buildProductLD, buildBreadcrumbLD } from "@/hooks/useSEO";
 
 // ─── Category label map ───────────────────────────────────────────────────────
 const CATEGORY_LABELS: Record<string, string> = {
@@ -207,6 +208,45 @@ export default function ProductDetail() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [productId]);
+
+  // Dynamic SEO — updates whenever product data loads
+  useSEO(
+    data
+      ? {
+          title: data.product.name,
+          description: data.product.description.slice(0, 160),
+          path: `/product/${productId}`,
+          image: data.product.image,
+          type: "product",
+          jsonLd: {
+            "@context": "https://schema.org",
+            "@graph": [
+              buildProductLD({
+                id: data.product.id,
+                name: data.product.name,
+                nameEn: data.product.nameEn,
+                description: data.product.description,
+                price: data.product.price,
+                priceValue: data.product.priceValue,
+                image: data.product.image,
+                category: data.product.category,
+                inStock: data.product.inStock,
+                rating: data.product.rating,
+              }),
+              buildBreadcrumbLD([
+                { name: "الرئيسية", url: "https://www.markzbader.org/" },
+                { name: "الكتالوج", url: "https://www.markzbader.org/catalog" },
+                { name: data.product.name, url: `https://www.markzbader.org/product/${productId}` },
+              ]),
+            ],
+          },
+        }
+      : {
+          title: "تفاصيل المنتج",
+          description: "تفاصيل المنتج — مركز بدر",
+          path: `/product/${productId}`,
+        }
+  );
 
   // Build full image list: primary image + gallery images
   const allImages = data

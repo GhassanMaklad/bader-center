@@ -20,6 +20,7 @@ import {
 import Navbar from "@/components/Navbar";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { useSEO } from "@/hooks/useSEO";
 
 const LOGO_URL =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
@@ -231,6 +232,13 @@ function SelectField({
 }
 
 export default function RequestService() {
+  useSEO({
+    title: "طلب خدمة",
+    description: "اطلب خدمة مخصصة من مركز بدر: كيترنج، هدايا، دروع، أفراح ومناسبات مختلفة. أرسل طلبك وسيتواصل معك فريقنا فوراً.",
+    path: "/request",
+    type: "website",
+  });
+
   const [, navigate] = useLocation();
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState<FormData>({

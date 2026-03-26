@@ -13,6 +13,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
 import { trpc } from "@/lib/trpc";
+import { useSEO } from "@/hooks/useSEO";
 
 // ─── Product Data ──────────────────────────────────────────────────────────────
 const INSTAGRAM_IMAGES = {
@@ -532,6 +533,14 @@ export default function Catalog() {
   const [activeOccasion, setActiveOccasion] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
+
+  // Dynamic SEO
+  useSEO({
+    title: "كتالوج المنتجات",
+    description: "تصفح كتالوج مركز بدر: هدايا فاخرة، دروع تكريمية، كيترنج، خط عربي ومناسبات مختلفة. جودة فاخرة منذ 20 عاماً في الكويت.",
+    path: "/catalog",
+    type: "website",
+  });
 
   // Read ?occasion=key from URL on first mount and pre-apply the filter
   const searchString = useSearch();

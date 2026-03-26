@@ -16,8 +16,17 @@ import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ChatbotWidget from "@/components/ChatbotWidget";
+import { useSEO, ORGANIZATION_LD } from "@/hooks/useSEO";
 
 export default function Home() {
+  useSEO({
+    title: "مركز بدر | Bader Center — للفخامة أصول",
+    description: "مركز بدر — تجهيزات الكيترنج والبوثات، استقبالات وأفراح، دروع وتكريمات فاخرة. نجسد الفخامة منذ 20 عاماً في الكويت.",
+    path: "/",
+    type: "website",
+    jsonLd: ORGANIZATION_LD,
+  });
+
   return (
     <div
       className="min-h-screen"

@@ -116,3 +116,11 @@
 - [x] إضافة DB helpers و tRPC procedures لجلب تفاصيل منتج واحد + صوره + المنتجات المشابهة
 - [x] بناء صفحة ProductDetail (/product/:id) مع معرض صور، وصف كامل، منتجات مشابهة
 - [x] تسجيل المسار في App.tsx وتحويل بطاقات المنتجات للنقر على الصفحة
+
+## SEO الديناميكي - مارس 2026
+
+- [x] بناء useSEO hook لتحديث title و meta tags ديناميكياً
+- [x] تحديث index.html بـ base meta tags و Open Graph و Twitter Card
+- [x] تطبيق SEO على الصفحات الرئيسية (Home, Catalog, ProductDetail, RequestService)
+- [x] إضافة JSON-LD structured data (Organization, Product, BreadcrumbList)
+- [x] إنشاء sitemap.xml وrobots.txt
