@@ -124,3 +124,9 @@
 - [x] تطبيق SEO على الصفحات الرئيسية (Home, Catalog, ProductDetail, RequestService)
 - [x] إضافة JSON-LD structured data (Organization, Product, BreadcrumbList)
 - [x] إنشاء sitemap.xml وrobots.txt
+
+## Live Chat + Quick View - مارس 2026
+
+- [x] دمج Tawk.to live chat widget في الموقع
+- [x] بناء مكوّن ProductQuickView modal مع معرض صور ووصف وزر واتساب
+- [x] إضافة زر "عرض سريع" على بطاقات المنتجات في الكتالوج

@@ -14,6 +14,7 @@ import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
 import { trpc } from "@/lib/trpc";
 import { useSEO } from "@/hooks/useSEO";
+import ProductQuickView from "@/components/ProductQuickView";
 
 // ─── Product Data ──────────────────────────────────────────────────────────────
 const INSTAGRAM_IMAGES = {
@@ -349,7 +350,7 @@ const CATEGORY_DEFS = [
 ];
 
 // ─── Product Card ───────────────────────────────────────────────────────────────
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, onQuickView }: { product: Product; onQuickView: (p: Product) => void }) {
   const [hovered, setHovered] = useState(false);
   const [, navigate] = useLocation();
 
@@ -396,6 +397,31 @@ function ProductCard({ product }: { product: Product }) {
             background: "linear-gradient(to top, rgba(28,24,16,0.7) 0%, rgba(28,24,16,0.1) 60%, transparent 100%)",
           }}
         />
+
+        {/* Quick View button — appears on hover */}
+        <div
+          className="absolute inset-0 flex items-center justify-center transition-all duration-300"
+          style={{ opacity: hovered ? 1 : 0, pointerEvents: hovered ? "auto" : "none" }}
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              background: "rgba(247,243,236,0.92)",
+              color: "#2C2416",
+              border: "1px solid rgba(156,122,60,0.4)",
+              fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+              backdropFilter: "blur(4px)",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            عرض سريع
+          </button>
+        </div>
 
         {/* Badge */}
         {product.badge && (
@@ -533,6 +559,7 @@ export default function Catalog() {
   const [activeOccasion, setActiveOccasion] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   // Dynamic SEO
   useSEO({
@@ -942,7 +969,7 @@ export default function Catalog() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filtered.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
               ))}
             </div>
           )}
@@ -1000,6 +1027,14 @@ export default function Catalog() {
       </section>
 
       <Footer />
+
+      {/* Quick View Modal */}
+      {quickViewProduct && (
+        <ProductQuickView
+          product={quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+        />
+      )}
 
       {/* Floating WhatsApp */}
       <a
