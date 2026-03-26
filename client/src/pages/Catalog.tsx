@@ -6,8 +6,8 @@
  * - WhatsApp order CTA per product
  * - RTL Arabic layout
  */
-import { useState, useMemo } from "react";
-import { Link, useLocation } from "wouter";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useLocation, useSearch } from "wouter";
 import { Search, Filter, ShoppingBag, Star, Phone, Loader2, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -532,6 +532,14 @@ export default function Catalog() {
   const [activeOccasion, setActiveOccasion] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
+
+  // Read ?occasion=key from URL on first mount and pre-apply the filter
+  const searchString = useSearch();
+  useEffect(() => {
+    const params = new URLSearchParams(searchString);
+    const occ = params.get("occasion");
+    if (occ) setActiveOccasion(occ);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch products from database
   const { data: dbProducts, isLoading: productsLoading } = trpc.products.list.useQuery();

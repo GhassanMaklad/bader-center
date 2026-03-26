@@ -5,7 +5,8 @@
  */
 import { useEffect, useRef, useState, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
-import { X, ChevronRight, ChevronLeft } from "lucide-react";
+import { X, ChevronRight, ChevronLeft, ShoppingBag } from "lucide-react";
+import { Link } from "wouter";
 
 const occasions = [
   { key: "catering",      icon: "🍽️", title: "الكيترنج والبوثات",      desc: "تجهيزات كيترنج وبوثات فاخرة" },
@@ -250,12 +251,11 @@ export default function OccasionsSection() {
           </div>
 
           {/* Occasions Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {occasions.map((occ, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {displayOccasions.map((occ, i) => (
               <div
-                key={occ.title}
-                onClick={() => setSelectedOccasion(occ)}
-                className="group text-center p-6 rounded-2xl cursor-pointer transition-all duration-400"
+                key={occ.key}
+                className="group flex flex-col text-center p-6 rounded-2xl transition-all duration-400"
                 style={{
                   background: "#EDE8DF",
                   border: "1px solid rgba(156,122,60,0.15)",
@@ -277,26 +277,60 @@ export default function OccasionsSection() {
                   (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 12px rgba(44,36,22,0.04)";
                 }}
               >
-                <div className="text-4xl mb-3">{occ.icon}</div>
-                <h3
-                  className="font-semibold text-sm mb-2"
-                  style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
-                >
-                  {occ.title}
-                </h3>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
-                >
-                  {occ.desc}
-                </p>
-                {/* "View photos" hint */}
+                {/* Clickable area: icon + title + desc opens photo carousel */}
                 <div
-                  className="mt-3 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ color: "#9C7A3C" }}
+                  className="flex-1 cursor-pointer"
+                  onClick={() => setSelectedOccasion(occ)}
                 >
-                  عرض الصور ←
+                  <div className="text-4xl mb-3">{occ.icon}</div>
+                  <h3
+                    className="font-semibold text-sm mb-2"
+                    style={{ color: "#2C2416", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+                  >
+                    {occ.title}
+                  </h3>
+                  <p
+                    className="text-xs leading-relaxed mb-3"
+                    style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+                  >
+                    {occ.desc}
+                  </p>
+                  {/* "View photos" hint */}
+                  <div
+                    className="text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity mb-3"
+                    style={{ color: "#9C7A3C" }}
+                  >
+                    عرض الصور ←
+                  </div>
                 </div>
+
+                {/* Browse Products button */}
+                <Link
+                  href={`/catalog?occasion=${occ.key}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-xs font-bold transition-all duration-300 mt-auto"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(156,122,60,0.12), rgba(156,122,60,0.18))",
+                    border: "1px solid rgba(156,122,60,0.3)",
+                    color: "#9C7A3C",
+                    fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.stopPropagation();
+                    (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, #B89050, #D4B070)";
+                    (e.currentTarget as HTMLElement).style.color = "#2C2416";
+                    (e.currentTarget as HTMLElement).style.borderColor = "#B89050";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.stopPropagation();
+                    (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, rgba(156,122,60,0.12), rgba(156,122,60,0.18))";
+                    (e.currentTarget as HTMLElement).style.color = "#9C7A3C";
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(156,122,60,0.3)";
+                  }}
+                >
+                  <ShoppingBag size={12} />
+                  تصفح المنتجات
+                </Link>
               </div>
             ))}
           </div>
