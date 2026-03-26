@@ -241,6 +241,8 @@ export default function RequestService() {
 
   const [, navigate] = useLocation();
   const [submitted, setSubmitted] = useState(false);
+  const [waOwnerLink, setWaOwnerLink] = useState("");
+  const [waCustomerLink, setWaCustomerLink] = useState("");
   const [form, setForm] = useState<FormData>({
     name: "",
     phone: "",
@@ -317,7 +319,7 @@ export default function RequestService() {
       notes: form.notes,
     });
 
-    // 1️⃣ Send request to Bader Center (owner)
+    // 1️⃣ Build owner notification message (for Bader Center team)
     const ownerMessage = [
       "🌟 *طلب خدمة جديد — مركز بدر*",
       "",
@@ -337,10 +339,7 @@ export default function RequestService() {
       .filter((l) => l !== "")
       .join("\n");
 
-    window.open(`https://wa.me/96522675826?text=${encodeURIComponent(ownerMessage)}`, "_blank");
-
     // 2️⃣ Build confirmation message for the customer
-    // Normalize phone: strip spaces/dashes, ensure it starts with country code
     const rawPhone = form.phone.replace(/[\s\-]/g, "");
     const customerPhone = rawPhone.startsWith("+")
       ? rawPhone.replace("+", "")
@@ -370,13 +369,9 @@ export default function RequestService() {
       .filter((l) => l !== "")
       .join("\n");
 
-    // Open WhatsApp to send confirmation to customer (slight delay so both tabs open)
-    setTimeout(() => {
-      window.open(
-        `https://wa.me/${customerPhone}?text=${encodeURIComponent(confirmationMessage)}`,
-        "_blank"
-      );
-    }, 800);
+    // Store WhatsApp links in state — user taps buttons directly (avoids popup blockers)
+    setWaOwnerLink(`https://wa.me/96522675826?text=${encodeURIComponent(ownerMessage)}`);
+    setWaCustomerLink(`https://wa.me/${customerPhone}?text=${encodeURIComponent(confirmationMessage)}`);
 
     setSubmitted(true);
   };
@@ -385,18 +380,17 @@ export default function RequestService() {
   if (submitted) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center relative"
+        className="min-h-screen flex flex-col items-center justify-center relative px-4"
         style={{ background: "#F2EDE4" }}
       >
         <div className="absolute inset-0 islamic-pattern opacity-10" />
         <div
-          className="relative z-10 text-center px-6 max-w-lg"
-          style={{
-            animation: "fadeInUp 0.8s ease forwards",
-          }}
+          className="relative z-10 text-center max-w-lg w-full"
+          style={{ animation: "fadeInUp 0.8s ease forwards" }}
         >
+          {/* Success icon */}
           <div
-            className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8"
+            className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6"
             style={{
               background: "linear-gradient(135deg, rgba(156,122,60,0.2), rgba(156,122,60,0.05))",
               border: "2px solid rgba(156,122,60,0.5)",
@@ -405,71 +399,90 @@ export default function RequestService() {
           >
             <CheckCircle2 size={48} className="text-[#B89050]" />
           </div>
+
           <h1
-            className="text-4xl font-bold text-white mb-4"
-            style={{ fontFamily: "'Noto Naskh Arabic', serif" }}
+            className="text-3xl font-bold mb-2"
+            style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#2C2416" }}
           >
-            تم إرسال طلبك بنجاح!
+            تم حفظ طلبك بنجاح! ✅
           </h1>
-          <div className="gold-divider max-w-xs mx-auto mb-6" />
+          <div className="gold-divider max-w-xs mx-auto mb-4" />
           <p
-            className="text-[#A09070] text-lg mb-6 leading-relaxed"
+            className="text-[#6B5A3E] text-base mb-8 leading-relaxed"
             style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
           >
-            شكراً لك! تم إرسال طلبك إلى مركز بدر، كما فُتح واتساب لإرسال رسالة تأكيد إليك على رقمك المسجّل.
+            الخطوة التالية: أرسل تفاصيل طلبك لفريق مركز بدر عبر واتساب ليتواصلوا معك فوراً.
           </p>
 
-          {/* Confirmation steps */}
+          {/* Primary CTA — send to Bader Center */}
+          <a
+            href={waOwnerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-3 w-full rounded-xl py-4 px-6 mb-4 font-bold text-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            style={{
+              background: "#25D366",
+              color: "#fff",
+              fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+              boxShadow: "0 6px 24px rgba(37,211,102,0.35)",
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            أرسل طلبك لفريق مركز بدر الآن
+          </a>
+
+          {/* Secondary CTA — send confirmation to customer */}
+          <a
+            href={waCustomerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-3 w-full rounded-xl py-3 px-6 mb-6 font-semibold text-sm transition-all duration-200 hover:scale-[1.01]"
+            style={{
+              background: "rgba(37,211,102,0.08)",
+              color: "#1a7a3e",
+              border: "1px solid rgba(37,211,102,0.3)",
+              fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#25D366">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            أرسل رسالة تأكيد لنفسك
+          </a>
+
+          {/* Info box */}
           <div
-            className="rounded-xl p-5 mb-8 text-right"
+            className="rounded-xl p-4 mb-6 text-right"
             style={{
               background: "rgba(156,122,60,0.07)",
               border: "1px solid rgba(156,122,60,0.2)",
             }}
           >
             <p
-              className="text-[#B89050] font-semibold mb-3 text-sm tracking-wide"
+              className="text-[#B89050] font-semibold mb-2 text-sm"
               style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
-              ماذا حدث الآن؟
+              ماذا يحدث بعد الإرسال؟
             </p>
             <ul
-              className="space-y-2 text-[#A09070] text-sm"
+              className="space-y-1.5 text-[#6B5A3E] text-sm"
               style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
             >
-              <li className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                تم حفظ طلبك في نظامنا
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                تم إرسال تفاصيل طلبك إلى فريق مركز بدر عبر واتساب
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#B89050]">↗</span>
-                فُتح واتساب لإرسال رسالة تأكيد على رقمك — تأكد من الضغط على "إرسال"
-              </li>
+              <li className="flex items-center gap-2"><span className="text-green-500">✓</span> تم حفظ طلبك في نظام مركز بدر</li>
+              <li className="flex items-center gap-2"><span className="text-[#B89050]">→</span> سيتواصل معك الفريق خلال ساعات العمل</li>
+              <li className="flex items-center gap-2"><span className="text-[#B89050]">→</span> سيُرسَل لك رابط الدفع بعد تأكيد الطلب</li>
             </ul>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://wa.me/96522675826"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-gold flex items-center justify-center gap-2"
-            >
-              <Phone size={18} />
-              تواصل مباشرة عبر واتساب
-            </a>
-            <button
-              onClick={() => navigate("/")}
-              className="btn-gold-outline flex items-center justify-center gap-2 px-6 py-3"
-            >
-              <ArrowRight size={18} />
-              العودة للرئيسية
-            </button>
-          </div>
+          <button
+            onClick={() => navigate("/")}
+            className="btn-gold-outline flex items-center justify-center gap-2 px-6 py-3 mx-auto"
+          >
+            <ArrowRight size={18} />
+            العودة للرئيسية
+          </button>
         </div>
       </div>
     );
