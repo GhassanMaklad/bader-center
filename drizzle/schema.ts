@@ -37,6 +37,7 @@ export const products = mysqlTable("products", {
   rating: int("rating").default(5).notNull(),
   inStock: boolean("inStock").default(true).notNull(),
   tags: text("tags"),                                          // JSON array stored as text (nullable)
+  occasionKeys: text("occasionKeys"),                            // JSON array of occasion keys e.g. ["weddings","corporate"]
   sortOrder: int("sortOrder").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

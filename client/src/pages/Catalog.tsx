@@ -8,7 +8,7 @@
  */
 import { useState, useMemo } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Filter, ShoppingBag, ArrowRight, Star, Phone, Loader2 } from "lucide-react";
+import { Search, Filter, ShoppingBag, Star, Phone, Loader2, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
@@ -56,6 +56,7 @@ interface Product {
   rating: number;
   inStock: boolean;
   tags: string[];
+  occasionKeys: string[]; // occasion keys from DB
 }
 
 const products: Product[] = [
@@ -75,6 +76,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["أفراح", "هدايا", "رمضان"],
+    occasionKeys: ["weddings", "occasions", "newborn"],
   },
   {
     id: 2,
@@ -91,6 +93,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["رمضان", "هدايا"],
+    occasionKeys: ["occasions", "weddings"],
   },
   {
     id: 3,
@@ -104,6 +107,7 @@ const products: Product[] = [
     rating: 4,
     inStock: true,
     tags: ["أفراح", "هدايا", "عيد"],
+    occasionKeys: ["weddings", "boxes"],
   },
   {
     id: 4,
@@ -120,6 +124,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["شركات", "هدايا", "مخصص"],
+    occasionKeys: ["corporate", "shields"],
   },
   {
     id: 5,
@@ -133,6 +138,7 @@ const products: Product[] = [
     rating: 4,
     inStock: true,
     tags: ["هدايا", "ديكور"],
+    occasionKeys: ["weddings", "occasions"],
   },
   {
     id: 6,
@@ -148,6 +154,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["عيد", "هدايا"],
+    occasionKeys: ["occasions", "weddings"],
   },
 
   // ── Shields ──
@@ -166,6 +173,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["شركات", "مدارس", "تكريم"],
+    occasionKeys: ["corporate", "schools", "shields"],
   },
   {
     id: 8,
@@ -179,6 +187,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["شركات", "حكومة", "تكريم"],
+    occasionKeys: ["corporate", "shields"],
   },
   {
     id: 9,
@@ -194,6 +203,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["تكريم", "مخصص", "فن"],
+    occasionKeys: ["corporate", "schools", "shields"],
   },
   {
     id: 10,
@@ -208,6 +218,7 @@ const products: Product[] = [
     rating: 4,
     inStock: true,
     tags: ["شركات", "تكريم", "جملة"],
+    occasionKeys: ["corporate", "shields"],
   },
 
   // ── Catering ──
@@ -225,6 +236,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["أفراح", "فعاليات", "شركات"],
+    occasionKeys: ["weddings", "catering", "corporate"],
   },
   {
     id: 12,
@@ -240,6 +252,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["وطني", "فعاليات", "مدارس"],
+    occasionKeys: ["catering", "corporate", "schools"],
   },
   {
     id: 13,
@@ -253,6 +266,7 @@ const products: Product[] = [
     rating: 4,
     inStock: true,
     tags: ["أفراح", "استقبالات"],
+    occasionKeys: ["weddings", "catering", "newborn"],
   },
 
   // ── Occasions ──
@@ -271,6 +285,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["قرقيعان", "أطفال", "موسمي"],
+    occasionKeys: ["occasions", "schools"],
   },
   {
     id: 15,
@@ -284,6 +299,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["تخرج", "هدايا", "تكريم"],
+    occasionKeys: ["schools", "occasions"],
   },
 
   // ── Calligraphy ──
@@ -301,6 +317,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["فن", "ديكور", "هدايا"],
+    occasionKeys: ["corporate", "shields", "occasions"],
   },
   {
     id: 17,
@@ -315,6 +332,7 @@ const products: Product[] = [
     rating: 5,
     inStock: true,
     tags: ["نقش", "مخصص", "هدايا"],
+    occasionKeys: ["corporate", "shields", "weddings"],
   },
 ];
 
@@ -511,10 +529,14 @@ function ProductCard({ product }: { product: Product }) {
 //// ─── Main Catalog Page ────────────────────────────────────────────────────────
 export default function Catalog() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
+  const [activeOccasion, setActiveOccasion] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
+
   // Fetch products from database
   const { data: dbProducts, isLoading: productsLoading } = trpc.products.list.useQuery();
+  // Fetch occasions from database
+  const { data: dbOccasions } = trpc.occasions.list.useQuery();
 
   // Map DB products to the Product interface
   const allProducts: Product[] = useMemo(() => {
@@ -534,15 +556,33 @@ export default function Catalog() {
       rating: p.rating,
       inStock: p.inStock,
       tags: p.tags ? (() => { try { return JSON.parse(p.tags!); } catch { return []; } })() : [],
+      occasionKeys: p.occasionKeys ? (() => { try { return JSON.parse(p.occasionKeys!); } catch { return []; } })() : [],
     }));
   }, [dbProducts]);
+
+  // Build occasion filter list from DB (only occasions that have products)
+  const occasionFilters = useMemo(() => {
+    const base = [{ key: "all", title: "كل المناسبات", icon: "✦" }];
+    if (!dbOccasions) return base;
+    return [
+      ...base,
+      ...dbOccasions
+        .filter((occ) => allProducts.some((p) => p.occasionKeys.includes(occ.key)))
+        .map((occ) => ({ key: occ.key, title: occ.title, icon: occ.icon })),
+    ];
+  }, [dbOccasions, allProducts]);
 
   const filtered = useMemo(() => {
     let result = allProducts;
 
-    // Category filter
+    // Service (category) filter
     if (activeCategory !== "all") {
       result = result.filter((p) => p.category === activeCategory);
+    }
+
+    // Occasion filter
+    if (activeOccasion !== "all") {
+      result = result.filter((p) => p.occasionKeys.includes(activeOccasion));
     }
 
     // Search filter
@@ -561,7 +601,6 @@ export default function Catalog() {
       result = [...result].sort((a, b) => b.rating - a.rating);
     } else if (sortBy === "price-asc") {
       result = [...result].sort((a, b) => {
-        // Items with priceValue=0 ("تواصل للسعر") go to the end
         if (a.priceValue === 0 && b.priceValue === 0) return 0;
         if (a.priceValue === 0) return 1;
         if (b.priceValue === 0) return -1;
@@ -569,7 +608,6 @@ export default function Catalog() {
       });
     } else if (sortBy === "price-desc") {
       result = [...result].sort((a, b) => {
-        // Items with priceValue=0 ("تواصل للسعر") go to the end
         if (a.priceValue === 0 && b.priceValue === 0) return 0;
         if (a.priceValue === 0) return 1;
         if (b.priceValue === 0) return -1;
@@ -578,7 +616,7 @@ export default function Catalog() {
     }
 
     return result;
-  }, [activeCategory, searchQuery, sortBy, allProducts]);
+  }, [activeCategory, activeOccasion, searchQuery, sortBy, allProducts]);
 
   // Build category tabs with live counts from DB
   const categories = useMemo(() =>
@@ -588,6 +626,14 @@ export default function Catalog() {
     })),
     [allProducts]
   );
+
+  const hasActiveFilters = activeCategory !== "all" || activeOccasion !== "all" || searchQuery.trim() !== "";
+
+  const clearAllFilters = () => {
+    setActiveCategory("all");
+    setActiveOccasion("all");
+    setSearchQuery("");
+  };
 
   if (productsLoading) {
     return (
@@ -674,41 +720,79 @@ export default function Catalog() {
       {/* Filters & Search */}
       <section className="sticky top-[40px] z-40 py-4" style={{ background: "rgba(250,250,248,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(156,122,60,0.15)" }}>
         <div className="container mx-auto px-4">
-          {/* Category Tabs */}
-          <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300"
-                style={{
-                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
-                  background: activeCategory === cat.id
-                    ? "linear-gradient(135deg, #B89050, #D4B070)"
-                    : "rgba(156,122,60,0.08)",
-                  color: activeCategory === cat.id ? "#2C2416" : "#6B5E4A",
-                  border: activeCategory === cat.id
-                    ? "1px solid #B89050"
-                    : "1px solid rgba(156,122,60,0.15)",
-                  boxShadow: activeCategory === cat.id ? "0 4px 15px rgba(156,122,60,0.3)" : "none",
-                }}
-              >
-                <span>{cat.icon}</span>
-                <span>{cat.label}</span>
-                <span
-                  className="text-xs px-1.5 py-0.5 rounded-full"
+
+          {/* Row 1: Service (Category) Tabs */}
+          <div className="mb-1">
+            <p className="text-xs mb-2" style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", letterSpacing: "0.05em" }}>
+              ✦ الخدمة
+            </p>
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300"
                   style={{
-                    background: activeCategory === cat.id ? "rgba(28,24,16,0.15)" : "rgba(156,122,60,0.12)",
-                    color: activeCategory === cat.id ? "#2C2416" : "#9C7A3C",
+                    fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+                    background: activeCategory === cat.id
+                      ? "linear-gradient(135deg, #B89050, #D4B070)"
+                      : "rgba(156,122,60,0.08)",
+                    color: activeCategory === cat.id ? "#2C2416" : "#6B5E4A",
+                    border: activeCategory === cat.id
+                      ? "1px solid #B89050"
+                      : "1px solid rgba(156,122,60,0.15)",
+                    boxShadow: activeCategory === cat.id ? "0 4px 15px rgba(156,122,60,0.3)" : "none",
                   }}
                 >
-                  {cat.count}
-                </span>
-              </button>
-            ))}
+                  <span>{cat.icon}</span>
+                  <span>{cat.label}</span>
+                  <span
+                    className="text-xs px-1.5 py-0.5 rounded-full"
+                    style={{
+                      background: activeCategory === cat.id ? "rgba(28,24,16,0.15)" : "rgba(156,122,60,0.12)",
+                      color: activeCategory === cat.id ? "#2C2416" : "#9C7A3C",
+                    }}
+                  >
+                    {cat.count}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Search + Sort Row */}
+          {/* Row 2: Occasion Filter Chips */}
+          {occasionFilters.length > 1 && (
+            <div className="mb-3">
+              <p className="text-xs mb-2" style={{ color: "#9C7A3C", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", letterSpacing: "0.05em" }}>
+                ✦ المناسبة
+              </p>
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                {occasionFilters.map((occ) => (
+                  <button
+                    key={occ.key}
+                    onClick={() => setActiveOccasion(occ.key)}
+                    className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300"
+                    style={{
+                      fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+                      background: activeOccasion === occ.key
+                        ? "linear-gradient(135deg, #2C2416, #4A3820)"
+                        : "rgba(44,36,22,0.06)",
+                      color: activeOccasion === occ.key ? "#D4B070" : "#6B5E4A",
+                      border: activeOccasion === occ.key
+                        ? "1px solid rgba(184,144,80,0.6)"
+                        : "1px solid rgba(44,36,22,0.12)",
+                      boxShadow: activeOccasion === occ.key ? "0 2px 10px rgba(44,36,22,0.2)" : "none",
+                    }}
+                  >
+                    <span>{occ.icon}</span>
+                    <span>{occ.title}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Row 3: Search + Sort + Clear Filters */}
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="relative flex-1">
@@ -752,6 +836,23 @@ export default function Catalog() {
                 <option value="rating">الأعلى تقييماً</option>
               </select>
             </div>
+
+            {/* Clear all filters button */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm transition-all duration-300"
+                style={{
+                  background: "rgba(185,28,28,0.08)",
+                  border: "1px solid rgba(185,28,28,0.2)",
+                  color: "#b91c1c",
+                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
+                }}
+              >
+                <X size={14} />
+                مسح الفلاتر
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -759,8 +860,8 @@ export default function Catalog() {
       {/* Products Grid */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          {/* Results count */}
-          <div className="flex items-center justify-between mb-8">
+          {/* Results count + active filter pills */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
             <p style={{ color: "#8A7560", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", fontSize: "0.875rem" }}>
               يعرض{" "}
               <span style={{ color: "#B89050", fontWeight: "bold" }}>{filtered.length}</span>{" "}
@@ -769,19 +870,37 @@ export default function Catalog() {
                 <span> · نتائج البحث عن "<span style={{ color: "#B89050" }}>{searchQuery}</span>"</span>
               )}
             </p>
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="text-xs px-3 py-1 rounded-full transition-colors"
-                style={{
-                  color: "#B89050",
-                  border: "1px solid rgba(156,122,60,0.3)",
-                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
-                }}
-              >
-                مسح البحث ✕
-              </button>
-            )}
+            <div className="flex flex-wrap gap-2">
+              {activeCategory !== "all" && (
+                <span
+                  className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full cursor-pointer"
+                  style={{ background: "rgba(156,122,60,0.12)", color: "#9C7A3C", border: "1px solid rgba(156,122,60,0.25)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+                  onClick={() => setActiveCategory("all")}
+                >
+                  {CATEGORY_DEFS.find(c => c.id === activeCategory)?.icon} {CATEGORY_DEFS.find(c => c.id === activeCategory)?.label}
+                  <X size={12} />
+                </span>
+              )}
+              {activeOccasion !== "all" && (
+                <span
+                  className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full cursor-pointer"
+                  style={{ background: "rgba(44,36,22,0.08)", color: "#6B5E4A", border: "1px solid rgba(44,36,22,0.15)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+                  onClick={() => setActiveOccasion("all")}
+                >
+                  {occasionFilters.find(o => o.key === activeOccasion)?.icon} {occasionFilters.find(o => o.key === activeOccasion)?.title}
+                  <X size={12} />
+                </span>
+              )}
+              {searchQuery && (
+                <span
+                  className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full cursor-pointer"
+                  style={{ background: "rgba(156,122,60,0.08)", color: "#9C7A3C", border: "1px solid rgba(156,122,60,0.2)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+                  onClick={() => setSearchQuery("")}
+                >
+                  "{searchQuery}" <X size={12} />
+                </span>
+              )}
+            </div>
           </div>
 
           {filtered.length === 0 ? (
@@ -797,7 +916,7 @@ export default function Catalog() {
                 جرب كلمة بحث مختلفة أو اختر فئة أخرى
               </p>
               <button
-                onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
+                onClick={clearAllFilters}
                 className="mt-6 btn-gold"
               >
                 عرض جميع المنتجات

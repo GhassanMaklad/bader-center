@@ -1,0 +1,9 @@
+{
+  "query": "SHOW COLUMNS FROM products LIKE 'occasionKeys';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute SHOW COLUMNS FROM products LIKE 'occasionKeys';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1566
+}

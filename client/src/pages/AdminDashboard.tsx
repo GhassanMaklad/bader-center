@@ -76,6 +76,7 @@ type ProductForm = {
   rating: number;
   inStock: boolean;
   tags: string;
+  occasionKeys: string;
   sortOrder: number;
 };
 
@@ -93,6 +94,7 @@ const emptyForm: ProductForm = {
   rating: 5,
   inStock: true,
   tags: "",
+  occasionKeys: "",
   sortOrder: 0,
 };
 
@@ -232,6 +234,7 @@ export default function AdminDashboard() {
       rating: p.rating,
       inStock: p.inStock,
       tags: p.tags ?? "",
+      occasionKeys: p.occasionKeys ?? "",
       sortOrder: p.sortOrder,
     });
     setDialogOpen(true);
@@ -244,6 +247,7 @@ export default function AdminDashboard() {
       badge: form.badge || null,
       badgeColor: form.badgeColor || null,
       tags: form.tags || null,
+      occasionKeys: form.occasionKeys || null,
     };
     if (editingId !== null) {
       updateMutation.mutate({ id: editingId, data: payload });
@@ -965,6 +969,20 @@ export default function AdminDashboard() {
                 dir="ltr"
                 style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
+            </div>
+            {/* Occasion Keys */}
+            <div className="space-y-1">
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>مفاتيح المناسبات (JSON مثال: ["weddings","corporate"])</Label>
+              <Input
+                value={form.occasionKeys}
+                onChange={(e) => setForm({ ...form, occasionKeys: e.target.value })}
+                placeholder='["weddings","corporate"]'
+                dir="ltr"
+                style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
+              />
+              <p className="text-xs" style={{ color: "#9C7A3C" }}>
+                المفاتيح المتاحة: weddings, corporate, schools, catering, occasions, newborn, shields, boxes, calligraphy
+              </p>
             </div>
             {/* Sort Order */}
             <div className="space-y-1">
