@@ -8,16 +8,17 @@ import { trpc } from "@/lib/trpc";
 import { X, ChevronRight, ChevronLeft } from "lucide-react";
 
 const occasions = [
-  { key: "ramadan",    icon: "🌙", title: "رمضان الكريم",    desc: "دزات وتجهيزات رمضانية فاخرة" },
-  { key: "qarqiaan",  icon: "🎊", title: "قرقيعان",          desc: "تجهيزات قرقيعان للأطفال والعائلات" },
-  { key: "national",  icon: "🇰🇼", title: "العيد الوطني",    desc: "ستاندات وهدايا بالألوان الوطنية" },
-  { key: "graduation",icon: "🎓", title: "حفلات التخرج",     desc: "دروع وهدايا تخرج مميزة" },
-  { key: "newborn",   icon: "👶", title: "المواليد",          desc: "صناديق هدايا للمواليد الجدد" },
-  { key: "wedding",   icon: "💒", title: "الأعراس",           desc: "تجهيزات أفراح فاخرة متكاملة" },
-  { key: "corporate", icon: "🏢", title: "الشركات",           desc: "هدايا وتكريمات للمؤسسات" },
-  { key: "schools",   icon: "🏫", title: "المدارس",           desc: "دروع وشهادات تقدير للطلاب" },
-  { key: "birthday",  icon: "🎉", title: "أعياد الميلاد",    desc: "تجهيزات احتفالية مميزة" },
-  { key: "reception", icon: "🤝", title: "الاستقبالات",      desc: "بوثات استقبال احترافية" },
+  { key: "catering",      icon: "🍽️", title: "الكيترنج والبوثات",      desc: "تجهيزات كيترنج وبوثات فاخرة" },
+  { key: "weddings",      icon: "💍", title: "الدزات والأفراح",      desc: "تجهيزات أفراح فاخرة متكاملة" },
+  { key: "schools",       icon: "🏫", title: "المدارس والمعلمات",    desc: "دروع وشهادات تقدير للطلاب" },
+  { key: "corporate",     icon: "🏢", title: "الشركات والوزارات",   desc: "هدايا وتكريمات للمؤسسات" },
+  { key: "newborn",       icon: "👶", title: "الاستقبال والمواليد",  desc: "صناديق هدايا للمواليد الجدد" },
+  { key: "boxes",         icon: "🎁", title: "العلب والصناديق",     desc: "علب وصناديق هدايا فاخرة" },
+  { key: "shields",       icon: "🏆", title: "الدروع والهديا",       desc: "دروع تكريم وهدايا فاخرة" },
+  { key: "occasions",     icon: "🎉", title: "الأعياد والمناسبات",  desc: "تجهيزات احتفالية مميزة" },
+  { key: "printing",      icon: "🖨️", title: "المطبوعات الورقية",   desc: "مطبوعات وبطاقات ومنشورات" },
+  { key: "manufacturing", icon: "⚙️", title: "الطباعة والتصنيع",    desc: "تصنيع منتجات مخصصة" },
+  { key: "decor",         icon: "🏠", title: "الديكور والنجارة",     desc: "ديكور داخلي وأعمال نجارة" },
 ];
 
 // ─── Carousel Modal ───────────────────────────────────────────────────────────
@@ -188,6 +189,12 @@ export default function OccasionsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [selectedOccasion, setSelectedOccasion] = useState<typeof occasions[0] | null>(null);
+
+  // Fetch DB-managed occasions (if any), fall back to static list
+  const { data: dbOccasions = [] } = trpc.occasions.list.useQuery();
+  const displayOccasions = dbOccasions.length > 0
+    ? dbOccasions.map((o) => ({ key: o.key, icon: o.icon, title: o.title, desc: o.desc ?? "" }))
+    : occasions;
 
   // Fetch photos for the selected occasion
   const { data: photos = [], isLoading: photosLoading } = trpc.occasionPhotos.list.useQuery(

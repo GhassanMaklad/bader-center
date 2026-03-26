@@ -1,6 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { galleryItems, InsertGalleryItem, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertServiceCard, InsertServiceRequest, InsertUser, occasionPhotos, orders, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
+import { galleryItems, InsertGalleryItem, InsertOccasion, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertServiceCard, InsertServiceRequest, InsertUser, occasionPhotos, occasions, orders, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -236,6 +236,34 @@ export async function deleteServiceCard(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(serviceCards).where(eq(serviceCards.id, id));
+}
+
+// ─── Occasion Queries ────────────────────────────────────────────────────────────────────────────────────────
+
+export async function getAllOccasions() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(occasions).orderBy(asc(occasions.sortOrder));
+}
+
+// nameAr is now 'title' in the schema
+export async function createOccasion(data: InsertOccasion) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(occasions).values(data);
+  return result;
+}
+
+export async function updateOccasion(id: number, data: Partial<InsertOccasion>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(occasions).set(data).where(eq(occasions.id, id));
+}
+
+export async function deleteOccasion(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(occasions).where(eq(occasions.id, id));
 }
 
 // ─── Occasion Photo Queries ────────────────────────────────────────────────────────────────────────────────────────

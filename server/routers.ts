@@ -32,6 +32,10 @@ import {
   createOccasionPhoto,
   updateOccasionPhoto,
   deleteOccasionPhoto,
+  getAllOccasions,
+  createOccasion,
+  updateOccasion,
+  deleteOccasion,
 } from "./db";
 
 // ─── Admin middleware ──────────────────────────────────────────────────────────
@@ -517,9 +521,63 @@ export const appRouter = router({
         const { url } = await storagePut(key, buffer, input.mimeType);
         return { url };
       }),
-   }),
+  }),
 
-  // ─── Occasion Photos Router ─────────────────────────────────────────────────
+  // ─── Occasions Management Router ────────────────────────────────────────────────────
+  occasions: router({
+    // Public: list all occasions
+    list: publicProcedure.query(async () => {
+      return getAllOccasions();
+    }),
+    // Admin: create a new occasion
+    create: adminProcedure
+      .input(
+        z.object({
+          key: z.string().min(1),
+          title: z.string().min(1),
+          icon: z.string().default("🎉"),
+          desc: z.string().default(""),
+          sortOrder: z.number().default(0),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await createOccasion({
+          key: input.key,
+          title: input.title,
+          icon: input.icon,
+          desc: input.desc,
+          sortOrder: input.sortOrder,
+          isActive: true,
+        });
+        return { success: true };
+      }),
+    // Admin: update an occasion
+    update: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          title: z.string().optional(),
+          icon: z.string().optional(),
+          desc: z.string().optional(),
+          sortOrder: z.number().optional(),
+          isActive: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateOccasion(id, data);
+        return { success: true };
+      }),
+    // Admin: delete an occasion
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteOccasion(input.id);
+        return { success: true };
+      }),
+  }),
+
+  // ─── Occasion Photos Router ─────────────────────────────────────────────────────
   occasionPhotos: router({
     // Public: list photos for a specific occasion (used in OccasionsSection)
     list: publicProcedure

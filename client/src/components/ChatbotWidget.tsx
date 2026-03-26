@@ -293,7 +293,7 @@ export default function ChatbotWidget() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen((v) => !v)}
-        className="fixed bottom-6 left-20 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+        className="fixed bottom-6 left-20 z-50 w-14 h-14 rounded-full flex flex-col items-center justify-center gap-0.5 transition-all duration-300 hover:scale-110"
         style={{
           background: isOpen
             ? "#F7F3EC"
@@ -310,8 +310,16 @@ export default function ChatbotWidget() {
           <ChevronDown size={20} style={{ color: "#9C7A3C" }} />
         ) : (
           <>
-            <MessageCircle size={16} className="text-black" />
-            <span style={{ fontSize: "10px", fontWeight: "700", color: "#fff", lineHeight: 1, marginTop: "1px" }}>AI</span>
+            {/* AI Sparkle SVG icon */}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Main sparkle star */}
+              <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="white" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5"/>
+              {/* Small sparkle top-right */}
+              <path d="M19 3L19.8 5.2L22 6L19.8 6.8L19 9L18.2 6.8L16 6L18.2 5.2L19 3Z" fill="white" opacity="0.85"/>
+              {/* Small sparkle bottom-left */}
+              <path d="M5 15L5.6 16.8L7.4 17.4L5.6 18L5 19.8L4.4 18L2.6 17.4L4.4 16.8L5 15Z" fill="white" opacity="0.7"/>
+            </svg>
+            <span style={{ fontSize: "9px", fontWeight: "800", color: "#fff", lineHeight: 1, letterSpacing: "0.05em" }}>AI</span>
           </>
         )}
       </button>

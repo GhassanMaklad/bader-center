@@ -1,0 +1,87 @@
+{
+  "query": "SELECT id, `key`, title, icon, sortOrder FROM occasions ORDER BY sortOrder;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute SELECT id, `key`, title, icon, sortOrder FROM occasions ORDER BY sortOrder;",
+  "rows": [
+    {
+      "id": "1",
+      "key": "catering",
+      "title": "الكيترنج والبوثات",
+      "icon": "🍽️",
+      "sortOrder": "1"
+    },
+    {
+      "id": "2",
+      "key": "weddings",
+      "title": "الدزات والأفراح",
+      "icon": "💍",
+      "sortOrder": "2"
+    },
+    {
+      "id": "3",
+      "key": "schools",
+      "title": "المدارس والمعلمات",
+      "icon": "🏫",
+      "sortOrder": "3"
+    },
+    {
+      "id": "4",
+      "key": "corporate",
+      "title": "الشركات والوزارات",
+      "icon": "🏢",
+      "sortOrder": "4"
+    },
+    {
+      "id": "5",
+      "key": "newborn",
+      "title": "الاستقبال والمواليد",
+      "icon": "👶",
+      "sortOrder": "5"
+    },
+    {
+      "id": "6",
+      "key": "boxes",
+      "title": "العلب والصناديق",
+      "icon": "🎁",
+      "sortOrder": "6"
+    },
+    {
+      "id": "7",
+      "key": "shields",
+      "title": "الدروع والهديا",
+      "icon": "🏆",
+      "sortOrder": "7"
+    },
+    {
+      "id": "8",
+      "key": "occasions",
+      "title": "الأعياد والمناسبات",
+      "icon": "🎉",
+      "sortOrder": "8"
+    },
+    {
+      "id": "9",
+      "key": "printing",
+      "title": "المطبوعات الورقية",
+      "icon": "🖨️",
+      "sortOrder": "9"
+    },
+    {
+      "id": "10",
+      "key": "manufacturing",
+      "title": "الطباعة والتصنيع",
+      "icon": "⚙️",
+      "sortOrder": "10"
+    },
+    {
+      "id": "11",
+      "key": "decor",
+      "title": "الديكور والنجارة",
+      "icon": "🏠",
+      "sortOrder": "11"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tkey\ttitle\ticon\tsortOrder\n1\tcatering\tالكيترنج والبوثات\t🍽️\t1\n2\tweddings\tالدزات والأفراح\t💍\t2\n3\tschools\tالمدارس والمعلمات\t🏫\t3\n4\tcorporate\tالشركات والوزارات\t🏢\t4\n5\tnewborn\tالاستقبال والمواليد\t👶\t5\n6\tboxes\tالعلب والصناديق\t🎁\t6\n7\tshields\tالدروع والهديا\t🏆\t7\n8\toccasions\tالأعياد والمناسبات\t🎉\t8\n9\tprinting\tالمطبوعات الورقية\t🖨️\t9\n10\tmanufacturing\tالطباعة والتصنيع\t⚙️\t10\n11\tdecor\tالديكور والنجارة\t🏠\t11\n",
+  "stderr": "",
+  "execution_time_ms": 1617
+}

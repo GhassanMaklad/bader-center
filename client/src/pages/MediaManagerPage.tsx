@@ -112,21 +112,169 @@ function useImageUpload(
 // ─── Occasions Tab ───────────────────────────────────────────────────────────
 
 const OCCASION_OPTIONS = [
-  { key: "ramadan", label: "رمضان الكريم" },
-  { key: "qarqiaan", label: "قرقيعان" },
-  { key: "national", label: "العيد الوطني" },
-  { key: "graduation", label: "حفلات التخرج" },
-  { key: "newborn", label: "المواليد" },
-  { key: "wedding", label: "الأعراس" },
-  { key: "corporate", label: "الشركات" },
-  { key: "schools", label: "المدارس" },
-  { key: "birthday", label: "أعياد الميلاد" },
-  { key: "reception", label: "الاستقبالات" },
+  { key: "catering", label: "الكيترنج والبوثات" },
+  { key: "weddings", label: "الدزات والأفراح" },
+  { key: "schools", label: "المدارس والمعلمات" },
+  { key: "corporate", label: "الشركات والوزارات" },
+  { key: "newborn", label: "الاستقبال والمواليد" },
+  { key: "boxes", label: "العلب والصناديق" },
+  { key: "shields", label: "الدروع والهديا" },
+  { key: "occasions", label: "الأعياد والمناسبات" },
+  { key: "printing", label: "المطبوعات الورقية" },
+  { key: "manufacturing", label: "الطباعة والتصنيع" },
+  { key: "decor", label: "الديكور الداخلي والنجارة" },
 ];
+
+// ─── Occasion Manager Tab ─────────────────────────────────────────────────────
+function OccasionManagerTab() {
+  const utils = trpc.useUtils();
+  const { data: dbOccasions = [], isLoading } = trpc.occasions.list.useQuery();
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [editOccasion, setEditOccasion] = useState<{ id: number; title: string; icon: string; desc: string; sortOrder: number } | null>(null);
+  const [form, setForm] = useState({ key: "", title: "", icon: "🎉", desc: "", sortOrder: 0 });
+
+  const createMut = trpc.occasions.create.useMutation({
+    onSuccess: () => { utils.occasions.list.invalidate(); setShowAddDialog(false); setForm({ key: "", title: "", icon: "🎉", desc: "", sortOrder: 0 }); toast.success("تمت إضافة المناسبة"); },
+    onError: (e) => toast.error(e.message),
+  });
+  const updateMut = trpc.occasions.update.useMutation({
+    onSuccess: () => { utils.occasions.list.invalidate(); setEditOccasion(null); toast.success("تم تحديث المناسبة"); },
+    onError: (e) => toast.error(e.message),
+  });
+  const deleteMut = trpc.occasions.delete.useMutation({
+    onSuccess: () => { utils.occasions.list.invalidate(); toast.success("تم حذف المناسبة"); },
+    onError: (e) => toast.error(e.message),
+  });
+
+  return (
+    <div dir="rtl">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#4A3728" }}>
+          إدارة المناسبات
+        </h2>
+        <Button onClick={() => setShowAddDialog(true)} style={{ background: "#C9A84C", color: "#fff" }}>
+          <Plus className="w-4 h-4 ml-1" /> إضافة مناسبة
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <p className="text-center py-8" style={{ color: "#9C7A3C" }}>جاري التحميل...</p>
+      ) : dbOccasions.length === 0 ? (
+        <div className="text-center py-12 rounded-xl border-2 border-dashed" style={{ borderColor: "#C9A84C", color: "#9C7A3C" }}>
+          <p style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>لا توجد مناسبات بعد. اضغط "إضافة مناسبة" للبدء.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {dbOccasions.map((occ) => (
+            <div key={occ.id} className="rounded-xl p-4 border flex flex-col gap-2" style={{ background: "#FEFAF3", borderColor: "#E8D5A3" }}>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{occ.icon}</span>
+                <div className="flex-1">
+                  <p className="font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#4A3728" }}>{occ.title}</p>
+                  <p className="text-xs" style={{ color: "#9C7A3C" }}>key: {occ.key}</p>
+                </div>
+                <div className="flex gap-1">
+                  <Button size="icon" variant="ghost" onClick={() => setEditOccasion({ id: occ.id, title: occ.title, icon: occ.icon, desc: occ.desc ?? "", sortOrder: occ.sortOrder })}>
+                    <Pencil className="w-4 h-4" style={{ color: "#C9A84C" }} />
+                  </Button>
+                  <Button size="icon" variant="ghost" onClick={() => { if (confirm("حذف هذه المناسبة؟")) deleteMut.mutate({ id: occ.id }); }}>
+                    <Trash2 className="w-4 h-4 text-red-400" />
+                  </Button>
+                </div>
+              </div>
+              {occ.desc && <p className="text-sm" style={{ color: "#7A6040", fontFamily: "'Noto Naskh Arabic', serif" }}>{occ.desc}</p>}
+              <p className="text-xs" style={{ color: "#B0A080" }}>الترتيب: {occ.sortOrder}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Add Dialog */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent dir="rtl" className="max-w-md">
+          <DialogHeader>
+            <DialogTitle style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>إضافة مناسبة جديدة</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>المفتاح (key) — بالإنجليزية بدون مسافات</Label>
+              <Input className="mt-1" placeholder="مثال: catering" value={form.key} onChange={(e) => setForm(f => ({ ...f, key: e.target.value.replace(/\s/g, "-").toLowerCase() }))} />
+            </div>
+            <div>
+              <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>اسم المناسبة (عربي)</Label>
+              <Input className="mt-1" placeholder="مثال: الكيترينج والبوثات" value={form.title} onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))} />
+            </div>
+            <div>
+              <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>أيقونة (إيموجي)</Label>
+              <Input className="mt-1" placeholder="🎉" value={form.icon} onChange={(e) => setForm(f => ({ ...f, icon: e.target.value }))} />
+            </div>
+            <div>
+              <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>وصف مختصر (اختياري)</Label>
+              <Input className="mt-1" placeholder="تجهيزات وخدمات متنوعة" value={form.desc} onChange={(e) => setForm(f => ({ ...f, desc: e.target.value }))} />
+            </div>
+            <div>
+              <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>الترتيب</Label>
+              <Input type="number" className="mt-1" value={form.sortOrder} onChange={(e) => setForm(f => ({ ...f, sortOrder: Number(e.target.value) }))} />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 mt-4">
+            <Button variant="outline" onClick={() => setShowAddDialog(false)} style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>إلغاء</Button>
+            <Button disabled={!form.key || !form.title || createMut.isPending} onClick={() => createMut.mutate(form)} style={{ background: "#C9A84C", color: "#fff", fontFamily: "'Noto Naskh Arabic', serif" }}>
+              {createMut.isPending ? "جاري..." : "إضافة"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      {editOccasion && (
+        <Dialog open onOpenChange={() => setEditOccasion(null)}>
+          <DialogContent dir="rtl" className="max-w-md">
+            <DialogHeader>
+              <DialogTitle style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>تعديل المناسبة</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div>
+                <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>اسم المناسبة (عربي)</Label>
+                <Input className="mt-1" value={editOccasion.title} onChange={(e) => setEditOccasion({ ...editOccasion, title: e.target.value })} />
+              </div>
+              <div>
+                <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>أيقونة (إيموجي)</Label>
+                <Input className="mt-1" value={editOccasion.icon} onChange={(e) => setEditOccasion({ ...editOccasion, icon: e.target.value })} />
+              </div>
+              <div>
+                <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>وصف مختصر</Label>
+                <Input className="mt-1" value={editOccasion.desc} onChange={(e) => setEditOccasion({ ...editOccasion, desc: e.target.value })} />
+              </div>
+              <div>
+                <Label style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>الترتيب</Label>
+                <Input type="number" className="mt-1" value={editOccasion.sortOrder} onChange={(e) => setEditOccasion({ ...editOccasion, sortOrder: Number(e.target.value) })} />
+              </div>
+            </div>
+            <DialogFooter className="gap-2 mt-4">
+              <Button variant="outline" onClick={() => setEditOccasion(null)} style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>إلغاء</Button>
+              <Button disabled={updateMut.isPending} onClick={() => updateMut.mutate({ id: editOccasion.id, title: editOccasion.title, icon: editOccasion.icon, desc: editOccasion.desc, sortOrder: editOccasion.sortOrder })} style={{ background: "#C9A84C", color: "#fff", fontFamily: "'Noto Naskh Arabic', serif" }}>
+                {updateMut.isPending ? "جاري..." : "حفظ"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}
 
 function OccasionsTab() {
   const utils = trpc.useUtils();
-  const [selectedOccasion, setSelectedOccasion] = useState(OCCASION_OPTIONS[0].key);
+  // Load occasions dynamically from DB, fall back to static list
+  const { data: dbOccasions = [] } = trpc.occasions.list.useQuery();
+  const occasionOptions = dbOccasions.length > 0
+    ? dbOccasions.map(o => ({ key: o.key, label: o.title }))
+    : OCCASION_OPTIONS;
+
+  const [selectedOccasion, setSelectedOccasion] = useState("");
+  const activeKey = selectedOccasion || occasionOptions[0]?.key || "";
+
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [caption, setCaption] = useState("");
@@ -134,11 +282,11 @@ function OccasionsTab() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const occasionLabel = OCCASION_OPTIONS.find(o => o.key === selectedOccasion)?.label || "";
+  const occasionLabel = occasionOptions.find(o => o.key === activeKey)?.label || "";
 
   const { data: photos = [], isLoading } = trpc.occasionPhotos.list.useQuery(
-    { occasionKey: selectedOccasion },
-    { enabled: !!selectedOccasion }
+    { occasionKey: activeKey },
+    { enabled: !!activeKey }
   );
 
   const addMutation = trpc.occasionPhotos.add.useMutation({
@@ -197,14 +345,14 @@ function OccasionsTab() {
     <div dir="rtl">
       {/* Occasion selector */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {OCCASION_OPTIONS.map((occ) => (
+        {occasionOptions.map((occ) => (
           <button
             key={occ.key}
             onClick={() => setSelectedOccasion(occ.key)}
             className="px-4 py-2 rounded-full text-sm font-semibold transition-all"
             style={{
-              background: selectedOccasion === occ.key ? "#9C7A3C" : "rgba(156,122,60,0.1)",
-              color: selectedOccasion === occ.key ? "#FFF" : "#9C7A3C",
+              background: activeKey === occ.key ? "#9C7A3C" : "rgba(156,122,60,0.1)",
+              color: activeKey === occ.key ? "#FFF" : "#9C7A3C",
               fontFamily: "'Noto Naskh Arabic', serif",
             }}
           >
@@ -1055,6 +1203,9 @@ export default function MediaManagerPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <Tabs defaultValue="occasions" dir="rtl">
           <TabsList className="mb-6" style={{ background: "rgba(156,122,60,0.1)" }}>
+            <TabsTrigger value="manage-occasions" style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>
+              إدارة المناسبات
+            </TabsTrigger>
             <TabsTrigger value="occasions" style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>
               صور المناسبات
             </TabsTrigger>
@@ -1065,6 +1216,9 @@ export default function MediaManagerPage() {
               بطاقات الخدمات
             </TabsTrigger>
           </TabsList>
+          <TabsContent value="manage-occasions">
+            <OccasionManagerTab />
+          </TabsContent>
           <TabsContent value="occasions">
             <OccasionsTab />
           </TabsContent>

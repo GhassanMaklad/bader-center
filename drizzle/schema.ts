@@ -147,3 +147,22 @@ export const occasionPhotos = mysqlTable("occasion_photos", {
 
 export type OccasionPhoto = typeof occasionPhotos.$inferSelect;
 export type InsertOccasionPhoto = typeof occasionPhotos.$inferInsert;
+
+/**
+ * Occasions table — dynamic occasion types managed from admin dashboard.
+ * Replaces the static hardcoded occasions list in OccasionsSection.
+ */
+export const occasions = mysqlTable("occasions", {
+  id: int("id").autoincrement().primaryKey(),
+  key: varchar("key", { length: 64 }).notNull().unique(), // e.g. 'wedding', 'graduation'
+  title: varchar("title", { length: 128 }).notNull(),     // Arabic name e.g. 'حفلات الأعراس'
+  icon: varchar("icon", { length: 64 }).default("🎉").notNull(), // emoji icon
+  desc: varchar("desc", { length: 255 }).default("").notNull(), // short description
+  sortOrder: int("sortOrder").default(0).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Occasion = typeof occasions.$inferSelect;
+export type InsertOccasion = typeof occasions.$inferInsert;
