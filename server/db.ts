@@ -1,6 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { galleryItems, InsertGalleryItem, InsertOccasion, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertServiceCard, InsertServiceRequest, InsertUser, occasionPhotos, occasions, orders, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
+import { galleryItems, InsertGalleryItem, InsertOccasion, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertProductImage, InsertServiceCard, InsertServiceRequest, InsertUser, occasionPhotos, occasions, orders, productImages, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -127,6 +127,40 @@ export async function toggleProductStock(id: number, inStock: boolean) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(products).set({ inStock }).where(eq(products.id, id));
+}
+
+// ─── Product Images Queries ───────────────────────────────────────────────────
+
+export async function getProductImages(productId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(productImages)
+    .where(eq(productImages.productId, productId))
+    .orderBy(asc(productImages.sortOrder));
+}
+
+export async function createProductImage(data: InsertProductImage) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(productImages).values(data);
+  return result;
+}
+
+export async function deleteProductImage(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(productImages).where(eq(productImages.id, id));
+}
+
+export async function getRelatedProducts(productId: number, category: string, occasionKeys: string | null, limit = 4) {
+  const db = await getDb();
+  if (!db) return [];
+  // Get products in same category, excluding current product
+  const results = await db.select().from(products)
+    .where(eq(products.category, category as "gifts" | "shields" | "catering" | "occasions" | "calligraphy"))
+    .orderBy(asc(products.sortOrder))
+    .limit(limit + 1);
+  return results.filter(p => p.id !== productId).slice(0, limit);
 }
 
 // ─── Service Request Queries ──────────────────────────────────────────────────

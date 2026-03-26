@@ -167,3 +167,20 @@ export const occasions = mysqlTable("occasions", {
 
 export type Occasion = typeof occasions.$inferSelect;
 export type InsertOccasion = typeof occasions.$inferInsert;
+
+/**
+ * Product images table — multiple images per product.
+ * The primary image lives on the products.image field;
+ * additional gallery images are stored here.
+ */
+export const productImages = mysqlTable("product_images", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId").notNull(),   // FK → products.id
+  imageUrl: text("imageUrl").notNull(),    // CDN URL from S3
+  caption: varchar("caption", { length: 255 }),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ProductImage = typeof productImages.$inferSelect;
+export type InsertProductImage = typeof productImages.$inferInsert;

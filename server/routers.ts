@@ -14,6 +14,10 @@ import {
   updateProduct,
   deleteProduct,
   toggleProductStock,
+  getProductImages,
+  createProductImage,
+  deleteProductImage,
+  getRelatedProducts,
   createServiceRequest,
   getAllServiceRequests,
   updateServiceRequestStatus,
@@ -61,6 +65,7 @@ const productInput = z.object({
   rating: z.number().min(1).max(5).default(5),
   inStock: z.boolean().default(true),
   tags: z.string().nullable().optional(),
+  occasionKeys: z.string().nullable().optional(),
   sortOrder: z.number().default(0),
 });
 
@@ -254,6 +259,67 @@ export const appRouter = router({
       .input(z.object({ id: z.number(), inStock: z.boolean() }))
       .mutation(async ({ input }) => {
         await toggleProductStock(input.id, input.inStock);
+        return { success: true };
+      }),
+
+    // Get full product detail with images and related products
+    detail: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const product = await getProductById(input.id);
+        if (!product) throw new TRPCError({ code: "NOT_FOUND" });
+        const images = await getProductImages(input.id);
+        const related = await getRelatedProducts(input.id, product.category, product.occasionKeys ?? null);
+        return { product, images, related };
+      }),
+  }),
+
+  // ─── Product Images (admin only) ───────────────────────────────────────────────────
+  productImages: router({
+    list: publicProcedure
+      .input(z.object({ productId: z.number() }))
+      .query(async ({ input }) => {
+        return getProductImages(input.productId);
+      }),
+
+    add: adminProcedure
+      .input(
+        z.object({
+          productId: z.number(),
+          filename: z.string().min(1),
+          contentType: z.string().min(1),
+          dataBase64: z.string().min(1),
+          caption: z.string().optional(),
+          sortOrder: z.number().default(0),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+        if (!allowed.includes(input.contentType)) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "نوع الملف غير مدعوم" });
+        }
+        if (input.dataBase64.length > 7_000_000) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "حجم الصورة يتجاوز الحد المسموح (5MB)" });
+        }
+        const { storagePut } = await import("./storage");
+        const buffer = Buffer.from(input.dataBase64, "base64");
+        const ext = input.filename.split(".").pop() ?? "jpg";
+        const randomSuffix = Math.random().toString(36).substring(2, 10);
+        const key = `product-gallery/${input.productId}/${Date.now()}-${randomSuffix}.${ext}`;
+        const { url } = await storagePut(key, buffer, input.contentType);
+        await createProductImage({
+          productId: input.productId,
+          imageUrl: url,
+          caption: input.caption ?? null,
+          sortOrder: input.sortOrder,
+        });
+        return { url };
+      }),
+
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteProductImage(input.id);
         return { success: true };
       }),
   }),

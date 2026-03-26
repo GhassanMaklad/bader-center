@@ -71,6 +71,13 @@
       "when": 1774526945593,
       "tag": "0009_greedy_mandarin",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1774528221285,
+      "tag": "0010_confused_serpent_society",
+      "breakpoints": true
     }
   ]
 }

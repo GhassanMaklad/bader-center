@@ -486,9 +486,9 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* CTA Buttons */}
         <div className="flex gap-2">
-          {/* Order Now button — navigates to /request with product pre-filled */}
+          {/* View Details button — navigates to /product/:id */}
           <button
-            onClick={handleOrderNow}
+            onClick={() => navigate(`/product/${product.id}`)}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all duration-300"
             style={{
               background: hovered
@@ -499,8 +499,8 @@ function ProductCard({ product }: { product: Product }) {
               fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
             }}
           >
-            <Phone size={14} />
-            اطلب الآن
+            <ShoppingBag size={14} />
+            عرض التفاصيل
           </button>
 
           {/* WhatsApp direct button */}

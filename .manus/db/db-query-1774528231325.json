@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `product_images` (\n  `id` int NOT NULL AUTO_INCREMENT,\n  `productId` int NOT NULL,\n  `imageUrl` text NOT NULL,\n  `caption` varchar(255),\n  `sortOrder` int NOT NULL DEFAULT 0,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  PRIMARY KEY (`id`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute CREATE TABLE IF NOT EXISTS `product_images` (\n  `id` int NOT NULL AUTO_INCREMENT,\n  `productId` int NOT NULL,\n  `imageUrl` text NOT NULL,\n  `caption` varchar(255),\n  `sortOrder` int NOT NULL DEFAULT 0,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  PRIMARY KEY (`id`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1707
+}
