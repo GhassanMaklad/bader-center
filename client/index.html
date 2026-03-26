@@ -56,7 +56,33 @@
 
     <!-- Tawk.to Live Chat -->
     <script type="text/javascript">
-      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+      var Tawk_API = Tawk_API || {};
+      var Tawk_LoadStart = new Date();
+
+      // Customize widget appearance and behaviour before the script loads
+      Tawk_API.customStyle = {
+        zIndex: 999
+      };
+
+      // Once the widget is fully loaded, apply color overrides and set visitor info
+      Tawk_API.onLoad = function() {
+        // Inject gold color override into the widget iframe via CSS variables
+        try {
+          var frames = document.querySelectorAll('iframe[title*="chat"], iframe[src*="tawk"]');
+          frames.forEach(function(frame) {
+            try {
+              var style = frame.contentDocument.createElement('style');
+              style.textContent = [
+                ':root { --tawk-color: #B89050 !important; }',
+                '.tawk-button, .tawk-button-circle { background-color: #B89050 !important; border-color: #B89050 !important; }',
+                '.tawk-header { background-color: #B89050 !important; }'
+              ].join('');
+              frame.contentDocument.head.appendChild(style);
+            } catch(e) {}
+          });
+        } catch(e) {}
+      };
+
       (function(){
         var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
         s1.async=true;
