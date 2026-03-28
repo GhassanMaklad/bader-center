@@ -45,6 +45,11 @@ import {
   createAnnouncement,
   updateAnnouncement,
   deleteAnnouncement,
+  getActiveTestimonials,
+  getAllTestimonials,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
 } from "./db";
 
 // ─── Admin middleware ──────────────────────────────────────────────────────────
@@ -754,6 +759,52 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
         await deleteAnnouncement(input.id);
+        return { success: true };
+      }),
+  }),
+
+  // ─── Testimonials (public read, admin write) ──────────────────────────────────────────────
+  testimonials: router({
+    list: publicProcedure.query(async () => {
+      return getActiveTestimonials();
+    }),
+    listAll: adminProcedure.query(async () => {
+      return getAllTestimonials();
+    }),
+    create: adminProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        position: z.string().optional(),
+        text: z.string().min(1),
+        rating: z.number().min(1).max(5).default(5),
+        avatarUrl: z.string().optional(),
+        isActive: z.boolean().default(true),
+        sortOrder: z.number().default(0),
+      }))
+      .mutation(async ({ input }) => {
+        await createTestimonial(input);
+        return { success: true };
+      }),
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        name: z.string().optional(),
+        position: z.string().optional(),
+        text: z.string().optional(),
+        rating: z.number().min(1).max(5).optional(),
+        avatarUrl: z.string().optional(),
+        isActive: z.boolean().optional(),
+        sortOrder: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateTestimonial(id, data);
+        return { success: true };
+      }),
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteTestimonial(input.id);
         return { success: true };
       }),
   }),

@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import CheckoutPage from "./pages/CheckoutPage";
 import MediaManagerPage from "./pages/MediaManagerPage";
 import ProductDetail from "./pages/ProductDetail";
+import About from "./pages/About";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/admin/media"} component={MediaManagerPage} />
       <Route path={"/product/:id"} component={ProductDetail} />
+      <Route path={"/about"} component={About} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

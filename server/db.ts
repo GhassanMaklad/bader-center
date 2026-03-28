@@ -1,6 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { announcements, galleryItems, InsertAnnouncement, InsertGalleryItem, InsertOccasion, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertProductImage, InsertServiceCard, InsertServiceRequest, InsertUser, occasionPhotos, occasions, orders, productImages, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
+import { announcements, galleryItems, InsertAnnouncement, InsertGalleryItem, InsertOccasion, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertProductImage, InsertServiceCard, InsertServiceRequest, InsertTestimonial, InsertUser, occasionPhotos, occasions, orders, productImages, products, serviceCards, serviceRequests, testimonials, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -362,4 +362,33 @@ export async function deleteAnnouncement(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(announcements).where(eq(announcements.id, id));
+}
+
+// ── Testimonials ─────────────────────────────────────────────────────────────
+export async function getActiveTestimonials() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(testimonials)
+    .where(eq(testimonials.isActive, true))
+    .orderBy(testimonials.sortOrder, testimonials.id);
+}
+export async function getAllTestimonials() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(testimonials).orderBy(testimonials.sortOrder, testimonials.id);
+}
+export async function createTestimonial(data: InsertTestimonial) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.insert(testimonials).values(data);
+}
+export async function updateTestimonial(id: number, data: Partial<InsertTestimonial>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(testimonials).set(data).where(eq(testimonials.id, id));
+}
+export async function deleteTestimonial(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(testimonials).where(eq(testimonials.id, id));
 }

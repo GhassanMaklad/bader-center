@@ -203,3 +203,23 @@ export const announcements = mysqlTable("announcements", {
 
 export type Announcement = typeof announcements.$inferSelect;
 export type InsertAnnouncement = typeof announcements.$inferInsert;
+
+
+/**
+ * Testimonials table — customer reviews displayed on the About page and homepage.
+ * Managed via admin dashboard.
+ */
+export const testimonials = mysqlTable("testimonials", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 150 }).notNull(),           // customer name
+  position: varchar("position", { length: 150 }),             // e.g. "مدير شركة الخليج"
+  text: text("text").notNull(),                               // testimonial body
+  rating: int("rating").default(5).notNull(),                 // 1–5 stars
+  avatarUrl: text("avatarUrl"),                               // optional CDN URL
+  isActive: boolean("isActive").default(true).notNull(),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type Testimonial = typeof testimonials.$inferSelect;
+export type InsertTestimonial = typeof testimonials.$inferInsert;

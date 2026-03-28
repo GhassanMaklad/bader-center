@@ -107,7 +107,14 @@ export default function AdminDashboard() {
   const [form, setForm] = useState<ProductForm>(emptyForm);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<"products" | "requests" | "orders" | "announcements">("products");
+  const [activeTab, setActiveTab] = useState<"products" | "requests" | "orders" | "announcements" | "testimonials">("products");
+
+  // ─── Testimonials state ───
+  type TestimonialForm = { name: string; position: string; text: string; rating: number; avatarUrl: string; isActive: boolean; sortOrder: number; };
+  const emptyTestimonialForm: TestimonialForm = { name: "", position: "", text: "", rating: 5, avatarUrl: "", isActive: true, sortOrder: 0 };
+  const [testimonialDialogOpen, setTestimonialDialogOpen] = useState(false);
+  const [editingTestimonialId, setEditingTestimonialId] = useState<number | null>(null);
+  const [testimonialForm, setTestimonialForm] = useState<TestimonialForm>(emptyTestimonialForm);
 
   // ─── Announcements state ───
   type AnnouncementForm = { icon: string; text: string; cta: string; ctaLink: string; sortOrder: number; isActive: boolean; };
@@ -122,6 +129,41 @@ export default function AdminDashboard() {
   const { data: serviceRequests, refetch: refetchRequests, isLoading: requestsLoading } = trpc.serviceRequests.list.useQuery();
   const { data: orders, refetch: refetchOrders, isLoading: ordersLoading } = trpc.orders.list.useQuery();
   const { data: allAnnouncements, refetch: refetchAnnouncements } = trpc.announcements.listAll.useQuery();
+  const { data: allTestimonials, refetch: refetchTestimonials } = trpc.testimonials.listAll.useQuery();
+
+  const createTestimonialMutation = trpc.testimonials.create.useMutation({
+    onSuccess: () => { toast.success("تم إضافة التقييم بنجاح"); setTestimonialDialogOpen(false); refetchTestimonials(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
+  const updateTestimonialMutation = trpc.testimonials.update.useMutation({
+    onSuccess: () => { toast.success("تم تحديث التقييم"); setTestimonialDialogOpen(false); refetchTestimonials(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
+  const deleteTestimonialMutation = trpc.testimonials.delete.useMutation({
+    onSuccess: () => { toast.success("تم حذف التقييم"); refetchTestimonials(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
+
+  const handleTestimonialSubmit = () => {
+    if (!testimonialForm.name.trim() || !testimonialForm.text.trim()) { toast.error("الاسم والنص مطلوبان"); return; }
+    if (editingTestimonialId !== null) {
+      updateTestimonialMutation.mutate({ id: editingTestimonialId, ...testimonialForm });
+    } else {
+      createTestimonialMutation.mutate(testimonialForm);
+    }
+  };
+
+  const openAddTestimonial = () => {
+    setEditingTestimonialId(null);
+    setTestimonialForm(emptyTestimonialForm);
+    setTestimonialDialogOpen(true);
+  };
+
+  const openEditTestimonial = (t: NonNullable<typeof allTestimonials>[0]) => {
+    setEditingTestimonialId(t.id);
+    setTestimonialForm({ name: t.name, position: t.position ?? "", text: t.text, rating: t.rating, avatarUrl: t.avatarUrl ?? "", isActive: t.isActive, sortOrder: t.sortOrder });
+    setTestimonialDialogOpen(true);
+  };
 
   const createAnnouncementMutation = trpc.announcements.create.useMutation({
     onSuccess: () => { toast.success("تم إضافة الإعلان بنجاح"); setAnnouncementDialogOpen(false); refetchAnnouncements(); },
@@ -418,6 +460,17 @@ export default function AdminDashboard() {
           >
             <Megaphone className="w-4 h-4" />
             شريط الإعلانات
+          </button>
+          <button
+            onClick={() => setActiveTab("testimonials")}
+            className="px-5 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-2"
+            style={{
+              color: activeTab === "testimonials" ? "#B89050" : "#6B5A3E",
+              borderBottom: activeTab === "testimonials" ? "2px solid #B89050" : "2px solid transparent",
+            }}
+          >
+            <Star className="w-4 h-4" />
+            آراء العملاء
           </button>
         </div>
       </div>
@@ -821,6 +874,68 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* ─── Testimonials Tab ───────────────────────────────────────────────────────── */}
+        {activeTab === "testimonials" && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold" style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}>آراء العملاء</h2>
+                <p className="text-sm mt-1" style={{ color: "#8A7560" }}>تحكم في التقييمات الظاهرة في صفحة "من نحن"</p>
+              </div>
+              <Button onClick={openAddTestimonial} className="bg-yellow-600 hover:bg-yellow-500 text-black font-bold">
+                <Plus className="w-4 h-4 ml-1" />
+                إضافة تقييم
+              </Button>
+            </div>
+
+            {!allTestimonials || allTestimonials.length === 0 ? (
+              <div className="text-center py-16 rounded-xl" style={{ background: "#F7F3EC", border: "1px dashed rgba(156,122,60,0.3)" }}>
+                <Star className="w-12 h-12 mx-auto mb-3 opacity-30" style={{ color: "#B89050" }} />
+                <p className="text-sm" style={{ color: "#8A7560" }}>لا توجد تقييمات حتى الآن. أضف تقييمات عملائك لتظهر في صفحة "من نحن".</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {allTestimonials.map((t) => (
+                  <div
+                    key={t.id}
+                    className="flex items-start gap-4 p-4 rounded-xl"
+                    style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.15)", opacity: t.isActive ? 1 : 0.5 }}
+                  >
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 border" style={{ background: "#EDE8DF", borderColor: "rgba(156,122,60,0.2)" }}>
+                      {t.name.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-sm" style={{ color: "#2C2416" }}>{t.name}</span>
+                        {t.position && <span className="text-xs" style={{ color: "#8A7560" }}>— {t.position}</span>}
+                        <div className="flex gap-0.5">
+                          {[1,2,3,4,5].map(s => <Star key={s} className={`w-3 h-3 ${s <= t.rating ? "fill-yellow-500 text-yellow-500" : "text-gray-300"}`} />)}
+                        </div>
+                      </div>
+                      <p className="text-sm line-clamp-2" style={{ color: "#4A3D2A" }}>{t.text}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Switch
+                        checked={t.isActive}
+                        onCheckedChange={(v) => updateTestimonialMutation.mutate({ id: t.id, isActive: v })}
+                      />
+                      <Button size="sm" variant="outline" onClick={() => openEditTestimonial(t)}
+                        style={{ borderColor: "rgba(156,122,60,0.3)", color: "#B89050" }}>
+                        <Edit className="w-3 h-3" />
+                      </Button>
+                      <Button size="sm" variant="outline"
+                        onClick={() => { if (confirm("حذف هذا التقييم؟")) deleteTestimonialMutation.mutate({ id: t.id }); }}
+                        style={{ borderColor: "rgba(239,68,68,0.3)", color: "#ef4444" }}>
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* ─── Announcements Tab ───────────────────────────────────────────────────────── */}
         {activeTab === "announcements" && (
           <div>
@@ -1210,6 +1325,66 @@ export default function AdminDashboard() {
             >
               إلغاء
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Testimonial Add/Edit Dialog */}
+      <Dialog open={testimonialDialogOpen} onOpenChange={setTestimonialDialogOpen}>
+        <DialogContent className="max-w-lg" style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.3)", direction: "rtl" }}>
+          <DialogHeader>
+            <DialogTitle className="text-right" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
+              {editingTestimonialId !== null ? "تعديل التقييم" : "إضافة تقييم جديد"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>اسم العميل *</Label>
+                <Input value={testimonialForm.name} onChange={(e) => setTestimonialForm({ ...testimonialForm, name: e.target.value })}
+                  placeholder="محمد العلي" style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>المنصب (اختياري)</Label>
+                <Input value={testimonialForm.position} onChange={(e) => setTestimonialForm({ ...testimonialForm, position: e.target.value })}
+                  placeholder="مدير شركة" style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>نص التقييم *</Label>
+              <Textarea value={testimonialForm.text} onChange={(e) => setTestimonialForm({ ...testimonialForm, text: e.target.value })}
+                placeholder="اكتب رأي العميل..." rows={3} style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>التقييم (1-5)</Label>
+                <Select value={String(testimonialForm.rating)} onValueChange={(v) => setTestimonialForm({ ...testimonialForm, rating: Number(v) })}>
+                  <SelectTrigger style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[5,4,3,2,1].map(n => <SelectItem key={n} value={String(n)}>{n} ★</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>الترتيب</Label>
+                <Input type="number" value={testimonialForm.sortOrder} onChange={(e) => setTestimonialForm({ ...testimonialForm, sortOrder: Number(e.target.value) })}
+                  style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Switch checked={testimonialForm.isActive} onCheckedChange={(v) => setTestimonialForm({ ...testimonialForm, isActive: v })} />
+              <span className="text-sm" style={{ color: "#6B5A3E" }}>{testimonialForm.isActive ? "ظاهر" : "مخفي"}</span>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <Button onClick={handleTestimonialSubmit} disabled={createTestimonialMutation.isPending || updateTestimonialMutation.isPending}
+                className="flex-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold">
+                {(createTestimonialMutation.isPending || updateTestimonialMutation.isPending) ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ التقييم"}
+              </Button>
+              <Button variant="outline" onClick={() => setTestimonialDialogOpen(false)}
+                style={{ borderColor: "rgba(156,122,60,0.3)", color: "#6B5A3E" }}>إلغاء</Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

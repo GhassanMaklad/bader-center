@@ -16,7 +16,6 @@ const navLinks = [
   { label: "خدماتنا", href: "#services" },
   { label: "أعمالنا", href: "#gallery" },
   { label: "المناسبات", href: "#occasions" },
-  { label: "من نحن", href: "#about" },
   { label: "تواصل معنا", href: "#contact" },
 ];
 
@@ -112,6 +111,14 @@ export default function Navbar() {
               كتالوج المنتجات
               <span className="absolute -bottom-1 right-0 w-0 h-px transition-all duration-300 group-hover:w-full" style={{ background: "#9C7A3C" }} />
             </Link>
+            <Link
+              href="/about"
+              className="transition-colors duration-300 text-sm font-semibold relative group"
+              style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+            >
+              من نحن
+              <span className="absolute -bottom-1 right-0 w-0 h-px transition-all duration-300 group-hover:w-full" style={{ background: "#9C7A3C" }} />
+            </Link>
           </div>
 
           {/* CTA */}
@@ -187,6 +194,14 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               كتالوج المنتجات
+            </Link>
+            <Link
+              href="/about"
+              className="transition-colors text-base font-medium text-right py-2 block"
+              style={{ color: "#4A3F2F", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", borderBottom: "1px solid rgba(156,122,60,0.1)" }}
+              onClick={() => setIsOpen(false)}
+            >
+              من نحن
             </Link>
             {isAdmin && (
               <Link
