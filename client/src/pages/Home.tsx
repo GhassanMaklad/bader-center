@@ -15,7 +15,6 @@ import StatsSection from "@/components/StatsSection";
 import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
-import ChatbotWidget from "@/components/ChatbotWidget";
 import { useSEO, ORGANIZATION_LD } from "@/hooks/useSEO";
 
 export default function Home() {
@@ -42,9 +41,6 @@ export default function Home() {
       <AboutSection />
       <ContactSection />
       <Footer />
-
-      {/* AI Chatbot Widget */}
-      <ChatbotWidget />
 
       {/* Floating WhatsApp Button */}
       <a
