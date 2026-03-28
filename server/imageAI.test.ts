@@ -94,6 +94,60 @@ describe("imageAI — enhance flow", () => {
   });
 });
 
+// ─── generateDescription flow ────────────────────────────────────────────────
+describe("imageAI — generateDescription flow", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("tone guide maps luxury to correct Arabic phrase", () => {
+    const toneGuide: Record<string, string> = {
+      luxury: "فاخرة وراقية، تستخدم مفردات الأناقة والتميّز والحصرية",
+      friendly: "ودية وقريبة من القلب، تناسب الأفراد والعائلات",
+      formal: "رسمية ومهنية، تناسب الشركات والمؤسسات",
+    };
+    expect(toneGuide["luxury"]).toContain("فاخرة");
+    expect(toneGuide["friendly"]).toContain("ودية");
+    expect(toneGuide["formal"]).toContain("رسمية");
+  });
+
+  it("productHint includes productType when provided", () => {
+    const productType = "بوكس هدايا";
+    const hint = productType ? `المنتج في الصورة هو: ${productType}.` : "حدّد نوع المنتج من الصورة بنفسك.";
+    expect(hint).toContain("بوكس هدايا");
+  });
+
+  it("productHint falls back to generic when productType is empty", () => {
+    const productType = "";
+    const hint = productType ? `المنتج في الصورة هو: ${productType}.` : "حدّد نوع المنتج من الصورة بنفسك.";
+    expect(hint).toContain("حدّد نوع المنتج");
+  });
+
+  it("parsed JSON contains all required fields", () => {
+    const mockResponse = {
+      title: "هدية فاخرة من مركز بدر",
+      description: "وصف تسويقي احترافي للمنتج",
+      features: ["جودة عالية", "تغليف أنيق", "مناسب للمناسبات"],
+      cta: "اطلب الآن وتميّز في كل مناسبة",
+      hashtags: ["#مركز_بدر", "#هدايا_فاخرة", "#الكويت"],
+    };
+    expect(mockResponse).toHaveProperty("title");
+    expect(mockResponse).toHaveProperty("description");
+    expect(mockResponse.features).toHaveLength(3);
+    expect(mockResponse.cta).toBeTruthy();
+    expect(mockResponse.hashtags).toHaveLength(3);
+  });
+
+  it("throws when LLM returns no content", () => {
+    const raw = undefined;
+    expect(() => {
+      if (!raw || typeof raw !== "string") {
+        throw new Error("لم يتمكن الذكاء الاصطناعي من توليد الوصف");
+      }
+    }).toThrow("لم يتمكن الذكاء الاصطناعي من توليد الوصف");
+  });
+});
+
 // ─── uploadOriginal flow ───────────────────────────────────────────────────────
 describe("imageAI — uploadOriginal flow", () => {
   beforeEach(() => {

@@ -851,6 +851,96 @@ export const appRouter = router({
       }),
 
     /**
+     * Analyse an image (original or enhanced) and generate a professional
+     * Arabic marketing description for the product shown.
+     */
+    generateDescription: adminProcedure
+      .input(
+        z.object({
+          imageUrl: z.string().url(),
+          productType: z.string().optional(), // e.g. "بوكس هدايا", "درع تكريم"
+          tone: z.enum(["luxury", "friendly", "formal"]).default("luxury"),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { invokeLLM } = await import("./_core/llm");
+
+        const toneGuide: Record<string, string> = {
+          luxury: "فاخرة وراقية، تستخدم مفردات الأناقة والتميّز والحصرية",
+          friendly: "ودية وقريبة من القلب، تناسب الأفراد والعائلات",
+          formal: "رسمية ومهنية، تناسب الشركات والمؤسسات",
+        };
+
+        const productHint = input.productType
+          ? `المنتج في الصورة هو: ${input.productType}.`
+          : "حدّد نوع المنتج من الصورة بنفسك.";
+
+        const systemPrompt = `أنت خبير تسويق متخصص في كتابة أوصاف منتجات احترافية باللغة العربية لمركز بدر الكويتي، المتخصص في الهدايا الفاخرة والمناسبات والتكريمات.
+
+أسلوب الكتابة: ${toneGuide[input.tone]}
+
+قواعد الإخراج (JSON فقط):
+- title: عنوان تسويقي جذاب (5-8 كلمات)
+- description: وصف تسويقي كامل (40-60 كلمة) يبرز الجودة والفائدة
+- features: مصفوفة من 3-4 مميزات قصيرة (كل ميزة 2-4 كلمات)
+- cta: جملة دعوة للتصرف (call-to-action) قصيرة وجذابة
+- hashtags: مصفوفة من 4-5 هاشتاقات عربية مناسبة للمنتج`;
+
+        const result = await invokeLLM({
+          messages: [
+            { role: "system", content: systemPrompt },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image_url",
+                  image_url: { url: input.imageUrl, detail: "high" },
+                },
+                {
+                  type: "text",
+                  text: `${productHint} اكتب وصفاً تسويقياً احترافياً لهذا المنتج بالعربية بصيغة JSON فقط.`,
+                },
+              ],
+            },
+          ],
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "product_description",
+              strict: true,
+              schema: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  features: { type: "array", items: { type: "string" } },
+                  cta: { type: "string" },
+                  hashtags: { type: "array", items: { type: "string" } },
+                },
+                required: ["title", "description", "features", "cta", "hashtags"],
+                additionalProperties: false,
+              },
+            },
+          },
+        });
+
+        const raw = result.choices[0]?.message?.content;
+        if (!raw || typeof raw !== "string") {
+          throw new Error("لم يتمكن الذكاء الاصطناعي من توليد الوصف");
+        }
+
+        const parsed = JSON.parse(raw) as {
+          title: string;
+          description: string;
+          features: string[];
+          cta: string;
+          hashtags: string[];
+        };
+
+        return parsed;
+      }),
+
+    /**
      * Upload a raw image to S3 so it can be passed to the enhance procedure
      */
     uploadOriginal: adminProcedure
