@@ -390,6 +390,14 @@ export default function AdminDashboard() {
           <Button
             variant="outline"
             size="sm"
+            onClick={() => navigate("/admin/image-enhancer")}
+            className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10"
+          >
+            ✨ محسّن الصور
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => navigate("/")}
             className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10"
           >

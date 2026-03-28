@@ -808,5 +808,66 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
+
+  // ─── AI Image Enhancer ────────────────────────────────────────────────────────
+  imageAI: router({
+    /**
+     * Enhance an image using AI:
+     * - Upscale / sharpen / improve quality
+     * - Optionally provide a custom prompt to guide the enhancement
+     */
+    enhance: adminProcedure
+      .input(
+        z.object({
+          imageUrl: z.string().url(),
+          mode: z.enum(["quality", "background_remove", "product"]).default("quality"),
+          customPrompt: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { generateImage } = await import("./_core/imageGeneration");
+
+        const prompts: Record<string, string> = {
+          quality:
+            "Enhance this image: improve sharpness, boost colors, increase clarity and detail. Make it look professional and high quality. Keep the same composition and content exactly.",
+          background_remove:
+            "Remove the background from this product image completely. Replace the background with a clean pure white (#FFFFFF) background. Keep the product perfectly intact with clean edges.",
+          product:
+            "Enhance this product photo for an e-commerce website: improve lighting, sharpen details, boost colors, remove any distracting background elements, and make it look professional and premium.",
+        };
+
+        const prompt = input.customPrompt || prompts[input.mode];
+
+        const result = await generateImage({
+          prompt,
+          originalImages: [{ url: input.imageUrl, mimeType: "image/jpeg" }],
+        });
+
+        if (!result.url) {
+          throw new Error("Image enhancement failed — no output returned");
+        }
+
+        return { enhancedUrl: result.url };
+      }),
+
+    /**
+     * Upload a raw image to S3 so it can be passed to the enhance procedure
+     */
+    uploadOriginal: adminProcedure
+      .input(
+        z.object({
+          base64: z.string().min(1),
+          mimeType: z.string().default("image/jpeg"),
+          filename: z.string().default("original.jpg"),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { storagePut } = await import("./storage");
+        const buffer = Buffer.from(input.base64, "base64");
+        const key = `ai-enhance/originals/${Date.now()}-${input.filename}`;
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        return { url };
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;
