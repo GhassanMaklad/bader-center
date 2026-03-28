@@ -1,6 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { galleryItems, InsertGalleryItem, InsertOccasion, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertProductImage, InsertServiceCard, InsertServiceRequest, InsertUser, occasionPhotos, occasions, orders, productImages, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
+import { announcements, galleryItems, InsertAnnouncement, InsertGalleryItem, InsertOccasion, InsertOccasionPhoto, InsertOrder, InsertProduct, InsertProductImage, InsertServiceCard, InsertServiceRequest, InsertUser, occasionPhotos, occasions, orders, productImages, products, serviceCards, serviceRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -328,4 +328,38 @@ export async function deleteOccasionPhoto(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(occasionPhotos).where(eq(occasionPhotos.id, id));
+}
+
+// ─── Announcements ───────────────────────────────────────────────────────────
+
+export async function getAllAnnouncements() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(announcements).orderBy(announcements.sortOrder, announcements.id);
+}
+
+export async function getActiveAnnouncements() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(announcements)
+    .where(eq(announcements.isActive, true))
+    .orderBy(announcements.sortOrder, announcements.id);
+}
+
+export async function createAnnouncement(data: InsertAnnouncement) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.insert(announcements).values(data);
+}
+
+export async function updateAnnouncement(id: number, data: Partial<InsertAnnouncement>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(announcements).set(data).where(eq(announcements.id, id));
+}
+
+export async function deleteAnnouncement(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(announcements).where(eq(announcements.id, id));
 }

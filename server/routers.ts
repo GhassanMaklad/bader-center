@@ -40,6 +40,11 @@ import {
   createOccasion,
   updateOccasion,
   deleteOccasion,
+  getAllAnnouncements,
+  getActiveAnnouncements,
+  createAnnouncement,
+  updateAnnouncement,
+  deleteAnnouncement,
 } from "./db";
 
 // ─── Admin middleware ──────────────────────────────────────────────────────────
@@ -700,6 +705,55 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
         await deleteOccasionPhoto(input.id);
+        return { success: true };
+      }),
+  }),
+  // ─── Announcements ─────────────────────────────────────────────────────────
+  announcements: router({
+    // Public: fetch only active announcements for the banner
+    listActive: publicProcedure.query(async () => {
+      return getActiveAnnouncements();
+    }),
+
+    // Admin: fetch all (including inactive) for management
+    listAll: adminProcedure.query(async () => {
+      return getAllAnnouncements();
+    }),
+
+    create: adminProcedure
+      .input(z.object({
+        icon: z.string().default("✨"),
+        text: z.string().min(1),
+        cta: z.string().default(""),
+        ctaLink: z.string().default("/request"),
+        sortOrder: z.number().default(0),
+        isActive: z.boolean().default(true),
+      }))
+      .mutation(async ({ input }) => {
+        await createAnnouncement(input);
+        return { success: true };
+      }),
+
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        icon: z.string().optional(),
+        text: z.string().optional(),
+        cta: z.string().optional(),
+        ctaLink: z.string().optional(),
+        sortOrder: z.number().optional(),
+        isActive: z.boolean().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateAnnouncement(id, data);
+        return { success: true };
+      }),
+
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteAnnouncement(input.id);
         return { success: true };
       }),
   }),

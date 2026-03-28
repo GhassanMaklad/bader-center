@@ -1,28 +1,41 @@
 /**
- * AnnouncementBanner - Animated seasonal offers ticker
+ * AnnouncementBanner - Dynamic animated seasonal offers ticker
+ * Loads announcements from DB via tRPC; falls back to hardcoded offers if DB is empty.
  * Design: Warm Beige / Greige Luxury Theme
  */
 import { useState } from "react";
 import { X, Star } from "lucide-react";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
 
-const offers = [
-  { icon: "🌙", text: "عروض رمضان الكريم — دزات وبوكسات فاخرة بأسعار مميزة", cta: "اطلب الآن" },
-  { icon: "🇰🇼", text: "العيد الوطني الكويتي — ستاندات وهدايا بالألوان الوطنية جاهزة للتوصيل", cta: "اكتشف" },
-  { icon: "🎊", text: "قرقيعان 2026 — تجهيزات احتفالية مميزة للأطفال والعائلات", cta: "اطلب" },
-  { icon: "✨", text: "خدمة التوصيل لجميع مناطق الكويت — اطلب الآن وسنوصل لك", cta: "اطلب" },
-  { icon: "🏆", text: "دروع وتكريمات فاخرة للشركات والمدارس — تصاميم حصرية بنقش ليزر", cta: "تواصل" },
-  { icon: "🎁", text: "هدايا الأفراح والاستقبالات — تصميم مخصص حسب طلبك", cta: "اطلب" },
-  { icon: "⭐", text: "أكثر من 20 عاماً من الخبرة في تجهيز المناسبات الفاخرة بالكويت", cta: "" },
+// Fallback static offers shown while loading or if DB is empty
+const FALLBACK_OFFERS = [
+  { icon: "🌙", text: "عروض رمضان الكريم — دزات وبوكسات فاخرة بأسعار مميزة", cta: "اطلب الآن", ctaLink: "/request" },
+  { icon: "🇰🇼", text: "العيد الوطني الكويتي — ستاندات وهدايا بالألوان الوطنية جاهزة للتوصيل", cta: "اكتشف", ctaLink: "/request" },
+  { icon: "🎊", text: "قرقيعان 2026 — تجهيزات احتفالية مميزة للأطفال والعائلات", cta: "اطلب", ctaLink: "/request" },
+  { icon: "✨", text: "خدمة التوصيل لجميع مناطق الكويت — اطلب الآن وسنوصل لك", cta: "اطلب", ctaLink: "/request" },
+  { icon: "🏆", text: "دروع وتكريمات فاخرة للشركات والمدارس — تصاميم حصرية بنقش ليزر", cta: "تواصل", ctaLink: "/request" },
+  { icon: "🎁", text: "هدايا الأفراح والاستقبالات — تصميم مخصص حسب طلبك", cta: "اطلب", ctaLink: "/request" },
+  { icon: "⭐", text: "أكثر من 20 عاماً من الخبرة في تجهيز المناسبات الفاخرة بالكويت", cta: "", ctaLink: "/request" },
 ];
-
-// Duplicate for seamless loop
-const allOffers = [...offers, ...offers, ...offers];
 
 export default function AnnouncementBanner() {
   const [dismissed, setDismissed] = useState(false);
 
+  const { data: dbAnnouncements } = trpc.announcements.listActive.useQuery(undefined, {
+    staleTime: 5 * 60 * 1000, // cache for 5 minutes
+  });
+
   if (dismissed) return null;
+
+  // Use DB announcements if available, otherwise fall back to hardcoded
+  const offers =
+    dbAnnouncements && dbAnnouncements.length > 0
+      ? dbAnnouncements.map((a) => ({ icon: a.icon, text: a.text, cta: a.cta, ctaLink: a.ctaLink }))
+      : FALLBACK_OFFERS;
+
+  // Duplicate for seamless infinite loop
+  const allOffers = [...offers, ...offers, ...offers];
 
   return (
     <div
@@ -70,7 +83,7 @@ export default function AnnouncementBanner() {
             </span>
             {offer.cta && (
               <Link
-                href="/request"
+                href={offer.ctaLink || "/request"}
                 className="inline-flex items-center gap-1 text-xs font-bold px-3 py-0.5 rounded-full transition-all duration-200 hover:opacity-80"
                 style={{
                   background: "rgba(212,192,160,0.15)",

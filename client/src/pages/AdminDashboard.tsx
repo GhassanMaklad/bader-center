@@ -29,6 +29,7 @@ import {
   ImagePlus,
   Loader2,
   LogOut,
+  Megaphone,
   Package,
   Phone,
   Plus,
@@ -106,13 +107,55 @@ export default function AdminDashboard() {
   const [form, setForm] = useState<ProductForm>(emptyForm);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<"products" | "requests" | "orders">("products");
+  const [activeTab, setActiveTab] = useState<"products" | "requests" | "orders" | "announcements">("products");
+
+  // ─── Announcements state ───
+  type AnnouncementForm = { icon: string; text: string; cta: string; ctaLink: string; sortOrder: number; isActive: boolean; };
+  const emptyAnnouncementForm: AnnouncementForm = { icon: "✨", text: "", cta: "", ctaLink: "/request", sortOrder: 0, isActive: true };
+  const [announcementDialogOpen, setAnnouncementDialogOpen] = useState(false);
+  const [editingAnnouncementId, setEditingAnnouncementId] = useState<number | null>(null);
+  const [announcementForm, setAnnouncementForm] = useState<AnnouncementForm>(emptyAnnouncementForm);
 
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const { data: products, refetch, isLoading } = trpc.products.list.useQuery();
   const { data: serviceRequests, refetch: refetchRequests, isLoading: requestsLoading } = trpc.serviceRequests.list.useQuery();
   const { data: orders, refetch: refetchOrders, isLoading: ordersLoading } = trpc.orders.list.useQuery();
+  const { data: allAnnouncements, refetch: refetchAnnouncements } = trpc.announcements.listAll.useQuery();
+
+  const createAnnouncementMutation = trpc.announcements.create.useMutation({
+    onSuccess: () => { toast.success("تم إضافة الإعلان بنجاح"); setAnnouncementDialogOpen(false); refetchAnnouncements(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
+  const updateAnnouncementMutation = trpc.announcements.update.useMutation({
+    onSuccess: () => { toast.success("تم تحديث الإعلان"); setAnnouncementDialogOpen(false); refetchAnnouncements(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
+  const deleteAnnouncementMutation = trpc.announcements.delete.useMutation({
+    onSuccess: () => { toast.success("تم حذف الإعلان"); refetchAnnouncements(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
+
+  const handleAnnouncementSubmit = () => {
+    if (!announcementForm.text.trim()) { toast.error("نص الإعلان مطلوب"); return; }
+    if (editingAnnouncementId !== null) {
+      updateAnnouncementMutation.mutate({ id: editingAnnouncementId, ...announcementForm });
+    } else {
+      createAnnouncementMutation.mutate(announcementForm);
+    }
+  };
+
+  const openAddAnnouncement = () => {
+    setEditingAnnouncementId(null);
+    setAnnouncementForm(emptyAnnouncementForm);
+    setAnnouncementDialogOpen(true);
+  };
+
+  const openEditAnnouncement = (a: NonNullable<typeof allAnnouncements>[0]) => {
+    setEditingAnnouncementId(a.id);
+    setAnnouncementForm({ icon: a.icon, text: a.text, cta: a.cta, ctaLink: a.ctaLink, sortOrder: a.sortOrder, isActive: a.isActive });
+    setAnnouncementDialogOpen(true);
+  };
 
   const updateOrderStatusMutation = trpc.orders.updateStatus.useMutation({
     onSuccess: () => { toast.success("تم تحديث حالة الطلب"); refetchOrders(); },
@@ -364,6 +407,17 @@ export default function AdminDashboard() {
                 {pendingOrdersCount}
               </span>
             )}
+          </button>
+          <button
+            onClick={() => setActiveTab("announcements")}
+            className="px-5 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-2"
+            style={{
+              color: activeTab === "announcements" ? "#B89050" : "#6B5A3E",
+              borderBottom: activeTab === "announcements" ? "2px solid #B89050" : "2px solid transparent",
+            }}
+          >
+            <Megaphone className="w-4 h-4" />
+            شريط الإعلانات
           </button>
         </div>
       </div>
@@ -766,7 +820,127 @@ export default function AdminDashboard() {
             )}
           </div>
         )}
+
+        {/* ─── Announcements Tab ───────────────────────────────────────────────────────── */}
+        {activeTab === "announcements" && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold" style={{ color: "#2C2416", fontFamily: "'Noto Naskh Arabic', serif" }}>شريط الإعلانات</h2>
+                <p className="text-sm mt-1" style={{ color: "#8A7560" }}>تحكم في الإعلانات الظاهرة في الشريط المتحرك أعلى الصفحة الرئيسية</p>
+              </div>
+              <Button onClick={openAddAnnouncement} className="bg-yellow-600 hover:bg-yellow-500 text-black font-bold">
+                <Plus className="w-4 h-4 ml-1" />
+                إضافة إعلان
+              </Button>
+            </div>
+
+            {!allAnnouncements || allAnnouncements.length === 0 ? (
+              <div className="text-center py-16 rounded-xl" style={{ background: "#F7F3EC", border: "1px dashed rgba(156,122,60,0.3)" }}>
+                <Megaphone className="w-12 h-12 mx-auto mb-3 opacity-30" style={{ color: "#B89050" }} />
+                <p className="text-sm" style={{ color: "#8A7560" }}>لا توجد إعلانات حتى الآن. سيظهر الشريط بالبيانات الافتراضية حتى تضيف إعلانات جديدة.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {allAnnouncements.map((a) => (
+                  <div
+                    key={a.id}
+                    className="flex items-center gap-4 p-4 rounded-xl"
+                    style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.15)", opacity: a.isActive ? 1 : 0.5 }}
+                  >
+                    <span className="text-2xl">{a.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate" style={{ color: "#2C2416" }}>{a.text}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        {a.cta && (
+                          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(184,144,80,0.15)", color: "#B89050" }}>
+                            زر: {a.cta} → {a.ctaLink}
+                          </span>
+                        )}
+                        <span className="text-xs" style={{ color: "#8A7560" }}>ترتيب: {a.sortOrder}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        checked={a.isActive}
+                        onCheckedChange={(v) => updateAnnouncementMutation.mutate({ id: a.id, isActive: v })}
+                      />
+                      <Button size="sm" variant="outline" onClick={() => openEditAnnouncement(a)}
+                        style={{ borderColor: "rgba(156,122,60,0.3)", color: "#B89050" }}>
+                        <Edit className="w-3 h-3" />
+                      </Button>
+                      <Button size="sm" variant="outline"
+                        onClick={() => { if (confirm("حذف هذا الإعلان؟")) deleteAnnouncementMutation.mutate({ id: a.id }); }}
+                        style={{ borderColor: "rgba(239,68,68,0.3)", color: "#ef4444" }}>
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </main>
+
+      {/* Announcement Add/Edit Dialog */}
+      <Dialog open={announcementDialogOpen} onOpenChange={setAnnouncementDialogOpen}>
+        <DialogContent className="max-w-lg" style={{ background: "#F7F3EC", border: "1px solid rgba(156,122,60,0.3)", direction: "rtl" }}>
+          <DialogHeader>
+            <DialogTitle className="text-right" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
+              {editingAnnouncementId !== null ? "تعديل الإعلان" : "إضافة إعلان جديد"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="grid grid-cols-4 gap-3">
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>أيقونة</Label>
+                <Input value={announcementForm.icon} onChange={(e) => setAnnouncementForm({ ...announcementForm, icon: e.target.value })}
+                  placeholder="✨" className="text-center text-xl" style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+              </div>
+              <div className="col-span-3 space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>نص الإعلان *</Label>
+                <Input value={announcementForm.text} onChange={(e) => setAnnouncementForm({ ...announcementForm, text: e.target.value })}
+                  placeholder="مثال: عروض رمضان الكريم..." style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>نص زر CTA (اختياري)</Label>
+                <Input value={announcementForm.cta} onChange={(e) => setAnnouncementForm({ ...announcementForm, cta: e.target.value })}
+                  placeholder="اطلب الآن" style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>رابط CTA</Label>
+                <Input value={announcementForm.ctaLink} onChange={(e) => setAnnouncementForm({ ...announcementForm, ctaLink: e.target.value })}
+                  placeholder="/request" dir="ltr" style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>الترتيب</Label>
+                <Input type="number" value={announcementForm.sortOrder} onChange={(e) => setAnnouncementForm({ ...announcementForm, sortOrder: Number(e.target.value) })}
+                  style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }} />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>مفعّل</Label>
+                <div className="flex items-center gap-2 h-10">
+                  <Switch checked={announcementForm.isActive} onCheckedChange={(v) => setAnnouncementForm({ ...announcementForm, isActive: v })} />
+                  <span className="text-sm" style={{ color: "#6B5A3E" }}>{announcementForm.isActive ? "ظاهر" : "مخفي"}</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <Button onClick={handleAnnouncementSubmit} disabled={createAnnouncementMutation.isPending || updateAnnouncementMutation.isPending}
+                className="flex-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold">
+                {(createAnnouncementMutation.isPending || updateAnnouncementMutation.isPending) ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ الإعلان"}
+              </Button>
+              <Button variant="outline" onClick={() => setAnnouncementDialogOpen(false)}
+                style={{ borderColor: "rgba(156,122,60,0.3)", color: "#6B5A3E" }}>إلغاء</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

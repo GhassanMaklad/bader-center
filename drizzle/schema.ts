@@ -184,3 +184,22 @@ export const productImages = mysqlTable("product_images", {
 
 export type ProductImage = typeof productImages.$inferSelect;
 export type InsertProductImage = typeof productImages.$inferInsert;
+
+/**
+ * Announcements table — dynamic scrolling ticker on the homepage banner.
+ * Managed via admin dashboard (add / edit / delete / enable / reorder).
+ */
+export const announcements = mysqlTable("announcements", {
+  id: int("id").autoincrement().primaryKey(),
+  icon: varchar("icon", { length: 16 }).default("✨").notNull(),   // emoji
+  text: varchar("text", { length: 300 }).notNull(),               // Arabic announcement text
+  cta: varchar("cta", { length: 50 }).default("").notNull(),       // CTA button label (empty = no button)
+  ctaLink: varchar("ctaLink", { length: 255 }).default("/request").notNull(), // CTA destination
+  sortOrder: int("sortOrder").default(0).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Announcement = typeof announcements.$inferSelect;
+export type InsertAnnouncement = typeof announcements.$inferInsert;
