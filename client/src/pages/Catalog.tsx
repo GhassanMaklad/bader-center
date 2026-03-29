@@ -52,7 +52,7 @@ interface Product {
   priceValue: number; // numeric KD value for sorting (0 = contact for price)
   priceNote?: string;
   image: string;
-  galleryImages?: { id: number; imageUrl: string }[]; // additional gallery images
+  galleryImages?: { id: number; imageUrl: string; sortOrder?: number }[]; // additional gallery images
   badge?: string;
   badgeColor?: string;
   description: string;
@@ -647,7 +647,7 @@ export default function Catalog() {
       priceValue: Number(p.priceValue ?? 0),
       priceNote: p.priceNote ?? undefined,
       image: p.image,
-      galleryImages: (p as typeof p & { galleryImages?: { id: number; imageUrl: string }[] }).galleryImages ?? [],
+      galleryImages: (p as typeof p & { galleryImages?: { id: number; imageUrl: string; sortOrder?: number }[] }).galleryImages ?? [],
       badge: p.badge ?? undefined,
       badgeColor: p.badgeColor ?? undefined,
       description: p.description,

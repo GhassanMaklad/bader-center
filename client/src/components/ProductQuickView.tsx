@@ -25,6 +25,8 @@ interface QuickViewProduct {
   inStock: boolean;
   badge?: string;
   badgeColor?: string;
+  // Pre-loaded gallery images passed from the catalog (avoids a second DB fetch)
+  galleryImages?: { id: number; imageUrl: string; sortOrder?: number }[];
 }
 
 interface ProductQuickViewProps {
@@ -55,15 +57,26 @@ export default function ProductQuickView({ product, onClose }: ProductQuickViewP
   const [, navigate] = useLocation();
   const [activeImg, setActiveImg] = useState(0);
 
-  // Fetch extra gallery images from DB
+  // Use pre-loaded gallery images if available; otherwise fall back to a DB fetch
   const { data: galleryData } = trpc.productImages.list.useQuery(
     { productId: product?.id ?? 0 },
-    { enabled: !!product?.id }
+    // Only fetch from DB if the caller didn't pass galleryImages
+    { enabled: !!product?.id && !product?.galleryImages }
   );
 
-  // Build full image list: primary + gallery
+  // Resolve gallery: prefer pre-loaded prop, then DB fetch, then empty
+  const resolvedGallery =
+    product?.galleryImages ??
+    galleryData?.map((img) => ({ id: img.id, imageUrl: img.imageUrl })) ??
+    [];
+
+  // Build full image list: primary + gallery (sorted by sortOrder if available)
+  const sortedGallery = [...resolvedGallery].sort(
+    (a, b) => ((a as { sortOrder?: number }).sortOrder ?? 0) - ((b as { sortOrder?: number }).sortOrder ?? 0)
+  );
+
   const allImages = product
-    ? [product.image, ...(galleryData?.map((img) => img.imageUrl) ?? [])]
+    ? [product.image, ...sortedGallery.map((img) => img.imageUrl)]
     : [];
 
   // Reset active image when product changes
