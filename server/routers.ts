@@ -958,6 +958,81 @@ export const appRouter = router({
         const { url } = await storagePut(key, buffer, input.mimeType);
         return { url };
       }),
+
+    /**
+     * Suggest a Kuwaiti Dinar price range for a product based on its name,
+     * category, and description. Returns min, max, suggested, displayText,
+     * and a short rationale in Arabic.
+     */
+    suggestPrice: adminProcedure
+      .input(
+        z.object({
+          productName: z.string().min(1),
+          category: z.string().min(1),
+          description: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const systemPrompt = `أنت خبير تسعير منتجات كويتي متخصص في سوق الهدايا والتكريم والمناسبات.
+العملة: دينار كويتي (KWD).
+فئات المنتجات المتاحة:
+- gifts: الهدايا والدزات (نطاق شائع: 5–80 KWD)
+- shields: الدروع والتكريم (نطاق شائع: 15–150 KWD)
+- catering: الكيترنج والبوثات (نطاق شائع: 50–500 KWD)
+- occasions: المناسبات الخاصة (نطاق شائع: 100–1000 KWD)
+- calligraphy: الخط والنقش (نطاق شائع: 10–60 KWD)
+أعط نطاقاً سعرياً واقعياً وتنافسياً للسوق الكويتي.`;
+
+        const userMessage = [
+          `اسم المنتج: ${input.productName}`,
+          `الفئة: ${input.category}`,
+          input.description ? `الوصف: ${input.description.slice(0, 300)}` : "",
+        ]
+          .filter(Boolean)
+          .join("\n");
+
+        const response = await invokeLLM({
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userMessage },
+          ],
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "price_suggestion",
+              strict: true,
+              schema: {
+                type: "object",
+                properties: {
+                  min: { type: "number", description: "الحد الأدنى للسعر بالدينار الكويتي" },
+                  max: { type: "number", description: "الحد الأعلى للسعر" },
+                  suggested: { type: "number", description: "السعر المقترح الأمثل" },
+                  displayText: { type: "string", description: "نص السعر للعرض بالعربية مثل 'من 45 د.ك'" },
+                  rationale: { type: "string", description: "تبرير قصير بالعربية (20-40 كلمة)" },
+                },
+                required: ["min", "max", "suggested", "displayText", "rationale"],
+                additionalProperties: false,
+              },
+            },
+          },
+        });
+
+        const content = response.choices?.[0]?.message?.content;
+        if (!content) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "فشل توليد اقتراح السعر" });
+
+        try {
+          const parsed = typeof content === "string" ? JSON.parse(content) : content;
+          return {
+            min: Number(parsed.min),
+            max: Number(parsed.max),
+            suggested: Number(parsed.suggested),
+            displayText: String(parsed.displayText),
+            rationale: String(parsed.rationale),
+          };
+        } catch {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "خطأ في تحليل اقتراح السعر" });
+        }
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

@@ -36,9 +36,11 @@ import {
   Plus,
   ShieldCheck,
   ShoppingCart,
+  Sparkles,
   Star,
   Trash2,
   Upload,
+  Wand2,
   X,
   XCircle,
 } from "lucide-react";
@@ -125,6 +127,33 @@ export default function AdminDashboard() {
   const [announcementForm, setAnnouncementForm] = useState<AnnouncementForm>(emptyAnnouncementForm);
 
   const [uploadingImage, setUploadingImage] = useState(false);
+
+  // ─── Price suggestion state ───
+  type PriceSuggestion = { min: number; max: number; suggested: number; displayText: string; rationale: string };
+  const [priceSuggestion, setPriceSuggestion] = useState<PriceSuggestion | null>(null);
+  const [suggestingPrice, setSuggestingPrice] = useState(false);
+
+  const suggestPriceMutation = trpc.imageAI.suggestPrice.useMutation({
+    onSuccess: (data) => {
+      setPriceSuggestion(data);
+      setSuggestingPrice(false);
+    },
+    onError: (e) => {
+      toast.error("خطأ في اقتراح السعر: " + e.message);
+      setSuggestingPrice(false);
+    },
+  });
+
+  const handleSuggestPrice = () => {
+    if (!form.name.trim()) { toast.error("أدخل اسم المنتج أولاً"); return; }
+    setSuggestingPrice(true);
+    setPriceSuggestion(null);
+    suggestPriceMutation.mutate({
+      productName: form.name,
+      category: form.category,
+      description: form.description || undefined,
+    });
+  };
 
   const { data: products, refetch, isLoading } = trpc.products.list.useQuery();
   const { data: serviceRequests, refetch: refetchRequests, isLoading: requestsLoading } = trpc.serviceRequests.list.useQuery();
@@ -331,6 +360,7 @@ export default function AdminDashboard() {
   const openAdd = () => {
     setEditingId(null);
     setForm(emptyForm);
+    setPriceSuggestion(null);
     setDialogOpen(true);
   };
 
@@ -354,6 +384,7 @@ export default function AdminDashboard() {
       occasionKeys: p.occasionKeys ?? "",
       sortOrder: p.sortOrder,
     });
+    setPriceSuggestion(null);
     setDialogOpen(true);
   };
 
@@ -1147,7 +1178,28 @@ export default function AdminDashboard() {
             </div>
             {/* Price Display */}
             <div className="space-y-1">
-              <Label className="text-sm" style={{ color: "#4A3D2A" }}>السعر (للعرض) *</Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-sm" style={{ color: "#4A3D2A" }}>السعر (للعرض) *</Label>
+                <button
+                  type="button"
+                  onClick={handleSuggestPrice}
+                  disabled={suggestingPrice || !form.name.trim()}
+                  className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    background: "rgba(107,94,168,0.1)",
+                    color: "#6B5EA8",
+                    border: "1px solid rgba(107,94,168,0.25)",
+                    fontFamily: "'Cairo', sans-serif",
+                  }}
+                >
+                  {suggestingPrice ? (
+                    <Loader2 size={11} className="animate-spin" />
+                  ) : (
+                    <Sparkles size={11} />
+                  )}
+                  {suggestingPrice ? "جاري التحليل..." : "اقتراح سعر"}
+                </button>
+              </div>
               <Input
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
@@ -1176,6 +1228,89 @@ export default function AdminDashboard() {
                 style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416" }}
               />
             </div>
+
+            {/* AI Price Suggestion Result */}
+            {priceSuggestion && (
+              <div
+                className="md:col-span-2 rounded-xl p-4 space-y-3"
+                style={{ background: "rgba(107,94,168,0.06)", border: "1px solid rgba(107,94,168,0.2)" }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: "rgba(107,94,168,0.15)" }}>
+                    <Wand2 size={13} style={{ color: "#6B5EA8" }} />
+                  </div>
+                  <p className="text-sm font-bold" style={{ color: "#6B5EA8", fontFamily: "'Cairo', sans-serif" }}>اقتراح السعر بالذكاء الاصطناعي</p>
+                </div>
+
+                {/* Range bar */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
+                    <span>أدنى: {priceSuggestion.min} د.ك</span>
+                    <span>مقترح: {priceSuggestion.suggested} د.ك</span>
+                    <span>أعلى: {priceSuggestion.max} د.ك</span>
+                  </div>
+                  <div className="relative h-2 rounded-full" style={{ background: "rgba(107,94,168,0.15)" }}>
+                    <div
+                      className="absolute top-0 h-2 rounded-full"
+                      style={{
+                        background: "linear-gradient(90deg, #6B5EA8, #9C7A3C)",
+                        left: "0%",
+                        width: `${Math.min(100, ((priceSuggestion.suggested - priceSuggestion.min) / Math.max(1, priceSuggestion.max - priceSuggestion.min)) * 100)}%`,
+                      }}
+                    />
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white"
+                      style={{
+                        background: "#6B5EA8",
+                        left: `calc(${Math.min(100, ((priceSuggestion.suggested - priceSuggestion.min) / Math.max(1, priceSuggestion.max - priceSuggestion.min)) * 100)}% - 6px)`,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Apply buttons */}
+                <div className="flex gap-2 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, price: `من ${priceSuggestion.min} د.ك`, priceValue: priceSuggestion.min }))}
+                    className="text-xs px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
+                    style={{ background: "rgba(107,94,168,0.1)", color: "#6B5EA8", border: "1px solid rgba(107,94,168,0.25)", fontFamily: "'Cairo', sans-serif" }}
+                  >
+                    تطبيق الأدنى ({priceSuggestion.min} د.ك)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, price: `${priceSuggestion.suggested} د.ك`, priceValue: priceSuggestion.suggested }))}
+                    className="text-xs px-3 py-1.5 rounded-lg transition-all hover:opacity-80 font-bold"
+                    style={{ background: "rgba(107,94,168,0.18)", color: "#6B5EA8", border: "1px solid rgba(107,94,168,0.4)", fontFamily: "'Cairo', sans-serif" }}
+                  >
+                    ★ تطبيق المقترح ({priceSuggestion.suggested} د.ك)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, price: `حتى ${priceSuggestion.max} د.ك`, priceValue: priceSuggestion.max }))}
+                    className="text-xs px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
+                    style={{ background: "rgba(107,94,168,0.1)", color: "#6B5EA8", border: "1px solid rgba(107,94,168,0.25)", fontFamily: "'Cairo', sans-serif" }}
+                  >
+                    تطبيق الأعلى ({priceSuggestion.max} د.ك)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, price: priceSuggestion.displayText, priceValue: priceSuggestion.suggested }))}
+                    className="text-xs px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
+                    style={{ background: "rgba(156,122,60,0.1)", color: "#9C7A3C", border: "1px solid rgba(156,122,60,0.25)", fontFamily: "'Cairo', sans-serif" }}
+                  >
+                    نص العرض: "{priceSuggestion.displayText}"
+                  </button>
+                </div>
+
+                {/* Rationale */}
+                <p className="text-xs leading-relaxed" style={{ color: "#7A6A50", fontFamily: "'Cairo', sans-serif" }}>
+                  💡 {priceSuggestion.rationale}
+                </p>
+              </div>
+            )}
+
             {/* Image Upload */}
             <div className="space-y-2 md:col-span-2">
               <Label className="text-sm" style={{ color: "#4A3D2A" }}>صورة المنتج *</Label>

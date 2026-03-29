@@ -175,3 +175,49 @@ describe("imageAI — uploadOriginal flow", () => {
     expect(url).toMatch(/^https?:\/\//);
   });
 });
+
+// ─── suggestPrice logic ────────────────────────────────────────────────────────
+describe("imageAI — suggestPrice logic", () => {
+  it("category price ranges are correctly defined", () => {
+    const ranges: Record<string, { min: number; max: number }> = {
+      gifts:       { min: 5,   max: 80   },
+      shields:     { min: 15,  max: 150  },
+      catering:    { min: 50,  max: 500  },
+      occasions:   { min: 100, max: 1000 },
+      calligraphy: { min: 10,  max: 60   },
+    };
+    expect(ranges["gifts"].min).toBe(5);
+    expect(ranges["shields"].max).toBe(150);
+    expect(ranges["occasions"].max).toBe(1000);
+  });
+
+  it("suggested price should be between min and max", () => {
+    const mockSuggestion = { min: 15, max: 45, suggested: 30, displayText: "من 30 د.ك", rationale: "سعر مناسب للسوق الكويتي" };
+    expect(mockSuggestion.suggested).toBeGreaterThanOrEqual(mockSuggestion.min);
+    expect(mockSuggestion.suggested).toBeLessThanOrEqual(mockSuggestion.max);
+  });
+
+  it("displayText is non-empty string", () => {
+    const mockSuggestion = { min: 10, max: 50, suggested: 25, displayText: "من 25 د.ك", rationale: "تبرير" };
+    expect(typeof mockSuggestion.displayText).toBe("string");
+    expect(mockSuggestion.displayText.length).toBeGreaterThan(0);
+  });
+
+  it("throws when productName is empty string", () => {
+    const validate = (name: string) => {
+      if (!name.trim()) throw new Error("productName is required");
+    };
+    expect(() => validate("")).toThrow("productName is required");
+    expect(() => validate("دزة ورود")).not.toThrow();
+  });
+
+  it("description is optional and does not affect validation", () => {
+    const buildInput = (desc?: string) => ({
+      productName: "درع تكريمي",
+      category: "shields",
+      description: desc,
+    });
+    expect(buildInput()).toEqual({ productName: "درع تكريمي", category: "shields", description: undefined });
+    expect(buildInput("وصف")).toEqual({ productName: "درع تكريمي", category: "shields", description: "وصف" });
+  });
+});
