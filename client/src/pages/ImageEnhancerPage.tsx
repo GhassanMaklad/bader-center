@@ -7,6 +7,8 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useLocation } from "wouter";
+import { saveDescriptionDraft } from "@/lib/descriptionDraft";
 import {
   Upload,
   Sparkles,
@@ -20,6 +22,7 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  ArrowLeftCircle,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -197,7 +200,13 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 }
 
 // ─── Description Result Card ──────────────────────────────────────────────────
-function DescriptionCard({ desc }: { desc: ProductDescription }) {
+function DescriptionCard({
+  desc,
+  onUseInProduct,
+}: {
+  desc: ProductDescription;
+  onUseInProduct: () => void;
+}) {
   const [expanded, setExpanded] = useState(true);
 
   const fullText = `${desc.title}\n\n${desc.description}\n\n✅ ${desc.features.join("\n✅ ")}\n\n${desc.cta}\n\n${desc.hashtags.join(" ")}`;
@@ -332,6 +341,21 @@ function DescriptionCard({ desc }: { desc: ProductDescription }) {
               ))}
             </div>
           </div>
+
+          {/* ── Use in product button ── */}
+          <button
+            onClick={(e) => { e.stopPropagation(); onUseInProduct(); }}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+            style={{
+              background: "linear-gradient(135deg, #2C2416 0%, #4A3D2A 100%)",
+              color: "#C9A84C",
+              fontFamily: "'Cairo', sans-serif",
+              border: "1px solid rgba(201,168,76,0.3)",
+            }}
+          >
+            <ArrowLeftCircle size={16} />
+            استخدم هذا الوصف في إضافة منتج
+          </button>
         </div>
       )}
     </div>
@@ -430,6 +454,8 @@ export default function ImageEnhancerPage() {
     setStep("upload");
   };
 
+  const [, navigate] = useLocation();
+
   const handleDownload = () => {
     if (!enhancedUrl) return;
     const a = document.createElement("a");
@@ -437,6 +463,20 @@ export default function ImageEnhancerPage() {
     a.download = `enhanced-${Date.now()}.png`;
     a.target = "_blank";
     a.click();
+  };
+
+  const handleUseInProduct = () => {
+    if (!description) return;
+    saveDescriptionDraft({
+      title: description.title,
+      description: description.description,
+      features: description.features,
+      cta: description.cta,
+      hashtags: description.hashtags,
+      imageUrl: enhancedUrl ?? originalUrl ?? undefined,
+    });
+    toast.success("تم حفظ الوصف — جاري الانتقال لنموذج المنتج...");
+    setTimeout(() => navigate("/admin"), 800);
   };
 
   const isEnhancing = step === "enhancing";
@@ -695,7 +735,7 @@ export default function ImageEnhancerPage() {
             )}
 
             {descStep === "done" && description && (
-              <DescriptionCard desc={description} />
+              <DescriptionCard desc={description} onUseInProduct={handleUseInProduct} />
             )}
           </div>
         </div>

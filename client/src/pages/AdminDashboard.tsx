@@ -21,6 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
+import { readAndClearDescriptionDraft } from "@/lib/descriptionDraft";
 import {
   Bell,
   CheckCircle,
@@ -276,6 +277,37 @@ export default function AdminDashboard() {
       navigate("/");
     }
   }, [loading, user, navigate]);
+
+  // Pre-fill product form from AI description draft (set by ImageEnhancerPage)
+  useEffect(() => {
+    const draft = readAndClearDescriptionDraft();
+    if (!draft) return;
+
+    // Build a rich description combining all generated fields
+    const fullDescription = [
+      draft.description,
+      draft.features.length ? `\nالمميزات:\n${draft.features.map((f) => `✅ ${f}`).join("\n")}` : "",
+      `\n${draft.cta}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    setEditingId(null);
+    setForm((prev) => ({
+      ...emptyForm,
+      name: draft.title,
+      description: fullDescription,
+      image: draft.imageUrl ?? prev.image,
+      tags: draft.hashtags.map((h) => h.replace(/^#/, "")).join(","),
+    }));
+    setDialogOpen(true);
+    setActiveTab("products");
+
+    // Small delay so the toast appears after navigation animation
+    setTimeout(() => {
+      toast.success("تم تعبئة نموذج المنتج من وصف الذكاء الاصطناعي ✨", { duration: 4000 });
+    }, 300);
+  }, []); // run once on mount
 
   if (loading) {
     return (
