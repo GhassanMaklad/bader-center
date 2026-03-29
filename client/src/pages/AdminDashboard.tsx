@@ -129,9 +129,16 @@ export default function AdminDashboard() {
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // ─── Price suggestion state ───
-  type PriceSuggestion = { min: number; max: number; suggested: number; displayText: string; rationale: string };
+  type PriceSuggestion = {
+    min: number; max: number; suggested: number; displayText: string; rationale: string;
+    // Competitive fields (present only when competitorPrice was provided)
+    competitorPrice?: number;
+    competitivePosition?: string;
+    priceDiffPercent?: number;
+  };
   const [priceSuggestion, setPriceSuggestion] = useState<PriceSuggestion | null>(null);
   const [suggestingPrice, setSuggestingPrice] = useState(false);
+  const [competitorPrice, setCompetitorPrice] = useState<string>("");
 
   const suggestPriceMutation = trpc.imageAI.suggestPrice.useMutation({
     onSuccess: (data) => {
@@ -148,10 +155,12 @@ export default function AdminDashboard() {
     if (!form.name.trim()) { toast.error("أدخل اسم المنتج أولاً"); return; }
     setSuggestingPrice(true);
     setPriceSuggestion(null);
+    const parsedCompetitor = parseFloat(competitorPrice);
     suggestPriceMutation.mutate({
       productName: form.name,
       category: form.category,
       description: form.description || undefined,
+      competitorPrice: !isNaN(parsedCompetitor) && parsedCompetitor > 0 ? parsedCompetitor : undefined,
     });
   };
 
@@ -361,6 +370,7 @@ export default function AdminDashboard() {
     setEditingId(null);
     setForm(emptyForm);
     setPriceSuggestion(null);
+    setCompetitorPrice("");
     setDialogOpen(true);
   };
 
@@ -385,6 +395,7 @@ export default function AdminDashboard() {
       sortOrder: p.sortOrder,
     });
     setPriceSuggestion(null);
+    setCompetitorPrice("");
     setDialogOpen(true);
   };
 
@@ -1176,6 +1187,33 @@ export default function AdminDashboard() {
                 </SelectContent>
               </Select>
             </div>
+            {/* Competitor Price (optional) */}
+            <div className="space-y-1">
+              <Label className="text-sm" style={{ color: "#4A3D2A" }}>
+                سعر المنافس <span className="text-xs" style={{ color: "#8A7560" }}>(اختياري)</span>
+              </Label>
+              <div className="relative">
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  value={competitorPrice}
+                  onChange={(e) => setCompetitorPrice(e.target.value)}
+                  placeholder="مثال: 35"
+                  style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416", paddingLeft: "3.5rem" }}
+                />
+                <span
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none"
+                  style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}
+                >
+                  د.ك
+                </span>
+              </div>
+              <p className="text-xs" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>
+                أدخل سعر المنافس للحصول على تحليل تنافسي مقارن
+              </p>
+            </div>
+
             {/* Price Display */}
             <div className="space-y-1">
               <div className="flex items-center justify-between">
@@ -1186,9 +1224,13 @@ export default function AdminDashboard() {
                   disabled={suggestingPrice || !form.name.trim()}
                   className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
-                    background: "rgba(107,94,168,0.1)",
-                    color: "#6B5EA8",
-                    border: "1px solid rgba(107,94,168,0.25)",
+                    background: competitorPrice && parseFloat(competitorPrice) > 0
+                      ? "rgba(34,197,94,0.1)"
+                      : "rgba(107,94,168,0.1)",
+                    color: competitorPrice && parseFloat(competitorPrice) > 0 ? "#16a34a" : "#6B5EA8",
+                    border: competitorPrice && parseFloat(competitorPrice) > 0
+                      ? "1px solid rgba(34,197,94,0.3)"
+                      : "1px solid rgba(107,94,168,0.25)",
                     fontFamily: "'Cairo', sans-serif",
                   }}
                 >
@@ -1197,7 +1239,11 @@ export default function AdminDashboard() {
                   ) : (
                     <Sparkles size={11} />
                   )}
-                  {suggestingPrice ? "جاري التحليل..." : "اقتراح سعر"}
+                  {suggestingPrice
+                    ? "جاري التحليل..."
+                    : competitorPrice && parseFloat(competitorPrice) > 0
+                    ? "تحليل تنافسي"
+                    : "اقتراح سعر"}
                 </button>
               </div>
               <Input
@@ -1233,14 +1279,85 @@ export default function AdminDashboard() {
             {priceSuggestion && (
               <div
                 className="md:col-span-2 rounded-xl p-4 space-y-3"
-                style={{ background: "rgba(107,94,168,0.06)", border: "1px solid rgba(107,94,168,0.2)" }}
+                style={{
+                  background: priceSuggestion.competitorPrice
+                    ? "rgba(34,197,94,0.04)"
+                    : "rgba(107,94,168,0.06)",
+                  border: priceSuggestion.competitorPrice
+                    ? "1px solid rgba(34,197,94,0.2)"
+                    : "1px solid rgba(107,94,168,0.2)",
+                }}
               >
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: "rgba(107,94,168,0.15)" }}>
-                    <Wand2 size={13} style={{ color: "#6B5EA8" }} />
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-6 h-6 rounded-md flex items-center justify-center"
+                      style={{ background: priceSuggestion.competitorPrice ? "rgba(34,197,94,0.15)" : "rgba(107,94,168,0.15)" }}
+                    >
+                      <Wand2 size={13} style={{ color: priceSuggestion.competitorPrice ? "#16a34a" : "#6B5EA8" }} />
+                    </div>
+                    <p
+                      className="text-sm font-bold"
+                      style={{ color: priceSuggestion.competitorPrice ? "#16a34a" : "#6B5EA8", fontFamily: "'Cairo', sans-serif" }}
+                    >
+                      {priceSuggestion.competitorPrice ? "تحليل تنافسي مقارن" : "اقتراح السعر بالذكاء الاصطناعي"}
+                    </p>
                   </div>
-                  <p className="text-sm font-bold" style={{ color: "#6B5EA8", fontFamily: "'Cairo', sans-serif" }}>اقتراح السعر بالذكاء الاصطناعي</p>
+                  {/* Competitive badge */}
+                  {priceSuggestion.competitorPrice && priceSuggestion.competitivePosition && (
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-bold"
+                        style={{
+                          background: (priceSuggestion.priceDiffPercent ?? 0) > 0
+                            ? "rgba(234,179,8,0.15)"
+                            : (priceSuggestion.priceDiffPercent ?? 0) < 0
+                            ? "rgba(34,197,94,0.15)"
+                            : "rgba(107,94,168,0.15)",
+                          color: (priceSuggestion.priceDiffPercent ?? 0) > 0
+                            ? "#854d0e"
+                            : (priceSuggestion.priceDiffPercent ?? 0) < 0
+                            ? "#15803d"
+                            : "#6B5EA8",
+                          fontFamily: "'Cairo', sans-serif",
+                        }}
+                      >
+                        {priceSuggestion.competitivePosition}
+                      </span>
+                      <span
+                        className="text-xs font-bold"
+                        style={{
+                          color: (priceSuggestion.priceDiffPercent ?? 0) > 0 ? "#854d0e" : "#15803d",
+                          fontFamily: "'Cairo', sans-serif",
+                        }}
+                      >
+                        {(priceSuggestion.priceDiffPercent ?? 0) > 0 ? "+" : ""}{priceSuggestion.priceDiffPercent?.toFixed(1)}%
+                      </span>
+                    </div>
+                  )}
                 </div>
+
+                {/* Competitor vs Suggested comparison row */}
+                {priceSuggestion.competitorPrice && (
+                  <div
+                    className="grid grid-cols-2 gap-3 rounded-lg p-3"
+                    style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }}
+                  >
+                    <div className="text-center">
+                      <p className="text-xs mb-1" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>سعر المنافس</p>
+                      <p className="text-lg font-bold" style={{ color: "#c0392b", fontFamily: "'Cairo', sans-serif" }}>
+                        {priceSuggestion.competitorPrice} د.ك
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs mb-1" style={{ color: "#8A7560", fontFamily: "'Cairo', sans-serif" }}>سعرنا المقترح</p>
+                      <p className="text-lg font-bold" style={{ color: "#16a34a", fontFamily: "'Cairo', sans-serif" }}>
+                        {priceSuggestion.suggested} د.ك
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Range bar */}
                 <div className="space-y-1.5">
@@ -1253,7 +1370,9 @@ export default function AdminDashboard() {
                     <div
                       className="absolute top-0 h-2 rounded-full"
                       style={{
-                        background: "linear-gradient(90deg, #6B5EA8, #9C7A3C)",
+                        background: priceSuggestion.competitorPrice
+                          ? "linear-gradient(90deg, #16a34a, #22c55e)"
+                          : "linear-gradient(90deg, #6B5EA8, #9C7A3C)",
                         left: "0%",
                         width: `${Math.min(100, ((priceSuggestion.suggested - priceSuggestion.min) / Math.max(1, priceSuggestion.max - priceSuggestion.min)) * 100)}%`,
                       }}
@@ -1261,7 +1380,7 @@ export default function AdminDashboard() {
                     <div
                       className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white"
                       style={{
-                        background: "#6B5EA8",
+                        background: priceSuggestion.competitorPrice ? "#16a34a" : "#6B5EA8",
                         left: `calc(${Math.min(100, ((priceSuggestion.suggested - priceSuggestion.min) / Math.max(1, priceSuggestion.max - priceSuggestion.min)) * 100)}% - 6px)`,
                       }}
                     />
@@ -1282,7 +1401,12 @@ export default function AdminDashboard() {
                     type="button"
                     onClick={() => setForm((f) => ({ ...f, price: `${priceSuggestion.suggested} د.ك`, priceValue: priceSuggestion.suggested }))}
                     className="text-xs px-3 py-1.5 rounded-lg transition-all hover:opacity-80 font-bold"
-                    style={{ background: "rgba(107,94,168,0.18)", color: "#6B5EA8", border: "1px solid rgba(107,94,168,0.4)", fontFamily: "'Cairo', sans-serif" }}
+                    style={{
+                      background: priceSuggestion.competitorPrice ? "rgba(34,197,94,0.18)" : "rgba(107,94,168,0.18)",
+                      color: priceSuggestion.competitorPrice ? "#16a34a" : "#6B5EA8",
+                      border: priceSuggestion.competitorPrice ? "1px solid rgba(34,197,94,0.4)" : "1px solid rgba(107,94,168,0.4)",
+                      fontFamily: "'Cairo', sans-serif",
+                    }}
                   >
                     ★ تطبيق المقترح ({priceSuggestion.suggested} د.ك)
                   </button>

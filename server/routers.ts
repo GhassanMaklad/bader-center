@@ -970,10 +970,22 @@ export const appRouter = router({
           productName: z.string().min(1),
           category: z.string().min(1),
           description: z.string().optional(),
+          competitorPrice: z.number().positive().optional(),
         })
       )
       .mutation(async ({ input }) => {
-        const systemPrompt = `أنت خبير تسعير منتجات كويتي متخصص في سوق الهدايا والتكريم والمناسبات.
+        const hasCompetitor = input.competitorPrice !== undefined && input.competitorPrice > 0;
+
+        const systemPrompt = hasCompetitor
+          ? `أنت خبير تسعير تنافسي كويتي متخصص في سوق الهدايا والتكريم والمناسبات.
+العملة: دينار كويتي (KWD).
+مهمتك: تحليل سعر المنافس واقتراح سعر تنافسي ذكي يحقق التوازن بين الجاذبية والربحية.
+استراتيجيات التسعير التنافسي:
+- إذا كان المنتج متميزاً: يمكن تسعيره أعلى من المنافس بـ 10-20%
+- إذا كان مشابهاً: سعّره أقل بـ 5-15% لجذب العملاء
+- إذا كان أقل جودة: سعّره أقل بـ 20-30%
+أعط تحليلاً تنافسياً واضحاً مع توصية سعرية محددة.`
+          : `أنت خبير تسعير منتجات كويتي متخصص في سوق الهدايا والتكريم والمناسبات.
 العملة: دينار كويتي (KWD).
 فئات المنتجات المتاحة:
 - gifts: الهدايا والدزات (نطاق شائع: 5–80 KWD)
@@ -987,9 +999,38 @@ export const appRouter = router({
           `اسم المنتج: ${input.productName}`,
           `الفئة: ${input.category}`,
           input.description ? `الوصف: ${input.description.slice(0, 300)}` : "",
+          hasCompetitor ? `سعر المنافس: ${input.competitorPrice} د.ك` : "",
         ]
           .filter(Boolean)
           .join("\n");
+
+        const schema = hasCompetitor
+          ? {
+              type: "object" as const,
+              properties: {
+                min: { type: "number", description: "الحد الأدنى للسعر المقترح بالدينار الكويتي" },
+                max: { type: "number", description: "الحد الأعلى للسعر المقترح" },
+                suggested: { type: "number", description: "السعر التنافسي المقترح الأمثل" },
+                displayText: { type: "string", description: "نص السعر للعرض بالعربية مثل 'من 45 د.ك'" },
+                rationale: { type: "string", description: "تبرير تنافسي قصير بالعربية (20-50 كلمة) يشرح العلاقة مع سعر المنافس" },
+                competitivePosition: { type: "string", description: "موقعنا التنافسي: أعلى / مساوٍ / أقل من المنافس" },
+                priceDiffPercent: { type: "number", description: "نسبة الفرق المئوية بين سعرنا المقترح وسعر المنافس (موجبة إذا أعلى، سالبة إذا أقل)" },
+              },
+              required: ["min", "max", "suggested", "displayText", "rationale", "competitivePosition", "priceDiffPercent"],
+              additionalProperties: false,
+            }
+          : {
+              type: "object" as const,
+              properties: {
+                min: { type: "number", description: "الحد الأدنى للسعر بالدينار الكويتي" },
+                max: { type: "number", description: "الحد الأعلى للسعر" },
+                suggested: { type: "number", description: "السعر المقترح الأمثل" },
+                displayText: { type: "string", description: "نص السعر للعرض بالعربية مثل 'من 45 د.ك'" },
+                rationale: { type: "string", description: "تبرير قصير بالعربية (20-40 كلمة)" },
+              },
+              required: ["min", "max", "suggested", "displayText", "rationale"],
+              additionalProperties: false,
+            };
 
         const response = await invokeLLM({
           messages: [
@@ -999,20 +1040,9 @@ export const appRouter = router({
           response_format: {
             type: "json_schema",
             json_schema: {
-              name: "price_suggestion",
+              name: hasCompetitor ? "competitive_price_suggestion" : "price_suggestion",
               strict: true,
-              schema: {
-                type: "object",
-                properties: {
-                  min: { type: "number", description: "الحد الأدنى للسعر بالدينار الكويتي" },
-                  max: { type: "number", description: "الحد الأعلى للسعر" },
-                  suggested: { type: "number", description: "السعر المقترح الأمثل" },
-                  displayText: { type: "string", description: "نص السعر للعرض بالعربية مثل 'من 45 د.ك'" },
-                  rationale: { type: "string", description: "تبرير قصير بالعربية (20-40 كلمة)" },
-                },
-                required: ["min", "max", "suggested", "displayText", "rationale"],
-                additionalProperties: false,
-              },
+              schema,
             },
           },
         });
@@ -1028,6 +1058,10 @@ export const appRouter = router({
             suggested: Number(parsed.suggested),
             displayText: String(parsed.displayText),
             rationale: String(parsed.rationale),
+            // Competitive fields (only present when competitorPrice was provided)
+            competitorPrice: input.competitorPrice,
+            competitivePosition: parsed.competitivePosition as string | undefined,
+            priceDiffPercent: parsed.priceDiffPercent !== undefined ? Number(parsed.priceDiffPercent) : undefined,
           };
         } catch {
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "خطأ في تحليل اقتراح السعر" });

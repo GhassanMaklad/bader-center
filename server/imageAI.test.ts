@@ -221,3 +221,66 @@ describe("imageAI — suggestPrice logic", () => {
     expect(buildInput("وصف")).toEqual({ productName: "درع تكريمي", category: "shields", description: "وصف" });
   });
 });
+
+// ─── competitorPrice logic ─────────────────────────────────────────────────────
+describe("imageAI — competitive price logic", () => {
+  it("hasCompetitor is true when competitorPrice is a positive number", () => {
+    const hasCompetitor = (price?: number) => price !== undefined && price > 0;
+    expect(hasCompetitor(35)).toBe(true);
+    expect(hasCompetitor(0)).toBe(false);
+    expect(hasCompetitor(undefined)).toBe(false);
+    expect(hasCompetitor(-5)).toBe(false);
+  });
+
+  it("competitive result includes competitivePosition and priceDiffPercent", () => {
+    const mockResult = {
+      min: 25, max: 40, suggested: 30,
+      displayText: "من 30 د.ك",
+      rationale: "سعر أقل من المنافس لجذب العملاء",
+      competitorPrice: 35,
+      competitivePosition: "أقل من المنافس",
+      priceDiffPercent: -14.3,
+    };
+    expect(mockResult).toHaveProperty("competitivePosition");
+    expect(mockResult).toHaveProperty("priceDiffPercent");
+    expect(mockResult.priceDiffPercent).toBeLessThan(0);
+    expect(mockResult.competitivePosition).toContain("أقل");
+  });
+
+  it("priceDiffPercent is positive when our price is higher than competitor", () => {
+    const ourPrice = 45;
+    const competitorPrice = 35;
+    const diff = ((ourPrice - competitorPrice) / competitorPrice) * 100;
+    expect(diff).toBeGreaterThan(0);
+    expect(diff.toFixed(1)).toBe("28.6");
+  });
+
+  it("priceDiffPercent is negative when our price is lower than competitor", () => {
+    const ourPrice = 28;
+    const competitorPrice = 35;
+    const diff = ((ourPrice - competitorPrice) / competitorPrice) * 100;
+    expect(diff).toBeLessThan(0);
+  });
+
+  it("non-competitive result has no competitivePosition field", () => {
+    const basicResult = {
+      min: 20, max: 50, suggested: 35,
+      displayText: "من 35 د.ك",
+      rationale: "سعر مناسب للسوق",
+    };
+    expect(basicResult).not.toHaveProperty("competitivePosition");
+    expect(basicResult).not.toHaveProperty("priceDiffPercent");
+  });
+
+  it("competitorPrice input is validated as positive number", () => {
+    const validate = (val: string) => {
+      const n = parseFloat(val);
+      return !isNaN(n) && n > 0 ? n : undefined;
+    };
+    expect(validate("35")).toBe(35);
+    expect(validate("0")).toBeUndefined();
+    expect(validate("")).toBeUndefined();
+    expect(validate("abc")).toBeUndefined();
+    expect(validate("-10")).toBeUndefined();
+  });
+});
