@@ -235,7 +235,7 @@ export const appRouter = router({
       }),
 
     create: adminProcedure.input(productInput).mutation(async ({ input }) => {
-      await createProduct({
+      const result = await createProduct({
         ...input,
         priceValue: String(input.priceValue),
         nameEn: input.nameEn ?? "",
@@ -244,7 +244,8 @@ export const appRouter = router({
         badgeColor: input.badgeColor ?? null,
         priceNote: input.priceNote ?? null,
       });
-      return { success: true };
+      const insertId = (result as unknown as { insertId?: number })?.insertId ?? null;
+      return { success: true, id: insertId };
     }),
 
     update: adminProcedure

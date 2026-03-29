@@ -52,6 +52,7 @@ interface Product {
   priceValue: number; // numeric KD value for sorting (0 = contact for price)
   priceNote?: string;
   image: string;
+  galleryImages?: { id: number; imageUrl: string }[]; // additional gallery images
   badge?: string;
   badgeColor?: string;
   description: string;
@@ -353,6 +354,16 @@ const CATEGORY_DEFS = [
 function ProductCard({ product, onQuickView }: { product: Product; onQuickView: (p: Product) => void }) {
   const [hovered, setHovered] = useState(false);
   const [, navigate] = useLocation();
+  const [activeImgIdx, setActiveImgIdx] = useState(0);
+
+  // Build full image list: primary + gallery
+  const allImages = useMemo(() => {
+    const imgs = [product.image];
+    if (product.galleryImages?.length) {
+      product.galleryImages.forEach((g) => imgs.push(g.imageUrl));
+    }
+    return imgs;
+  }, [product.image, product.galleryImages]);
 
   const waMsg = encodeURIComponent(
     `مرحباً مركز بدر 👋\nأريد الاستفسار عن: ${product.name}\nالسعر المذكور: ${product.price}\n\nأرجو التواصل معي.`
@@ -381,15 +392,57 @@ function ProductCard({ product, onQuickView }: { product: Product; onQuickView: 
     >
       {/* Image */}
       <div className="relative overflow-hidden" style={{ height: "220px" }}>
+        {/* Slider: show active image */}
         <img
-          src={product.image}
+          src={allImages[activeImgIdx]}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-700"
-          style={{ transform: hovered ? "scale(1.08)" : "scale(1)" }}
+          className="w-full h-full object-cover transition-all duration-500"
+          style={{ transform: hovered && allImages.length === 1 ? "scale(1.08)" : "scale(1)" }}
           onError={(e) => {
             (e.target as HTMLImageElement).src = UNSPLASH.giftBox1;
           }}
         />
+        {/* Dot indicators — only when multiple images */}
+        {allImages.length > 1 && (
+          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10">
+            {allImages.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setActiveImgIdx(i); }}
+                className="rounded-full transition-all duration-200"
+                style={{
+                  width: i === activeImgIdx ? "18px" : "6px",
+                  height: "6px",
+                  background: i === activeImgIdx ? "rgba(247,243,236,0.95)" : "rgba(247,243,236,0.45)",
+                  border: "none",
+                  padding: 0,
+                }}
+              />
+            ))}
+          </div>
+        )}
+        {/* Prev / Next arrows — only when multiple images and hovered */}
+        {allImages.length > 1 && hovered && (
+          <>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setActiveImgIdx((prev) => (prev - 1 + allImages.length) % allImages.length); }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200"
+              style={{ background: "rgba(28,24,16,0.6)", border: "1px solid rgba(247,243,236,0.3)" }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setActiveImgIdx((prev) => (prev + 1) % allImages.length); }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200"
+              style={{ background: "rgba(28,24,16,0.6)", border: "1px solid rgba(247,243,236,0.3)" }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </>
+        )}
         {/* Dark overlay */}
         <div
           className="absolute inset-0 transition-opacity duration-300"
@@ -594,6 +647,7 @@ export default function Catalog() {
       priceValue: Number(p.priceValue ?? 0),
       priceNote: p.priceNote ?? undefined,
       image: p.image,
+      galleryImages: (p as typeof p & { galleryImages?: { id: number; imageUrl: string }[] }).galleryImages ?? [],
       badge: p.badge ?? undefined,
       badgeColor: p.badgeColor ?? undefined,
       description: p.description,

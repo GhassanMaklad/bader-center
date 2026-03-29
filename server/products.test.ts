@@ -30,6 +30,9 @@ vi.mock("./db", () => ({
   updateProduct: vi.fn().mockResolvedValue(undefined),
   deleteProduct: vi.fn().mockResolvedValue(undefined),
   toggleProductStock: vi.fn().mockResolvedValue(undefined),
+  getProductImages: vi.fn().mockResolvedValue([]),
+  createProductImage: vi.fn().mockResolvedValue({ insertId: 10 }),
+  deleteProductImage: vi.fn().mockResolvedValue(undefined),
   upsertUser: vi.fn(),
   getUserByOpenId: vi.fn(),
 }));
@@ -158,5 +161,73 @@ describe("products.toggleStock (admin only)", () => {
     const caller = appRouter.createCaller(createAdminCtx());
     const result = await caller.products.toggleStock({ id: 1, inStock: false });
     expect(result.success).toBe(true);
+  });
+});
+
+describe("productImages.list", () => {
+  it("returns empty array for a product with no gallery images", async () => {
+    const caller = appRouter.createCaller(createPublicCtx());
+    const result = await caller.productImages.list({ productId: 999 });
+    expect(Array.isArray(result)).toBe(true);
+  });
+});
+
+describe("productImages.add (admin only)", () => {
+  it("rejects non-admin users from adding gallery images", async () => {
+    const caller = appRouter.createCaller(createUserCtx());
+    await expect(
+      caller.productImages.add({
+        productId: 1,
+        filename: "test.jpg",
+        contentType: "image/jpeg",
+        dataBase64: "abc123",
+        sortOrder: 0,
+      })
+    ).rejects.toThrow();
+  });
+
+  it("rejects unauthenticated users from adding gallery images", async () => {
+    const caller = appRouter.createCaller(createPublicCtx());
+    await expect(
+      caller.productImages.add({
+        productId: 1,
+        filename: "test.jpg",
+        contentType: "image/jpeg",
+        dataBase64: "abc123",
+        sortOrder: 0,
+      })
+    ).rejects.toThrow();
+  });
+});
+
+describe("productImages.delete (admin only)", () => {
+  it("rejects non-admin users from deleting gallery images", async () => {
+    const caller = appRouter.createCaller(createUserCtx());
+    await expect(caller.productImages.delete({ id: 1 })).rejects.toThrow();
+  });
+
+  it("rejects unauthenticated users from deleting gallery images", async () => {
+    const caller = appRouter.createCaller(createPublicCtx());
+    await expect(caller.productImages.delete({ id: 1 })).rejects.toThrow();
+  });
+});
+
+describe("products.create returns id", () => {
+  it("returns success and id after product creation", async () => {
+    const caller = appRouter.createCaller(createAdminCtx());
+    const result = await caller.products.create({
+      name: "منتج اختبار",
+      category: "gifts",
+      price: "من 20 د.ك",
+      priceValue: 20,
+      image: "https://example.com/test.jpg",
+      description: "وصف اختبار",
+      rating: 5,
+      inStock: true,
+      sortOrder: 0,
+    });
+    expect(result.success).toBe(true);
+    // id may be null in mock but should exist as a key
+    expect("id" in result).toBe(true);
   });
 });

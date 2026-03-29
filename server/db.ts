@@ -94,14 +94,25 @@ export async function getUserByOpenId(openId: string) {
 export async function getAllProducts() {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  return db.select().from(products).orderBy(asc(products.sortOrder));
+  const rows = await db.select().from(products).orderBy(asc(products.sortOrder));
+  // Attach gallery images to each product
+  const allImages = await db.select().from(productImages).orderBy(asc(productImages.sortOrder));
+  return rows.map((p) => ({
+    ...p,
+    galleryImages: allImages.filter((img) => img.productId === p.id),
+  }));
 }
 
 export async function getProductById(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const result = await db.select().from(products).where(eq(products.id, id)).limit(1);
-  return result[0] ?? null;
+  const product = result[0] ?? null;
+  if (!product) return null;
+  const images = await db.select().from(productImages)
+    .where(eq(productImages.productId, id))
+    .orderBy(asc(productImages.sortOrder));
+  return { ...product, galleryImages: images };
 }
 
 export async function createProduct(data: InsertProduct) {

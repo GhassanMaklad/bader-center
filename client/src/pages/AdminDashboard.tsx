@@ -275,8 +275,91 @@ export default function AdminDashboard() {
     reader.readAsDataURL(file);
   };
 
+  // ─── Gallery images state (for multi-image support) ───
+  type GalleryImg = { id?: number; url: string; uploading?: boolean };
+  const [galleryImages, setGalleryImages] = useState<GalleryImg[]>([]);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+
+  const addGalleryImageMutation = trpc.productImages.add.useMutation({
+    onSuccess: ({ url }, variables) => {
+      // Replace the uploading placeholder with the real URL
+      setGalleryImages((prev) =>
+        prev.map((img) => (img.uploading && img.url === "uploading" ? { url, uploading: false } : img))
+      );
+      toast.success("تم رفع الصورة الإضافية!");
+    },
+    onError: (e) => {
+      toast.error("فشل رفع الصورة: " + e.message);
+      setGalleryImages((prev) => prev.filter((img) => !img.uploading));
+    },
+    onSettled: () => setUploadingGallery(false),
+  });
+
+  const deleteGalleryImageMutation = trpc.productImages.delete.useMutation({
+    onError: (e) => toast.error("فشل حذف الصورة: " + e.message),
+  });
+
+  const handleGalleryImageFile = (file: File) => {
+    if (!file) return;
+    if (galleryImages.length >= 4) {
+      toast.error("الحد الأقصى 4 صور إضافية (إجمالي 5 مع الصورة الرئيسية)");
+      return;
+    }
+    setUploadingGallery(true);
+    // Add placeholder
+    setGalleryImages((prev) => [...prev, { url: "uploading", uploading: true }]);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = (e.target?.result as string).split(",")[1];
+      // If editing an existing product, upload directly to productImages table
+      if (editingId !== null) {
+        addGalleryImageMutation.mutate({
+          productId: editingId,
+          filename: file.name,
+          contentType: file.type,
+          dataBase64: base64,
+          sortOrder: galleryImages.length,
+        });
+      } else {
+        // For new products, store as base64 temporarily; upload after product is created
+        const dataUrl = e.target?.result as string;
+        setGalleryImages((prev) =>
+          prev.map((img) => (img.uploading ? { url: dataUrl, uploading: false, _file: file } as GalleryImg & { _file: File } : img))
+        );
+        setUploadingGallery(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeGalleryImage = (index: number) => {
+    const img = galleryImages[index];
+    if (img.id) deleteGalleryImageMutation.mutate({ id: img.id });
+    setGalleryImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const createMutation = trpc.products.create.useMutation({
-    onSuccess: () => {
+    onSuccess: async (newProduct) => {
+      // Upload any pending gallery images for the new product
+      const pending = galleryImages.filter((img) => img.url.startsWith("data:"));
+      if (pending.length > 0 && newProduct?.id) {
+        for (let i = 0; i < pending.length; i++) {
+          const img = pending[i];
+          const base64 = img.url.split(",")[1];
+          const mimeMatch = img.url.match(/data:([^;]+);/);
+          const contentType = mimeMatch?.[1] ?? "image/jpeg";
+          const ext = contentType.split("/")[1] ?? "jpg";
+          try {
+            await addGalleryImageMutation.mutateAsync({
+              productId: newProduct.id,
+              filename: `gallery-${i}.${ext}`,
+              contentType,
+              dataBase64: base64,
+              sortOrder: i,
+            });
+          } catch (_) { /* individual errors already toasted */ }
+        }
+      }
       toast.success("تم إضافة المنتج بنجاح");
       setDialogOpen(false);
       refetch();
@@ -371,6 +454,7 @@ export default function AdminDashboard() {
     setForm(emptyForm);
     setPriceSuggestion(null);
     setCompetitorPrice("");
+    setGalleryImages([]);
     setDialogOpen(true);
   };
 
@@ -396,6 +480,9 @@ export default function AdminDashboard() {
     });
     setPriceSuggestion(null);
     setCompetitorPrice("");
+    // Load existing gallery images from the product data
+    const existingGallery = (p as ProductRow & { galleryImages?: { id: number; imageUrl: string }[] }).galleryImages ?? [];
+    setGalleryImages(existingGallery.map((img) => ({ id: img.id, url: img.imageUrl })));
     setDialogOpen(true);
   };
 
@@ -1436,52 +1523,22 @@ export default function AdminDashboard() {
             )}
 
             {/* Image Upload */}
-            <div className="space-y-2 md:col-span-2">
-              <Label className="text-sm" style={{ color: "#4A3D2A" }}>صورة المنتج *</Label>
-              <div className="flex gap-3 items-start">
-                {/* Upload button */}
-                <label
-                  className="flex flex-col items-center justify-center w-28 h-28 rounded-xl cursor-pointer transition-all duration-200 flex-shrink-0"
-                  style={{
-                    background: uploadingImage ? "rgba(156,122,60,0.05)" : "rgba(156,122,60,0.08)",
-                    border: "2px dashed rgba(156,122,60,0.4)",
-                  }}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    const file = e.dataTransfer.files[0];
-                    if (file) handleImageFile(file);
-                  }}
-                >
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleImageFile(file);
-                    }}
-                    disabled={uploadingImage}
-                  />
-                  {uploadingImage ? (
-                    <Loader2 className="w-6 h-6 text-yellow-500 animate-spin" />
-                  ) : (
-                    <>
-                      <ImagePlus className="w-6 h-6 text-yellow-500 mb-1" />
-                      <span className="text-xs text-yellow-600 text-center leading-tight">ارفع صورة<br/>أو اسحبها</span>
-                    </>
-                  )}
-                </label>
+            <div className="space-y-3 md:col-span-2">
+              <Label className="text-sm font-semibold" style={{ color: "#4A3D2A" }}>صور المنتج (1-5 صور)</Label>
 
-                {/* Preview + URL input */}
-                <div className="flex-1 space-y-2">
-                  {form.image && (
-                    <div className="relative inline-block">
+              {/* Image grid: primary + gallery */}
+              <div className="flex flex-wrap gap-3">
+
+                {/* Primary image slot */}
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-xs font-medium" style={{ color: "#8A7560" }}>رئيسية *</span>
+                  {form.image ? (
+                    <div className="relative">
                       <img
                         src={form.image}
-                        alt="preview"
-                        className="w-28 h-28 rounded-xl object-cover"
-                        style={{ border: "1px solid rgba(156,122,60,0.3)" }}
+                        alt="primary"
+                        className="w-24 h-24 rounded-xl object-cover"
+                        style={{ border: "2px solid rgba(156,122,60,0.5)" }}
                       />
                       <button
                         type="button"
@@ -1492,20 +1549,90 @@ export default function AdminDashboard() {
                         <X className="w-3 h-3 text-white" />
                       </button>
                     </div>
+                  ) : (
+                    <label
+                      className="flex flex-col items-center justify-center w-24 h-24 rounded-xl cursor-pointer transition-all duration-200"
+                      style={{
+                        background: uploadingImage ? "rgba(156,122,60,0.05)" : "rgba(156,122,60,0.08)",
+                        border: "2px dashed rgba(156,122,60,0.5)",
+                      }}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleImageFile(f); }}
+                    >
+                      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageFile(f); }}
+                        disabled={uploadingImage}
+                      />
+                      {uploadingImage ? <Loader2 className="w-5 h-5 text-yellow-500 animate-spin" /> : (
+                        <><ImagePlus className="w-5 h-5 text-yellow-500 mb-1" /><span className="text-xs text-yellow-600 text-center leading-tight">ارفع<br/>صورة</span></>
+                      )}
+                    </label>
                   )}
-                  <div className="space-y-1">
-                    <p className="text-xs" style={{ color: "#8A7560" }}>أو الصق رابط URL مباشرة:</p>
-                    <Input
-                      value={form.image}
-                      onChange={(e) => setForm({ ...form, image: e.target.value })}
-                      placeholder="https://..."
-                      dir="ltr"
-                      style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416", fontSize: "0.75rem" }}
-                    />
-                  </div>
                 </div>
+
+                {/* Gallery image slots */}
+                {galleryImages.map((img, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-1">
+                    <span className="text-xs" style={{ color: "#8A7560" }}>إضافية {idx + 1}</span>
+                    <div className="relative">
+                      {img.uploading ? (
+                        <div className="w-24 h-24 rounded-xl flex items-center justify-center" style={{ background: "rgba(156,122,60,0.08)", border: "2px dashed rgba(156,122,60,0.3)" }}>
+                          <Loader2 className="w-5 h-5 text-yellow-500 animate-spin" />
+                        </div>
+                      ) : (
+                        <img src={img.url} alt={`gallery-${idx}`} className="w-24 h-24 rounded-xl object-cover" style={{ border: "1px solid rgba(156,122,60,0.3)" }} />
+                      )}
+                      {!img.uploading && (
+                        <button type="button" onClick={() => removeGalleryImage(idx)}
+                          className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center"
+                          style={{ background: "#ef4444" }}
+                        >
+                          <X className="w-3 h-3 text-white" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Add more slot — show if total < 5 */}
+                {galleryImages.length < 4 && form.image && (
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-xs" style={{ color: "#8A7560" }}>إضافية {galleryImages.length + 1}</span>
+                    <label
+                      className="flex flex-col items-center justify-center w-24 h-24 rounded-xl cursor-pointer transition-all duration-200"
+                      style={{
+                        background: uploadingGallery ? "rgba(156,122,60,0.05)" : "rgba(156,122,60,0.06)",
+                        border: "2px dashed rgba(156,122,60,0.3)",
+                      }}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleGalleryImageFile(f); }}
+                    >
+                      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleGalleryImageFile(f); }}
+                        disabled={uploadingGallery}
+                      />
+                      {uploadingGallery ? <Loader2 className="w-5 h-5 text-yellow-500 animate-spin" /> : (
+                        <><Plus className="w-5 h-5 text-yellow-500 mb-1" /><span className="text-xs text-yellow-600 text-center leading-tight">أضف<br/>صورة</span></>
+                      )}
+                    </label>
+                  </div>
+                )}
               </div>
-              <p className="text-xs" style={{ color: "#8A7560" }}>الأحجام المدعومة: JPEG, PNG, WebP, GIF — حد أقصى 5MB</p>
+
+              {/* URL fallback for primary image */}
+              {!form.image && (
+                <div className="space-y-1">
+                  <p className="text-xs" style={{ color: "#8A7560" }}>أو الصق رابط URL للصورة الرئيسية:</p>
+                  <Input
+                    value={form.image}
+                    onChange={(e) => setForm({ ...form, image: e.target.value })}
+                    placeholder="https://..."
+                    dir="ltr"
+                    style={{ background: "#F7F3EC", borderColor: "rgba(156,122,60,0.3)", color: "#2C2416", fontSize: "0.75rem" }}
+                  />
+                </div>
+              )}
+              <p className="text-xs" style={{ color: "#8A7560" }}>الصورة الرئيسية مطلوبة. يمكن إضافة حتى 4 صور إضافية — JPEG, PNG, WebP, GIF — حد أقصى 5MB لكل صورة</p>
             </div>
             {/* Description */}
             <div className="space-y-1 md:col-span-2">
