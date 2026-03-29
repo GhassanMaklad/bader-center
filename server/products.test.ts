@@ -33,6 +33,7 @@ vi.mock("./db", () => ({
   getProductImages: vi.fn().mockResolvedValue([]),
   createProductImage: vi.fn().mockResolvedValue({ insertId: 10 }),
   deleteProductImage: vi.fn().mockResolvedValue(undefined),
+  updateProductImagesSortOrder: vi.fn().mockResolvedValue(undefined),
   upsertUser: vi.fn(),
   getUserByOpenId: vi.fn(),
 }));
@@ -229,5 +230,43 @@ describe("products.create returns id", () => {
     expect(result.success).toBe(true);
     // id may be null in mock but should exist as a key
     expect("id" in result).toBe(true);
+  });
+});
+
+describe("productImages.reorder (admin only)", () => {
+  it("allows admin to reorder gallery images", async () => {
+    const caller = appRouter.createCaller(createAdminCtx());
+    const result = await caller.productImages.reorder({
+      items: [
+        { id: 1, sortOrder: 0 },
+        { id: 2, sortOrder: 1 },
+        { id: 3, sortOrder: 2 },
+      ],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects non-admin users from reordering", async () => {
+    const caller = appRouter.createCaller(createUserCtx());
+    await expect(
+      caller.productImages.reorder({
+        items: [{ id: 1, sortOrder: 0 }],
+      })
+    ).rejects.toThrow();
+  });
+
+  it("rejects unauthenticated users from reordering", async () => {
+    const caller = appRouter.createCaller(createPublicCtx());
+    await expect(
+      caller.productImages.reorder({
+        items: [{ id: 1, sortOrder: 0 }],
+      })
+    ).rejects.toThrow();
+  });
+
+  it("handles empty items array gracefully", async () => {
+    const caller = appRouter.createCaller(createAdminCtx());
+    const result = await caller.productImages.reorder({ items: [] });
+    expect(result.success).toBe(true);
   });
 });

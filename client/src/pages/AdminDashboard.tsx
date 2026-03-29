@@ -44,7 +44,24 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
@@ -276,7 +293,7 @@ export default function AdminDashboard() {
   };
 
   // ─── Gallery images state (for multi-image support) ───
-  type GalleryImg = { id?: number; url: string; uploading?: boolean };
+  type GalleryImg = { uid: string; id?: number; url: string; uploading?: boolean };
   const [galleryImages, setGalleryImages] = useState<GalleryImg[]>([]);
   const [uploadingGallery, setUploadingGallery] = useState(false);
 
@@ -284,7 +301,7 @@ export default function AdminDashboard() {
     onSuccess: ({ url }, variables) => {
       // Replace the uploading placeholder with the real URL
       setGalleryImages((prev) =>
-        prev.map((img) => (img.uploading && img.url === "uploading" ? { url, uploading: false } : img))
+        prev.map((img) => (img.uploading && img.url === "uploading" ? { uid: img.uid, url, uploading: false } : img))
       );
       toast.success("تم رفع الصورة الإضافية!");
     },
@@ -307,7 +324,8 @@ export default function AdminDashboard() {
     }
     setUploadingGallery(true);
     // Add placeholder
-    setGalleryImages((prev) => [...prev, { url: "uploading", uploading: true }]);
+    const placeholderUid = `upload-${Date.now()}-${Math.random()}`;
+    setGalleryImages((prev) => [...prev, { uid: placeholderUid, url: "uploading", uploading: true }]);
     const reader = new FileReader();
     reader.onload = (e) => {
       const base64 = (e.target?.result as string).split(",")[1];
@@ -324,7 +342,7 @@ export default function AdminDashboard() {
         // For new products, store as base64 temporarily; upload after product is created
         const dataUrl = e.target?.result as string;
         setGalleryImages((prev) =>
-          prev.map((img) => (img.uploading ? { url: dataUrl, uploading: false, _file: file } as GalleryImg & { _file: File } : img))
+          prev.map((img) => (img.uploading ? { uid: img.uid, url: dataUrl, uploading: false, _file: file } as GalleryImg & { _file: File } : img))
         );
         setUploadingGallery(false);
       }
@@ -367,8 +385,19 @@ export default function AdminDashboard() {
     onError: (e) => toast.error("خطأ: " + e.message),
   });
 
+  const reorderImagesMutation = trpc.productImages.reorder.useMutation({
+    onError: (e) => toast.error("خطأ في حفظ ترتيب الصور: " + e.message),
+  });
+
   const updateMutation = trpc.products.update.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Persist the new sort order for gallery images that have DB ids
+      const itemsWithId = galleryImages
+        .filter((img) => img.id !== undefined)
+        .map((img, idx) => ({ id: img.id!, sortOrder: idx }));
+      if (itemsWithId.length > 0) {
+        await reorderImagesMutation.mutateAsync({ items: itemsWithId });
+      }
       toast.success("تم تحديث المنتج بنجاح");
       setDialogOpen(false);
       refetch();
@@ -482,7 +511,7 @@ export default function AdminDashboard() {
     setCompetitorPrice("");
     // Load existing gallery images from the product data
     const existingGallery = (p as ProductRow & { galleryImages?: { id: number; imageUrl: string }[] }).galleryImages ?? [];
-    setGalleryImages(existingGallery.map((img) => ({ id: img.id, url: img.imageUrl })));
+    setGalleryImages(existingGallery.map((img) => ({ uid: `existing-${img.id}`, id: img.id, url: img.imageUrl })));
     setDialogOpen(true);
   };
 
@@ -1570,29 +1599,85 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
-                {/* Gallery image slots */}
-                {galleryImages.map((img, idx) => (
-                  <div key={idx} className="flex flex-col items-center gap-1">
-                    <span className="text-xs" style={{ color: "#8A7560" }}>إضافية {idx + 1}</span>
-                    <div className="relative">
-                      {img.uploading ? (
-                        <div className="w-24 h-24 rounded-xl flex items-center justify-center" style={{ background: "rgba(156,122,60,0.08)", border: "2px dashed rgba(156,122,60,0.3)" }}>
-                          <Loader2 className="w-5 h-5 text-yellow-500 animate-spin" />
+                {/* Drag-and-drop gallery image slots */}
+                {(() => {
+                  // SortableGalleryItem component defined inline
+                  function SortableGalleryItem({ img, idx, onRemove }: { img: GalleryImg; idx: number; onRemove: (idx: number) => void }) {
+                    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: img.uid });
+                    const style = {
+                      transform: CSS.Transform.toString(transform),
+                      transition,
+                      opacity: isDragging ? 0.5 : 1,
+                      zIndex: isDragging ? 50 : undefined,
+                    };
+                    return (
+                      <div ref={setNodeRef} style={style} className="flex flex-col items-center gap-1">
+                        <span className="text-xs" style={{ color: "#8A7560" }}>إضافية {idx + 1}</span>
+                        <div className="relative group">
+                          {img.uploading ? (
+                            <div className="w-24 h-24 rounded-xl flex items-center justify-center" style={{ background: "rgba(156,122,60,0.08)", border: "2px dashed rgba(156,122,60,0.3)" }}>
+                              <Loader2 className="w-5 h-5 text-yellow-500 animate-spin" />
+                            </div>
+                          ) : (
+                            <>
+                              <img
+                                src={img.url}
+                                alt={`gallery-${idx}`}
+                                className="w-24 h-24 rounded-xl object-cover select-none"
+                                style={{ border: "1px solid rgba(156,122,60,0.3)" }}
+                                draggable={false}
+                              />
+                              {/* Drag handle overlay */}
+                              <div
+                                {...attributes}
+                                {...listeners}
+                                className="absolute inset-0 rounded-xl flex items-end justify-center pb-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-grab active:cursor-grabbing"
+                                style={{ background: "rgba(0,0,0,0.35)" }}
+                              >
+                                <span className="text-white text-xs font-medium select-none">⠿ اسحب</span>
+                              </div>
+                            </>
+                          )}
+                          {!img.uploading && (
+                            <button
+                              type="button"
+                              onClick={() => onRemove(idx)}
+                              className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center"
+                              style={{ background: "#ef4444" }}
+                            >
+                              <X className="w-3 h-3 text-white" />
+                            </button>
+                          )}
                         </div>
-                      ) : (
-                        <img src={img.url} alt={`gallery-${idx}`} className="w-24 h-24 rounded-xl object-cover" style={{ border: "1px solid rgba(156,122,60,0.3)" }} />
-                      )}
-                      {!img.uploading && (
-                        <button type="button" onClick={() => removeGalleryImage(idx)}
-                          className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center"
-                          style={{ background: "#ef4444" }}
-                        >
-                          <X className="w-3 h-3 text-white" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                      </div>
+                    );
+                  }
+
+                  const sensors = useSensors(
+                    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+                    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+                  );
+
+                  const handleDragEnd = (event: DragEndEvent) => {
+                    const { active, over } = event;
+                    if (!over || active.id === over.id) return;
+                    setGalleryImages((items) => {
+                      const oldIdx = items.findIndex((i) => i.uid === active.id);
+                      const newIdx = items.findIndex((i) => i.uid === over.id);
+                      return arrayMove(items, oldIdx, newIdx);
+                    });
+                  };
+
+                  return (
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                      <SortableContext items={galleryImages.map((i) => i.uid)} strategy={rectSortingStrategy}>
+                        {galleryImages.map((img, idx) => (
+                          <SortableGalleryItem key={img.uid} img={img} idx={idx} onRemove={removeGalleryImage} />
+                        ))}
+                      </SortableContext>
+                    </DndContext>
+                  );
+                })()}
 
                 {/* Add more slot — show if total < 5 */}
                 {galleryImages.length < 4 && form.image && (

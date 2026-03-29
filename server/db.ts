@@ -163,6 +163,17 @@ export async function deleteProductImage(id: number) {
   await db.delete(productImages).where(eq(productImages.id, id));
 }
 
+export async function updateProductImagesSortOrder(items: { id: number; sortOrder: number }[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  // Update each image's sortOrder in parallel
+  await Promise.all(
+    items.map(({ id, sortOrder }) =>
+      db.update(productImages).set({ sortOrder }).where(eq(productImages.id, id))
+    )
+  );
+}
+
 export async function getRelatedProducts(productId: number, category: string, occasionKeys: string | null, limit = 4) {
   const db = await getDb();
   if (!db) return [];

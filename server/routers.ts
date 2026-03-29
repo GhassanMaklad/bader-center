@@ -17,6 +17,7 @@ import {
   getProductImages,
   createProductImage,
   deleteProductImage,
+  updateProductImagesSortOrder,
   getRelatedProducts,
   createServiceRequest,
   getAllServiceRequests,
@@ -331,6 +332,19 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
         await deleteProductImage(input.id);
+        return { success: true };
+      }),
+
+    // Persist new sort order after drag-and-drop reordering
+    reorder: adminProcedure
+      .input(
+        z.object({
+          // Array of { id, sortOrder } pairs in the new order
+          items: z.array(z.object({ id: z.number(), sortOrder: z.number() })),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await updateProductImagesSortOrder(input.items);
         return { success: true };
       }),
   }),
