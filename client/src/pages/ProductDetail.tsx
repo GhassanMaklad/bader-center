@@ -208,6 +208,10 @@ export default function ProductDetail() {
   // ── Order Notes Modal ──
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [orderNotes, setOrderNotes] = useState("");
+  const [orderQty, setOrderQty] = useState(1);
+  const [orderDeliveryDate, setOrderDeliveryDate] = useState("");
+
+  const logOrderMutation = trpc.orders.logWhatsappOrder.useMutation();
 
   const { data, isLoading, error } = trpc.products.detail.useQuery(
     { id: productId },
@@ -272,12 +276,14 @@ export default function ProductDetail() {
     ? `https://www.markzbader.org/product/${data?.product.id}`
     : "";
 
-  const buildWhatsappMessage = (notes: string) =>
+  const buildWhatsappMessage = (qty: number, deliveryDate: string, notes: string) =>
     data
       ? encodeURIComponent(
           `مرحباً مركز بدر 👋\n` +
           `📦 *المنتج المطلوب:* ${data.product.name}\n` +
           `💰 *السعر:* ${data.product.price}\n` +
+          `🔢 *الكمية:* ${qty}\n` +
+          (deliveryDate ? `📅 *تاريخ التسليم:* ${deliveryDate}\n` : "") +
           `🔗 *رابط المنتج:* ${productUrl}` +
           (notes.trim() ? `\n📝 *ملاحظات:* ${notes.trim()}` : "") +
           `\n\nأرجو التواصل معي لإتمام الطلب.`
@@ -287,14 +293,29 @@ export default function ProductDetail() {
   const openOrderModal = () => {
     if (!data?.product.inStock) return;
     setOrderNotes("");
+    setOrderQty(1);
+    setOrderDeliveryDate("");
     setOrderModalOpen(true);
   };
 
   const sendOrderWhatsApp = () => {
-    const msg = buildWhatsappMessage(orderNotes);
+    if (!data) return;
+    const msg = buildWhatsappMessage(orderQty, orderDeliveryDate, orderNotes);
+    // Log order to DB + notify admin (fire-and-forget)
+    logOrderMutation.mutate({
+      productId: data.product.id,
+      productName: data.product.name,
+      productPrice: data.product.price,
+      productUrl,
+      qty: orderQty,
+      deliveryDate: orderDeliveryDate || undefined,
+      notes: orderNotes || undefined,
+    });
     window.open(`https://wa.me/96522675826?text=${msg}`, "_blank");
     setOrderModalOpen(false);
     setOrderNotes("");
+    setOrderQty(1);
+    setOrderDeliveryDate("");
   };
 
   const copyLink = () => {
@@ -903,6 +924,51 @@ export default function ProductDetail() {
               </div>
             </div>
 
+            {/* Qty + Delivery Date row */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Quantity */}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "rgba(201,168,76,0.8)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
+                  الكمية
+                </label>
+                <div className="flex items-center rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(156,122,60,0.25)", background: "rgba(255,255,255,0.04)" }}>
+                  <button
+                    type="button"
+                    onClick={() => setOrderQty((q) => Math.max(1, q - 1))}
+                    className="w-10 h-11 flex items-center justify-center text-lg font-bold transition-colors"
+                    style={{ color: "#C9A84C", background: "rgba(156,122,60,0.1)" }}
+                  >-</button>
+                  <span className="flex-1 text-center text-base font-bold" style={{ color: "#E8D5A0" }}>{orderQty}</span>
+                  <button
+                    type="button"
+                    onClick={() => setOrderQty((q) => q + 1)}
+                    className="w-10 h-11 flex items-center justify-center text-lg font-bold transition-colors"
+                    style={{ color: "#C9A84C", background: "rgba(156,122,60,0.1)" }}
+                  >+</button>
+                </div>
+              </div>
+
+              {/* Delivery Date */}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "rgba(201,168,76,0.8)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
+                  تاريخ التسليم <span style={{ color: "rgba(201,168,76,0.4)" }}>(اختياري)</span>
+                </label>
+                <input
+                  type="date"
+                  value={orderDeliveryDate}
+                  onChange={(e) => setOrderDeliveryDate(e.target.value)}
+                  min={new Date().toISOString().split("T")[0]}
+                  className="w-full h-11 rounded-2xl px-3 text-sm outline-none"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(156,122,60,0.25)",
+                    color: orderDeliveryDate ? "#E8D5A0" : "rgba(201,168,76,0.4)",
+                    colorScheme: "dark",
+                  }}
+                />
+              </div>
+            </div>
+
             {/* Notes field */}
             <div className="flex flex-col gap-2">
               <label
@@ -914,8 +980,8 @@ export default function ProductDetail() {
               <textarea
                 value={orderNotes}
                 onChange={(e) => setOrderNotes(e.target.value)}
-                placeholder="مثال: اللون المطلوب، الحجم، تاريخ التسليم، اسم الشخص المكرَّم..."
-                rows={4}
+                placeholder="مثال: اللون المطلوب، الحجم، اسم الشخص المكرَّم..."
+                rows={3}
                 className="w-full rounded-2xl p-4 text-sm resize-none outline-none transition-all"
                 style={{
                   background: "rgba(255,255,255,0.04)",

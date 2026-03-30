@@ -919,15 +919,34 @@ export default function AdminDashboard() {
                         >
                           <td className="p-3 font-mono text-xs" style={{ color: "#9C7A3C" }}>#{order.id}</td>
                           <td className="p-3">
-                            <p className="font-semibold" style={{ color: "#2C2416" }}>{order.customerName}</p>
-                            <p className="text-xs" style={{ color: "#8A7560" }}>{order.customerPhone}</p>
-                            <p className="text-xs mt-1" style={{ color: "#6B5A3E" }}>
-                              {cartItems.map(i => `${i.name} ×${i.qty}`).join(" · ")}
+                            {/* Product name + qty */}
+                            <p className="font-semibold" style={{ color: "#2C2416" }}>
+                              {cartItems.length > 0 ? cartItems.map(i => `${i.name} ×${i.qty}`).join(" · ") : order.customerName}
                             </p>
+                            {/* Delivery date & notes parsed from order.notes */}
+                            {order.notes && (() => {
+                              const parts = order.notes.split(" | ");
+                              const datePart = parts.find(p => p.startsWith("تاريخ التسليم:"));
+                              const notesPart = parts.find(p => p.startsWith("ملاحظات:"));
+                              return (
+                                <div className="mt-1 flex flex-col gap-0.5">
+                                  {datePart && (
+                                    <p className="text-xs flex items-center gap-1" style={{ color: "#9C7A3C" }}>
+                                      📅 {datePart.replace("تاريخ التسليم: ", "")}
+                                    </p>
+                                  )}
+                                  {notesPart && (
+                                    <p className="text-xs" style={{ color: "#8A7560" }}>
+                                      📝 {notesPart.replace("ملاحظات: ", "")}
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            })()}
                           </td>
                           <td className="p-3 hidden md:table-cell">
                             <span className="font-bold" style={{ color: "#B89050" }}>
-                              {Number(order.totalAmount).toFixed(3)} {order.currency}
+                              {Number(order.totalAmount) > 0 ? `${Number(order.totalAmount).toFixed(3)} ${order.currency}` : "—"}
                             </span>
                           </td>
                           <td className="p-3 text-center">

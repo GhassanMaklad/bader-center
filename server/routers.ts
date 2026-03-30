@@ -414,6 +414,63 @@ export const appRouter = router({
   // ─── Orders (WhatsApp-based flow) ────────────────────────────────────────
   orders: router({
     /**
+     * Log a single-product WhatsApp order (from product page / catalog).
+     * Called just before the frontend opens the WhatsApp link.
+     */
+    logWhatsappOrder: publicProcedure
+      .input(
+        z.object({
+          productId: z.number(),
+          productName: z.string(),
+          productPrice: z.string(),
+          productUrl: z.string(),
+          qty: z.number().min(1).default(1),
+          deliveryDate: z.string().optional(),  // ISO date string e.g. "2026-04-15"
+          notes: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const cartItems = JSON.stringify([{
+          productId: input.productId,
+          name: input.productName,
+          qty: input.qty,
+          price: 0,
+        }]);
+
+        const notesLines: string[] = [];
+        if (input.deliveryDate) notesLines.push(`تاريخ التسليم: ${input.deliveryDate}`);
+        if (input.notes?.trim()) notesLines.push(`ملاحظات: ${input.notes.trim()}`);
+
+        const result = await createOrder({
+          customerName: "عميل واتساب",
+          customerPhone: "",
+          totalAmount: "0",
+          currency: "KWD",
+          status: "pending",
+          cartItems,
+          notes: notesLines.join(" | ") || null,
+        });
+
+        const orderId = (result as { insertId: number }).insertId;
+
+        // Notify owner immediately
+        notifyOwner({
+          title: `📦 طلب واتساب جديد — ${input.productName}`,
+          content: [
+            `📦 *المنتج:* ${input.productName}`,
+            `💰 *السعر:* ${input.productPrice}`,
+            `🔢 *الكمية:* ${input.qty}`,
+            input.deliveryDate ? `📅 *تاريخ التسليم:* ${input.deliveryDate}` : "",
+            input.notes?.trim() ? `📝 *ملاحظات:* ${input.notes.trim()}` : "",
+            `🔗 *رابط المنتج:* ${input.productUrl}`,
+            `🔖 *رقم الطلب:* #${orderId}`,
+          ].filter(Boolean).join("\n"),
+        }).catch((err) => console.warn("[Notification] Failed:", err));
+
+        return { success: true, orderId };
+      }),
+
+    /**
      * Save an order from the cart to the DB for admin tracking.
      * The actual order is sent to WhatsApp by the frontend.
      */
