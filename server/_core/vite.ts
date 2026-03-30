@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
+import { registerOGMiddleware } from "./ogTags";
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
@@ -20,18 +21,31 @@ export async function setupVite(app: Express, server: Server) {
     appType: "custom",
   });
 
+  const clientTemplate = path.resolve(
+    import.meta.dirname,
+    "../..",
+    "client",
+    "index.html"
+  );
+
+  /** Helper: read and transform index.html (used by OG middleware + catch-all) */
+  async function getHtml(): Promise<string> {
+    let template = await fs.promises.readFile(clientTemplate, "utf-8");
+    template = template.replace(
+      `src="/src/main.tsx"`,
+      `src="/src/main.tsx?v=${nanoid()}"`
+    );
+    return vite.transformIndexHtml("/", template);
+  }
+
+  // Register OG tag middleware BEFORE Vite middlewares so bots get pre-filled tags
+  registerOGMiddleware(app, getHtml);
+
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
     try {
-      const clientTemplate = path.resolve(
-        import.meta.dirname,
-        "../..",
-        "client",
-        "index.html"
-      );
-
       // always reload the index.html file from disk incase it changes
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
@@ -58,10 +72,20 @@ export function serveStatic(app: Express) {
     );
   }
 
+  const indexHtmlPath = path.resolve(distPath, "index.html");
+
+  /** Helper: read index.html from dist for production OG injection */
+  async function getHtml(): Promise<string> {
+    return fs.promises.readFile(indexHtmlPath, "utf-8");
+  }
+
+  // Register OG tag middleware BEFORE static serving so bots get pre-filled tags
+  registerOGMiddleware(app, getHtml);
+
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+    res.sendFile(indexHtmlPath);
   });
 }
