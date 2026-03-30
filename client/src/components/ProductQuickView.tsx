@@ -6,7 +6,7 @@
  */
 import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
-import { X, ChevronRight, ChevronLeft, Star, ExternalLink, Maximize2, Share2, Copy, Check } from "lucide-react";
+import { X, ChevronRight, ChevronLeft, Star, ExternalLink, Maximize2, Share2, Copy, Check, Send } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -174,6 +174,9 @@ function ShareDropdown({
   onClose: () => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const [sendToFriend, setSendToFriend] = useState(false);
+  const [friendPhone, setFriendPhone] = useState("");
+  const [sentToFriend, setSentToFriend] = useState(false);
   const productUrl = `${window.location.origin}/product/${productId}`;
 
   const handleCopy = async () => {
@@ -200,6 +203,24 @@ function ShareDropdown({
   const waShareMsg = encodeURIComponent(
     `شاهد هذا المنتج من مركز بدر 🌟\n${productName}\nالسعر: ${price}\n\n${productUrl}`
   );
+
+  const sendProductToFriend = () => {
+    if (!friendPhone.trim()) return;
+    let phone = friendPhone.replace(/\D/g, "");
+    if (phone.startsWith("0")) phone = "965" + phone.slice(1);
+    if (!phone.startsWith("965") && phone.length <= 8) phone = "965" + phone;
+    const text = encodeURIComponent(
+      `🛍️ شاهد هذا المنتج من مركز بدر:\n${productName}\n💰 ${price}\n🔗 ${productUrl}`
+    );
+    window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
+    setSentToFriend(true);
+    setTimeout(() => {
+      setSentToFriend(false);
+      setFriendPhone("");
+      setSendToFriend(false);
+      onClose();
+    }, 2000);
+  };
 
   return (
     <div
@@ -228,11 +249,65 @@ function ShareDropdown({
         rel="noopener noreferrer"
         onClick={onClose}
         className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-all hover:bg-green-50"
-        style={{ color: "#166534", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+        style={{ color: "#166534", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", borderTop: "1px solid rgba(156,122,60,0.1)" }}
       >
         <WhatsAppIcon size={16} />
         مشاركة عبر واتساب
       </a>
+
+      {/* Send to a friend */}
+      <div style={{ borderTop: "1px solid rgba(156,122,60,0.1)" }}>
+        {!sendToFriend ? (
+          <button
+            onClick={() => setSendToFriend(true)}
+            className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-all hover:bg-amber-50"
+            style={{ color: "#5A4A30", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+          >
+            <Send size={16} style={{ color: "#9C7A3C" }} />
+            أرسل لصديق
+          </button>
+        ) : (
+          <div className="px-4 py-3">
+            <p className="text-xs mb-2" style={{ color: "rgba(90,74,48,0.6)", fontFamily: "'Cairo', sans-serif" }}>
+              أدخل رقم الهاتف (كويتي أو دولي)
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="tel"
+                value={friendPhone}
+                onChange={(e) => setFriendPhone(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendProductToFriend()}
+                placeholder="مثال: 55001234"
+                autoFocus
+                className="flex-1 rounded-lg px-3 py-2 text-sm outline-none"
+                style={{
+                  background: "rgba(156,122,60,0.08)",
+                  border: "1px solid rgba(156,122,60,0.3)",
+                  color: "#3D2E1A",
+                  direction: "ltr",
+                  fontFamily: "monospace",
+                }}
+              />
+              <button
+                onClick={sendProductToFriend}
+                disabled={!friendPhone.trim() || sentToFriend}
+                className="rounded-lg px-3 py-2 text-sm font-bold transition-all flex-none"
+                style={{
+                  background: sentToFriend ? "rgba(76,175,80,0.15)" : "rgba(37,211,102,0.12)",
+                  border: `1px solid ${sentToFriend ? "#4CAF50" : "#25D366"}`,
+                  color: sentToFriend ? "#4CAF50" : "#166534",
+                  opacity: !friendPhone.trim() ? 0.4 : 1,
+                }}
+              >
+                {sentToFriend ? <Check size={15} /> : <Send size={15} />}
+              </button>
+            </div>
+            {sentToFriend && (
+              <p className="text-xs mt-2" style={{ color: "#4CAF50", fontFamily: "'Cairo', sans-serif" }}>تم الفتح في واتساب ✓</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

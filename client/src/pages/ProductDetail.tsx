@@ -8,7 +8,7 @@
  */
 import { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "wouter";
-import { ArrowRight, Star, Phone, ShoppingBag, ChevronRight, ChevronLeft, ZoomIn, X, Share2, Heart, Copy, Check, MessageCircle } from "lucide-react";
+import { ArrowRight, Star, Phone, ShoppingBag, ChevronRight, ChevronLeft, ZoomIn, X, Share2, Heart, Copy, Check, MessageCircle, Send } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
@@ -200,6 +200,9 @@ export default function ProductDetail() {
   const [wishlist, setWishlist] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [sendToFriend, setSendToFriend] = useState(false);
+  const [friendPhone, setFriendPhone] = useState("");
+  const [sentToFriend, setSentToFriend] = useState(false);
 
   const { data, isLoading, error } = trpc.products.detail.useQuery(
     { id: productId },
@@ -278,6 +281,25 @@ export default function ProductDetail() {
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
     setShareOpen(false);
+  };
+
+  const sendProductToFriend = () => {
+    if (!friendPhone.trim()) return;
+    // Normalize phone: strip non-digits, add country code if missing
+    let phone = friendPhone.replace(/\D/g, "");
+    if (phone.startsWith("0")) phone = "965" + phone.slice(1);
+    if (!phone.startsWith("965") && phone.length <= 8) phone = "965" + phone;
+    const text = encodeURIComponent(
+      `🛍️ شاهد هذا المنتج من مركز بدر:\n${data?.product.name}\n💰 ${data?.product.price}\n🔗 ${window.location.href}`
+    );
+    window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
+    setSentToFriend(true);
+    setTimeout(() => {
+      setSentToFriend(false);
+      setFriendPhone("");
+      setSendToFriend(false);
+      setShareOpen(false);
+    }, 2000);
   };
 
   // ── Loading state ──
@@ -640,6 +662,61 @@ export default function ProductDetail() {
                         <MessageCircle className="w-4 h-4 flex-none" style={{ color: "#25D366" }} />
                         مشاركة عبر واتساب
                       </button>
+
+                      {/* Send to a friend */}
+                      <div style={{ borderTop: "1px solid rgba(156,122,60,0.08)" }}>
+                        {!sendToFriend ? (
+                          <button
+                            onClick={() => setSendToFriend(true)}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors text-right"
+                            style={{ color: "rgba(232,213,160,0.85)" }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(156,122,60,0.08)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                          >
+                            <Send className="w-4 h-4 flex-none" style={{ color: "#9C7A3C" }} />
+                            أرسل لصديق
+                          </button>
+                        ) : (
+                          <div className="px-4 py-3">
+                            <p className="text-xs mb-2" style={{ color: "rgba(156,122,60,0.7)" }}>
+                              أدخل رقم الهاتف (كويتي أو دولي)
+                            </p>
+                            <div className="flex gap-2">
+                              <input
+                                type="tel"
+                                value={friendPhone}
+                                onChange={(e) => setFriendPhone(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && sendProductToFriend()}
+                                placeholder="مثال: 55001234"
+                                autoFocus
+                                className="flex-1 rounded-lg px-3 py-2 text-sm outline-none text-right"
+                                style={{
+                                  background: "rgba(255,255,255,0.06)",
+                                  border: "1px solid rgba(156,122,60,0.3)",
+                                  color: "rgba(232,213,160,0.9)",
+                                  direction: "ltr",
+                                }}
+                              />
+                              <button
+                                onClick={sendProductToFriend}
+                                disabled={!friendPhone.trim() || sentToFriend}
+                                className="rounded-lg px-3 py-2 text-sm font-bold transition-all flex-none"
+                                style={{
+                                  background: sentToFriend ? "rgba(76,175,80,0.2)" : "rgba(37,211,102,0.15)",
+                                  border: `1px solid ${sentToFriend ? "#4CAF50" : "#25D366"}`,
+                                  color: sentToFriend ? "#4CAF50" : "#25D366",
+                                  opacity: !friendPhone.trim() ? 0.4 : 1,
+                                }}
+                              >
+                                {sentToFriend ? <Check className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+                              </button>
+                            </div>
+                            {sentToFriend && (
+                              <p className="text-xs mt-2" style={{ color: "#4CAF50" }}>تم الفتح في واتساب ✓</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </>
                 )}
