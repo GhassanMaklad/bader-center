@@ -1,0 +1,8 @@
+{
+  "query": "SELECT product_id, COUNT(*) as img_count FROM product_images GROUP BY product_id ORDER BY product_id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute SELECT product_id, COUNT(*) as img_count FROM product_images GROUP BY product_id ORDER BY product_id;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'product_id' in 'group statement'"
+  ]
+}

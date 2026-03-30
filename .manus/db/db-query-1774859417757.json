@@ -1,0 +1,105 @@
+{
+  "query": "SELECT id, name, image FROM products ORDER BY id LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4HCCsGHnP41x42r.root --database 5qcuM54U5U98AxY6F5CRzB --execute SELECT id, name, image FROM products ORDER BY id LIMIT 20;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "دزة الورود الفاخرة",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_dazza_display_d7fb14b3.webp"
+    },
+    {
+      "id": "2",
+      "name": "بوكس هبّة رمضان",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_ramadan_cups_b30ce7d6.jpg"
+    },
+    {
+      "id": "3",
+      "name": "بوكس الخضرة الفاخر",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_green_box_e70d62fd.webp"
+    },
+    {
+      "id": "4",
+      "name": "بوكسات البراند المخصصة",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_boxes_12e0ff8e.jpg"
+    },
+    {
+      "id": "5",
+      "name": "هدية الورود المجففة",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_dazza_display_d7fb14b3.webp"
+    },
+    {
+      "id": "6",
+      "name": "هدية الفطر الفاخرة",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_eid_engraving_e4c56a13.jpg"
+    },
+    {
+      "id": "7",
+      "name": "درع التكريم الذهبي",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_product6_de1b84b3.jpg"
+    },
+    {
+      "id": "8",
+      "name": "درع الكريستال الفاخر",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_boxes_12e0ff8e.jpg"
+    },
+    {
+      "id": "9",
+      "name": "درع الخط العربي",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_eid_engraving_e4c56a13.jpg"
+    },
+    {
+      "id": "10",
+      "name": "درع الشركات المؤسسي",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_green_box_e70d62fd.webp"
+    },
+    {
+      "id": "11",
+      "name": "ستاند الكيترنج الفاخر",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_booth_stand_79e2e9ef.webp"
+    },
+    {
+      "id": "12",
+      "name": "بوث العيد الوطني",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_booth_stand_a9bad866.jpg"
+    },
+    {
+      "id": "13",
+      "name": "طاولة الضيافة الفاخرة",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_ramadan_cups_b30ce7d6.jpg"
+    },
+    {
+      "id": "14",
+      "name": "تجهيزات قرقيعان 2026",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_qargian_2026_532a544d.webp"
+    },
+    {
+      "id": "15",
+      "name": "باقة تخرج الذكريات",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_product10_077fb0b4.jpg"
+    },
+    {
+      "id": "16",
+      "name": "لوحة الخط بالخيوط",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_product11_5a30bbf2.jpg"
+    },
+    {
+      "id": "17",
+      "name": "نقش ليزر مخصص",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_product6_de1b84b3.jpg"
+    },
+    {
+      "id": "30001",
+      "name": "تفصيل دزة الخشب الدائري",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/products/1774263836383-fl8tmej5.JPG"
+    },
+    {
+      "id": "60001",
+      "name": "كيترينج كانفوس",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/products/1774279562883-hr9xw53a.jpg"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\timage\n1\tدزة الورود الفاخرة\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_dazza_display_d7fb14b3.webp\n2\tبوكس هبّة رمضان\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_ramadan_cups_b30ce7d6.jpg\n3\tبوكس الخضرة الفاخر\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_green_box_e70d62fd.webp\n4\tبوكسات البراند المخصصة\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_boxes_12e0ff8e.jpg\n5\tهدية الورود المجففة\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_dazza_display_d7fb14b3.webp\n6\tهدية الفطر الفاخرة\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_eid_engraving_e4c56a13.jpg\n7\tدرع التكريم الذهبي\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_product6_de1b84b3.jpg\n8\tدرع الكريستال الفاخر\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_boxes_12e0ff8e.jpg\n9\tدرع الخط العربي\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_eid_engraving_e4c56a13.jpg\n10\tدرع الشركات المؤسسي\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_green_box_e70d62fd.webp\n11\tستاند الكيترنج الفاخر\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_booth_stand_79e2e9ef.webp\n12\tبوث العيد الوطني\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_booth_stand_a9bad866.jpg\n13\tطاولة الضيافة الفاخرة\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_ramadan_cups_b30ce7d6.jpg\n14\tتجهيزات قرقيعان 2026\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_qargian_2026_532a544d.webp\n15\tباقة تخرج الذكريات\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_product10_077fb0b4.jpg\n16\tلوحة الخط بالخيوط\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_product11_5a30bbf2.jpg\n17\tنقش ليزر مخصص\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/ig_post_product6_de1b84b3.jpg\n30001\tتفصيل دزة الخشب الدائري\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/products/1774263836383-fl8tmej5.JPG\n60001\tكيترينج كانفوس\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/products/1774279562883-hr9xw53a.jpg\n",
+  "stderr": "",
+  "execution_time_ms": 1688
+}
