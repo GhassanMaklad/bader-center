@@ -129,6 +129,8 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"products" | "requests" | "orders" | "announcements" | "testimonials">("products");
+  const [filterOrderStatus, setFilterOrderStatus] = useState<string>("all");
+  const [filterOrderDate, setFilterOrderDate] = useState<string>("all");
 
   // ─── Testimonials state ───
   type TestimonialForm = { name: string; position: string; text: string; rating: number; avatarUrl: string; isActive: boolean; sortOrder: number; };
@@ -856,18 +858,118 @@ export default function AdminDashboard() {
         {/* ─── Orders Tab ─────────────────────────────────────────────────────────────── */}
         {activeTab === "orders" && (
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
-                الطلبات والمدفوعات
-              </h2>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => refetchOrders()}
-                className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10"
-              >
-                تحديث
-              </Button>
+            {/* Header + Filters */}
+            <div className="flex flex-col gap-3 mb-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
+                  الطلبات والمدفوعات
+                </h2>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (!orders?.length) return;
+                      const now = new Date();
+                      const filtered = orders.filter((order) => {
+                        if (filterOrderStatus !== "all" && order.status !== filterOrderStatus) return false;
+                        if (filterOrderDate !== "all") {
+                          const d = new Date(order.createdAt);
+                          if (filterOrderDate === "today" && d.toDateString() !== now.toDateString()) return false;
+                          if (filterOrderDate === "week") { const w = new Date(now); w.setDate(now.getDate() - 7); if (d < w) return false; }
+                          if (filterOrderDate === "month") { const m = new Date(now); m.setMonth(now.getMonth() - 1); if (d < m) return false; }
+                        }
+                        return true;
+                      });
+                      const header = ["رقم الطلب", "اسم العميل", "هاتف العميل", "المنتج", "الكمية", "تاريخ التسليم", "الملاحظات", "الحالة", "تاريخ الطلب"];
+                      const rows = filtered.map((o) => {
+                        let productName = "";
+                        let qty = "";
+                        let deliveryDate = "";
+                        let notes = "";
+                        try {
+                          const items = JSON.parse(o.cartItems || "[]");
+                          productName = items[0]?.name || "";
+                          qty = String(items[0]?.qty || 1);
+                        } catch {}
+                        try {
+                          const n = o.notes || "";
+                          const dateMatch = n.match(/تاريخ التسليم: ([\d-]+)/);
+                          const notesMatch = n.match(/ملاحظات: (.+)/);
+                          deliveryDate = dateMatch?.[1] || "";
+                          notes = notesMatch?.[1] || n;
+                        } catch {}
+                        return [
+                          o.id,
+                          o.customerName || "",
+                          o.customerPhone || "",
+                          productName,
+                          qty,
+                          deliveryDate,
+                          notes,
+                          o.status,
+                          new Date(o.createdAt).toLocaleString("ar-KW"),
+                        ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",");
+                      });
+                      const bom = "\uFEFF";
+                      const csv = bom + [header.join(","), ...rows].join("\n");
+                      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `طلبات-مركز-بدر-${new Date().toISOString().split("T")[0]}.csv`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="border-green-500/30 text-green-400 hover:bg-green-500/10 flex items-center gap-1.5"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    تصدير CSV
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => refetchOrders()}
+                    className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10"
+                  >
+                    تحديث
+                  </Button>
+                </div>
+              </div>
+              {/* Filter bar */}
+              <div className="flex flex-wrap gap-2">
+                {/* Status filter */}
+                {(["all", "pending", "confirmed", "paid", "cancelled"] as const).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setFilterOrderStatus(s)}
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+                    style={{
+                      background: filterOrderStatus === s ? "rgba(156,122,60,0.25)" : "rgba(156,122,60,0.06)",
+                      border: filterOrderStatus === s ? "1px solid rgba(201,168,76,0.5)" : "1px solid rgba(156,122,60,0.15)",
+                      color: filterOrderStatus === s ? "#C9A84C" : "#8A7560",
+                    }}
+                  >
+                    {{ all: "جميع الحالات", pending: "• معلق", confirmed: "• مؤكد", paid: "• مدفوع", cancelled: "• ملغي" }[s]}
+                  </button>
+                ))}
+                <div className="w-px bg-yellow-500/20 mx-1" />
+                {/* Date filter */}
+                {(["all", "today", "week", "month"] as const).map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setFilterOrderDate(d)}
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+                    style={{
+                      background: filterOrderDate === d ? "rgba(156,122,60,0.25)" : "rgba(156,122,60,0.06)",
+                      border: filterOrderDate === d ? "1px solid rgba(201,168,76,0.5)" : "1px solid rgba(156,122,60,0.15)",
+                      color: filterOrderDate === d ? "#C9A84C" : "#8A7560",
+                    }}
+                  >
+                    {{ all: "كل التواريخ", today: "اليوم", week: "هذا الأسبوع", month: "هذا الشهر" }[d]}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {ordersLoading ? (
@@ -880,7 +982,32 @@ export default function AdminDashboard() {
                 <p className="text-lg">لا توجد طلبات حتى الآن</p>
                 <p className="text-sm mt-1">ستظهر طلبات الواتساب هنا بعد إرسالها من العملاء</p>
               </div>
-            ) : (
+            ) : (() => {
+              // Apply filters
+              const now = new Date();
+              const filtered = orders.filter((order) => {
+                if (filterOrderStatus !== "all" && order.status !== filterOrderStatus) return false;
+                if (filterOrderDate !== "all") {
+                  const d = new Date(order.createdAt);
+                  if (filterOrderDate === "today") {
+                    if (d.toDateString() !== now.toDateString()) return false;
+                  } else if (filterOrderDate === "week") {
+                    const weekAgo = new Date(now); weekAgo.setDate(now.getDate() - 7);
+                    if (d < weekAgo) return false;
+                  } else if (filterOrderDate === "month") {
+                    const monthAgo = new Date(now); monthAgo.setMonth(now.getMonth() - 1);
+                    if (d < monthAgo) return false;
+                  }
+                }
+                return true;
+              });
+              if (!filtered.length) return (
+                <div className="text-center py-16" style={{ color: "#8A7560" }}>
+                  <ShoppingCart className="w-10 h-10 mx-auto mb-2 opacity-20" />
+                  <p>لا توجد طلبات تطابق الفلتر المحدد</p>
+                </div>
+              );
+              return (
               <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(156,122,60,0.2)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
                 <table className="w-full text-sm">
                   <thead style={{ background: "rgba(156,122,60,0.08)" }}>
@@ -894,7 +1021,7 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map((order, idx) => {
+                    {filtered.map((order, idx) => {
                       const orderStatusColors: Record<string, string> = {
                         pending: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
                         confirmed: "bg-blue-500/20 text-blue-300 border-blue-500/30",
@@ -979,7 +1106,8 @@ export default function AdminDashboard() {
                   </tbody>
                 </table>
               </div>
-            )}
+              );
+            })()}
           </div>
         )}
 

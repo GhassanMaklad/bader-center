@@ -427,6 +427,8 @@ export const appRouter = router({
           qty: z.number().min(1).default(1),
           deliveryDate: z.string().optional(),  // ISO date string e.g. "2026-04-15"
           notes: z.string().optional(),
+          customerName: z.string().optional(),
+          customerPhone: z.string().optional(),
         })
       )
       .mutation(async ({ input }) => {
@@ -442,8 +444,8 @@ export const appRouter = router({
         if (input.notes?.trim()) notesLines.push(`ملاحظات: ${input.notes.trim()}`);
 
         const result = await createOrder({
-          customerName: "عميل واتساب",
-          customerPhone: "",
+          customerName: input.customerName?.trim() || "عميل واتساب",
+          customerPhone: input.customerPhone?.trim() || "",
           totalAmount: "0",
           currency: "KWD",
           status: "pending",
@@ -454,6 +456,7 @@ export const appRouter = router({
         const orderId = (result as { insertId: number }).insertId;
 
         // Notify owner immediately
+        const customerLabel = input.customerName?.trim() || "عميل واتساب";
         notifyOwner({
           title: `📦 طلب واتساب جديد — ${input.productName}`,
           content: [
@@ -462,6 +465,8 @@ export const appRouter = router({
             `🔢 *الكمية:* ${input.qty}`,
             input.deliveryDate ? `📅 *تاريخ التسليم:* ${input.deliveryDate}` : "",
             input.notes?.trim() ? `📝 *ملاحظات:* ${input.notes.trim()}` : "",
+            `👤 *العميل:* ${customerLabel}`,
+            input.customerPhone?.trim() ? `📞 *الهاتف:* ${input.customerPhone.trim()}` : "",
             `🔗 *رابط المنتج:* ${input.productUrl}`,
             `🔖 *رقم الطلب:* #${orderId}`,
           ].filter(Boolean).join("\n"),

@@ -359,6 +359,8 @@ function ProductCard({ product, onQuickView }: { product: Product; onQuickView: 
   const [orderNotes, setOrderNotes] = useState("");
   const [orderQty, setOrderQty] = useState(1);
   const [orderDeliveryDate, setOrderDeliveryDate] = useState("");
+  const [orderCustomerName, setOrderCustomerName] = useState("");
+  const [orderCustomerPhone, setOrderCustomerPhone] = useState("");
 
   const logOrderMutation = trpc.orders.logWhatsappOrder.useMutation();
 
@@ -373,8 +375,10 @@ function ProductCard({ product, onQuickView }: { product: Product; onQuickView: 
 
   const productUrl = `https://www.markzbader.org/product/${product.id}`;
 
-  const buildWaMsg = (qty: number, deliveryDate: string, notes: string) => encodeURIComponent(
+  const buildWaMsg = (qty: number, deliveryDate: string, notes: string, customerName: string, customerPhone: string) => encodeURIComponent(
     `مرحباً مركز بدر 👋\n` +
+    (customerName.trim() ? `👤 *العميل:* ${customerName.trim()}\n` : "") +
+    (customerPhone.trim() ? `📞 *الهاتف:* ${customerPhone.trim()}\n` : "") +
     `📦 *المنتج المطلوب:* ${product.name}\n` +
     `💰 *السعر:* ${product.price}\n` +
     `🔢 *الكمية:* ${qty}\n` +
@@ -394,12 +398,16 @@ function ProductCard({ product, onQuickView }: { product: Product; onQuickView: 
       qty: orderQty,
       deliveryDate: orderDeliveryDate || undefined,
       notes: orderNotes || undefined,
+      customerName: orderCustomerName || undefined,
+      customerPhone: orderCustomerPhone || undefined,
     });
-    window.open(`https://wa.me/96522675826?text=${buildWaMsg(orderQty, orderDeliveryDate, orderNotes)}`, "_blank");
+    window.open(`https://wa.me/96522675826?text=${buildWaMsg(orderQty, orderDeliveryDate, orderNotes, orderCustomerName, orderCustomerPhone)}`, "_blank");
     setOrderModalOpen(false);
     setOrderNotes("");
     setOrderQty(1);
     setOrderDeliveryDate("");
+    setOrderCustomerName("");
+    setOrderCustomerPhone("");
   };
 
   const handleOrderNow = () => {
@@ -715,6 +723,37 @@ function ProductCard({ product, onQuickView }: { product: Product; onQuickView: 
               </div>
             </div>
 
+            {/* Customer Name + Phone row */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "rgba(201,168,76,0.8)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
+                  اسم العميل <span style={{ color: "rgba(201,168,76,0.4)" }}>(اختياري)</span>
+                </label>
+                <input
+                  type="text"
+                  value={orderCustomerName}
+                  onChange={(e) => setOrderCustomerName(e.target.value)}
+                  placeholder="مثال: أحمد محمد"
+                  className="w-full h-11 rounded-2xl px-4 text-sm outline-none"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(156,122,60,0.25)", color: "#E8D5A0", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "rgba(201,168,76,0.8)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
+                  رقم الهاتف <span style={{ color: "rgba(201,168,76,0.4)" }}>(اختياري)</span>
+                </label>
+                <input
+                  type="tel"
+                  value={orderCustomerPhone}
+                  onChange={(e) => setOrderCustomerPhone(e.target.value)}
+                  placeholder="مثال: 96512345678"
+                  dir="ltr"
+                  className="w-full h-11 rounded-2xl px-4 text-sm outline-none"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(156,122,60,0.25)", color: "#E8D5A0" }}
+                />
+              </div>
+            </div>
+
             {/* Notes field */}
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold" style={{ color: "rgba(201,168,76,0.8)", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}>
@@ -726,14 +765,7 @@ function ProductCard({ product, onQuickView }: { product: Product; onQuickView: 
                 placeholder="مثال: اللون المطلوب، الحجم، اسم الشخص المكرَّم..."
                 rows={3}
                 className="w-full rounded-2xl p-4 text-sm resize-none outline-none"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(156,122,60,0.25)",
-                  color: "#E8D5A0",
-                  fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif",
-                  caretColor: "#C9A84C",
-                }}
-                autoFocus
+                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(156,122,60,0.25)", color: "#E8D5A0", fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif", caretColor: "#C9A84C" }}
               />
             </div>
 
