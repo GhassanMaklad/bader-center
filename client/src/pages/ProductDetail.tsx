@@ -8,7 +8,7 @@
  */
 import { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "wouter";
-import { ArrowRight, Star, Phone, ShoppingBag, ChevronRight, ChevronLeft, ZoomIn, X, Share2, Heart } from "lucide-react";
+import { ArrowRight, Star, Phone, ShoppingBag, ChevronRight, ChevronLeft, ZoomIn, X, Share2, Heart, Copy, Check, MessageCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
@@ -198,6 +198,8 @@ export default function ProductDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [wishlist, setWishlist] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const { data, isLoading, error } = trpc.products.detail.useQuery(
     { id: productId },
@@ -262,12 +264,20 @@ export default function ProductDetail() {
     ? encodeURIComponent(`مرحباً، أريد الاستفسار عن المنتج: ${data.product.name}\nالسعر: ${data.product.price}`)
     : "";
 
-  const shareProduct = () => {
-    if (navigator.share) {
-      navigator.share({ title: data?.product.name, url: window.location.href });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-    }
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setShareOpen(false);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
+
+  const shareWhatsApp = () => {
+    const text = encodeURIComponent(
+      `🛍️ ${data?.product.name}\n💰 ${data?.product.price}\n🔗 ${window.location.href}`
+    );
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+    setShareOpen(false);
   };
 
   // ── Loading state ──
@@ -579,16 +589,61 @@ export default function ProductDetail() {
 
             {/* Share & Wishlist */}
             <div className="flex items-center gap-3">
-              <button
-                onClick={shareProduct}
-                className="flex items-center gap-2 text-sm transition-colors"
-                style={{ color: "rgba(201,168,76,0.5)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#C9A84C")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(201,168,76,0.5)")}
-              >
-                <Share2 className="w-4 h-4" />
-                مشاركة
-              </button>
+              {/* Share dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setShareOpen((o) => !o)}
+                  className="flex items-center gap-2 text-sm transition-colors"
+                  style={{ color: copied ? "#4CAF50" : shareOpen ? "#C9A84C" : "rgba(201,168,76,0.5)" }}
+                >
+                  {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                  {copied ? "تم النسخ!" : "مشاركة"}
+                </button>
+
+                {shareOpen && (
+                  <>
+                    {/* Backdrop */}
+                    <div className="fixed inset-0 z-10" onClick={() => setShareOpen(false)} />
+                    {/* Dropdown */}
+                    <div
+                      className="absolute bottom-full mb-2 right-0 z-20 rounded-2xl overflow-hidden shadow-2xl"
+                      style={{
+                        background: "rgba(20,16,10,0.97)",
+                        border: "1px solid rgba(156,122,60,0.25)",
+                        minWidth: "180px",
+                        backdropFilter: "blur(12px)",
+                      }}
+                    >
+                      <div
+                        className="px-4 py-2 text-xs font-bold tracking-widest uppercase"
+                        style={{ color: "rgba(156,122,60,0.6)", borderBottom: "1px solid rgba(156,122,60,0.1)" }}
+                      >
+                        مشاركة المنتج
+                      </div>
+                      <button
+                        onClick={copyLink}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors text-right"
+                        style={{ color: "rgba(232,213,160,0.85)" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(156,122,60,0.1)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
+                        <Copy className="w-4 h-4 flex-none" style={{ color: "#9C7A3C" }} />
+                        نسخ رابط المنتج
+                      </button>
+                      <button
+                        onClick={shareWhatsApp}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors text-right"
+                        style={{ color: "rgba(232,213,160,0.85)", borderTop: "1px solid rgba(156,122,60,0.08)" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(37,211,102,0.08)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
+                        <MessageCircle className="w-4 h-4 flex-none" style={{ color: "#25D366" }} />
+                        مشاركة عبر واتساب
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
               <span style={{ color: "rgba(156,122,60,0.3)" }}>|</span>
               <button
                 onClick={() => setWishlist((w) => !w)}
