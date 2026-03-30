@@ -23,7 +23,7 @@ import { toast } from "sonner";
 import { useSEO } from "@/hooks/useSEO";
 
 const LOGO_URL =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_new_2ca13c91.png";
 
 const OCCASIONS = [
   { value: "ramadan", label: "🌙 رمضان الكريم" },

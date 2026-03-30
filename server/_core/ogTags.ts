@@ -20,7 +20,7 @@ import { getProductById } from "../db";
 
 const SITE_URL = "https://www.markzbader.org";
 const BADER_LOGO =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_new_2ca13c91.png";
 const SITE_NAME = "مركز بدر | Bader Center";
 const DEFAULT_DESC =
   "مركز بدر — تجهيزات الكيترنج والبوثات، استقبالات وأفراح، دروع وتكريمات فاخرة. نجسد الفخامة منذ 20 عاماً في الكويت.";

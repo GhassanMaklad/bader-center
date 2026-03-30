@@ -4,7 +4,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
+const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_new_2ca13c91.png";
 const CATERING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/catering_booth-27hdZGhESZb97S94uSah7j.webp";
 
 const values = [

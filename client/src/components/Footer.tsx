@@ -5,7 +5,7 @@
 import { Instagram, Facebook, Phone, Mail, MapPin } from "lucide-react";
 import { Link } from "wouter";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_08e79383.webp";
+const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663383339249/5qcuM54U5U98AxY6F5CRzB/bader_logo_new_2ca13c91.png";
 
 export default function Footer() {
   const scrollTo = (id: string) => {
