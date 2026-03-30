@@ -25,6 +25,7 @@ import { readAndClearDescriptionDraft } from "@/lib/descriptionDraft";
 import {
   Bell,
   CheckCircle,
+  Copy,
   CreditCard,
   Edit,
   ImagePlus,
@@ -805,6 +806,20 @@ export default function AdminDashboard() {
                     {/* Actions */}
                     <td className="p-3">
                       <div className="flex items-center justify-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          title="نسخ رابط المنتج"
+                          onClick={() => {
+                            const url = `https://www.markzbader.org/product/${product.id}`;
+                            navigator.clipboard.writeText(url).then(() =>
+                              toast.success("تم نسخ رابط المنتج ✔")
+                            );
+                          }}
+                          className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10 h-8 w-8 p-0"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </Button>
                         <Button
                           size="sm"
                           variant="outline"
