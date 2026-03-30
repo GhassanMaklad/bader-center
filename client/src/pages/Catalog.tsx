@@ -365,8 +365,14 @@ function ProductCard({ product, onQuickView }: { product: Product; onQuickView: 
     return imgs;
   }, [product.image, product.galleryImages]);
 
+  const productUrl = `https://www.markzbader.org/product/${product.id}`;
+
   const waMsg = encodeURIComponent(
-    `مرحباً مركز بدر 👋\nأريد الاستفسار عن: ${product.name}\nالسعر المذكور: ${product.price}\n\nأرجو التواصل معي.`
+    `مرحباً مركز بدر 👋\n` +
+    `📦 *المنتج المطلوب:* ${product.name}\n` +
+    `💰 *السعر:* ${product.price}\n` +
+    `🔗 *رابط المنتج:* ${productUrl}\n\n` +
+    `أرجو التواصل معي لإتمام الطلب.`
   );
 
   const handleOrderNow = () => {

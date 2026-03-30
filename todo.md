@@ -244,3 +244,8 @@
 - [x] تحديث شعار الموقع في Navbar وFooter وAboutSection وRequestService
 - [x] تحديث ogTags.ts بالرابط الجديد
 - [x] تحديث index.html بالرابط الجديد
+
+## تحسين رسالة واتساب عند الطلب - مارس 2026
+
+- [x] تحديث رسالة واتساب في ProductDetail لتشمل رابط المنتج المباشر
+- [x] تحديث رسالة واتساب في Catalog (ProductCard) لتشمل رابط المنتج المباشر

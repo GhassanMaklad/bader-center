@@ -264,8 +264,18 @@ export default function ProductDetail() {
     setLightboxOpen(true);
   };
 
+  const productUrl = typeof window !== "undefined"
+    ? `https://www.markzbader.org/product/${data?.product.id}`
+    : "";
+
   const whatsappMessage = data
-    ? encodeURIComponent(`مرحباً، أريد الاستفسار عن المنتج: ${data.product.name}\nالسعر: ${data.product.price}`)
+    ? encodeURIComponent(
+        `مرحباً مركز بدر 👋\n` +
+        `📦 *المنتج المطلوب:* ${data.product.name}\n` +
+        `💰 *السعر:* ${data.product.price}\n` +
+        `🔗 *رابط المنتج:* ${productUrl}\n\n` +
+        `أرجو التواصل معي لإتمام الطلب.`
+      )
     : "";
 
   const copyLink = () => {
