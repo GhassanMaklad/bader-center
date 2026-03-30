@@ -202,6 +202,7 @@ export default function ProductDetail() {
   const [copied, setCopied] = useState(false);
   const [sendToFriend, setSendToFriend] = useState(false);
   const [friendPhone, setFriendPhone] = useState("");
+  const [friendMessage, setFriendMessage] = useState("");
   const [sentToFriend, setSentToFriend] = useState(false);
 
   const { data, isLoading, error } = trpc.products.detail.useQuery(
@@ -289,14 +290,16 @@ export default function ProductDetail() {
     let phone = friendPhone.replace(/\D/g, "");
     if (phone.startsWith("0")) phone = "965" + phone.slice(1);
     if (!phone.startsWith("965") && phone.length <= 8) phone = "965" + phone;
+    const customNote = friendMessage.trim() ? `\n💬 ${friendMessage.trim()}` : "";
     const text = encodeURIComponent(
-      `🛍️ شاهد هذا المنتج من مركز بدر:\n${data?.product.name}\n💰 ${data?.product.price}\n🔗 ${window.location.href}`
+      `🛍️ شاهد هذا المنتج من مركز بدر:\n${data?.product.name}\n💰 ${data?.product.price}${customNote}\n🔗 ${window.location.href}`
     );
     window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
     setSentToFriend(true);
     setTimeout(() => {
       setSentToFriend(false);
       setFriendPhone("");
+      setFriendMessage("");
       setSendToFriend(false);
       setShareOpen(false);
     }, 2000);
@@ -677,8 +680,8 @@ export default function ProductDetail() {
                             أرسل لصديق
                           </button>
                         ) : (
-                          <div className="px-4 py-3">
-                            <p className="text-xs mb-2" style={{ color: "rgba(156,122,60,0.7)" }}>
+                          <div className="px-4 py-3 space-y-2">
+                            <p className="text-xs" style={{ color: "rgba(156,122,60,0.7)" }}>
                               أدخل رقم الهاتف (كويتي أو دولي)
                             </p>
                             <div className="flex gap-2">
@@ -711,8 +714,20 @@ export default function ProductDetail() {
                                 {sentToFriend ? <Check className="w-4 h-4" /> : <Send className="w-4 h-4" />}
                               </button>
                             </div>
+                            <textarea
+                              value={friendMessage}
+                              onChange={(e) => setFriendMessage(e.target.value)}
+                              placeholder="رسالة مخصصة (اختياري)..."
+                              rows={2}
+                              className="w-full rounded-lg px-3 py-2 text-sm outline-none resize-none text-right"
+                              style={{
+                                background: "rgba(255,255,255,0.06)",
+                                border: "1px solid rgba(156,122,60,0.2)",
+                                color: "rgba(232,213,160,0.9)",
+                              }}
+                            />
                             {sentToFriend && (
-                              <p className="text-xs mt-2" style={{ color: "#4CAF50" }}>تم الفتح في واتساب ✓</p>
+                              <p className="text-xs" style={{ color: "#4CAF50" }}>تم الفتح في واتساب ✓</p>
                             )}
                           </div>
                         )}
