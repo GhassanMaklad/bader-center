@@ -234,6 +234,12 @@ export async function updateOrderStatus(
   await db.update(orders).set({ status }).where(eq(orders.id, id));
 }
 
+export async function updateOrderAdminNotes(id: number, adminNotes: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(orders).set({ adminNotes }).where(eq(orders.id, id));
+}
+
 export async function getAllOrders() {
   const db = await getDb();
   if (!db) return [];

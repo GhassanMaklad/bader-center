@@ -82,6 +82,7 @@ export const orders = mysqlTable("orders", {
   // Cart snapshot (JSON)
   cartItems: text("cartItems").notNull(),                         // JSON array of {productId, name, qty, price}
   notes: text("notes"),
+  adminNotes: text("adminNotes"),                                // Internal staff notes (not visible to customer)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

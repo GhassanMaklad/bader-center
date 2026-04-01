@@ -24,6 +24,7 @@ import {
   updateServiceRequestStatus,
   createOrder,
   updateOrderStatus,
+  updateOrderAdminNotes,
   getAllOrders,
   getAllGalleryItems,
   createGalleryItem,
@@ -562,6 +563,21 @@ export const appRouter = router({
       )
       .mutation(async ({ input }) => {
         await updateOrderStatus(input.id, input.status);
+        return { success: true };
+      }),
+
+    /**
+     * Admin: update internal notes for an order (not visible to customers).
+     */
+    updateAdminNotes: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          adminNotes: z.string(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await updateOrderAdminNotes(input.id, input.adminNotes);
         return { success: true };
       }),
   }),

@@ -276,8 +276,16 @@ export default function AdminDashboard() {
     onError: (e) => toast.error("خطأ: " + e.message),
   });
 
+  const updateAdminNotesMutation = trpc.orders.updateAdminNotes.useMutation({
+    onSuccess: () => { toast.success("تم حفظ الملاحظة الداخلية"); refetchOrders(); },
+    onError: (e) => toast.error("خطأ: " + e.message),
+  });
+  const [editingNotes, setEditingNotes] = useState<{ [orderId: number]: string }>({});
+
   const newRequestsCount = serviceRequests?.filter(r => r.status === "new").length ?? 0;
   const pendingOrdersCount = orders?.filter(o => o.status === "pending").length ?? 0;
+  const todayOrdersCount = orders?.filter(o => new Date(o.createdAt).toDateString() === new Date().toDateString()).length ?? 0;
+  const confirmedOrdersCount = orders?.filter(o => o.status === "confirmed").length ?? 0;
 
   // ─── Bulk import mutation ───
   const bulkCreateMutation = trpc.products.bulkCreate.useMutation({
@@ -1017,6 +1025,21 @@ export default function AdminDashboard() {
           <div>
             {/* Header + Filters */}
             <div className="flex flex-col gap-3 mb-4">
+              {/* Daily stats */}
+              <div className="grid grid-cols-3 gap-3 mb-1">
+                <div className="rounded-xl p-3 text-center" style={{ background: "rgba(156,122,60,0.08)", border: "1px solid rgba(201,168,76,0.2)" }}>
+                  <p className="text-2xl font-bold" style={{ color: "#C9A84C" }}>{todayOrdersCount}</p>
+                  <p className="text-xs mt-0.5" style={{ color: "#8A7560" }}>طلبات اليوم</p>
+                </div>
+                <div className="rounded-xl p-3 text-center" style={{ background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.2)" }}>
+                  <p className="text-2xl font-bold" style={{ color: "#EAB308" }}>{pendingOrdersCount}</p>
+                  <p className="text-xs mt-0.5" style={{ color: "#8A7560" }}>معلقة</p>
+                </div>
+                <div className="rounded-xl p-3 text-center" style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)" }}>
+                  <p className="text-2xl font-bold" style={{ color: "#3B82F6" }}>{confirmedOrdersCount}</p>
+                  <p className="text-xs mt-0.5" style={{ color: "#8A7560" }}>مؤكدة</p>
+                </div>
+              </div>
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold" style={{ fontFamily: "'Noto Naskh Arabic', serif", color: "#9C7A3C" }}>
                   الطلبات والمدفوعات
@@ -1171,9 +1194,11 @@ export default function AdminDashboard() {
                     <tr>
                       <th className="text-right p-3 text-yellow-400 font-semibold">#</th>
                       <th className="text-right p-3 text-yellow-400 font-semibold">العميل</th>
+                      <th className="text-right p-3 text-yellow-400 font-semibold hidden sm:table-cell">الهاتف</th>
                       <th className="text-right p-3 text-yellow-400 font-semibold hidden md:table-cell">المبلغ</th>
                       <th className="text-center p-3 text-yellow-400 font-semibold">الحالة</th>
                       <th className="text-right p-3 text-yellow-400 font-semibold hidden lg:table-cell">التاريخ</th>
+                      <th className="text-right p-3 text-yellow-400 font-semibold hidden xl:table-cell">ملاحظة داخلية</th>
                       <th className="text-center p-3 text-yellow-400 font-semibold">إجراء</th>
                     </tr>
                   </thead>
@@ -1228,6 +1253,21 @@ export default function AdminDashboard() {
                               );
                             })()}
                           </td>
+                          {/* Phone column */}
+                          <td className="p-3 hidden sm:table-cell">
+                            {order.customerPhone ? (
+                              <a
+                                href={`tel:${order.customerPhone}`}
+                                className="flex items-center gap-1 text-xs font-mono hover:underline"
+                                style={{ color: "#3B82F6" }}
+                              >
+                                <Phone className="w-3 h-3" />
+                                {order.customerPhone}
+                              </a>
+                            ) : (
+                              <span className="text-xs" style={{ color: "#8A7560" }}>—</span>
+                            )}
+                          </td>
                           <td className="p-3 hidden md:table-cell">
                             <span className="font-bold" style={{ color: "#B89050" }}>
                               {Number(order.totalAmount) > 0 ? `${Number(order.totalAmount).toFixed(3)} ${order.currency}` : "—"}
@@ -1240,6 +1280,28 @@ export default function AdminDashboard() {
                           </td>
                           <td className="p-3 hidden lg:table-cell text-xs" style={{ color: "#8A7560" }}>
                             {new Date(order.createdAt).toLocaleString("ar-KW", { dateStyle: "short", timeStyle: "short" })}
+                          </td>
+                          {/* Internal admin notes column */}
+                          <td className="p-3 hidden xl:table-cell">
+                            <div className="flex gap-1 items-start">
+                              <textarea
+                                rows={2}
+                                className="text-xs rounded p-1 w-32 resize-none"
+                                style={{ background: "rgba(156,122,60,0.06)", border: "1px solid rgba(156,122,60,0.2)", color: "#2C2416" }}
+                                placeholder="ملاحظة داخلية..."
+                                value={editingNotes[order.id] !== undefined ? editingNotes[order.id] : (order.adminNotes ?? "")}
+                                onChange={(e) => setEditingNotes(prev => ({ ...prev, [order.id]: e.target.value }))}
+                              />
+                              <button
+                                className="text-xs px-1.5 py-1 rounded hover:opacity-80"
+                                style={{ background: "rgba(156,122,60,0.15)", color: "#9C7A3C" }}
+                                onClick={() => {
+                                  const notes = editingNotes[order.id] !== undefined ? editingNotes[order.id] : (order.adminNotes ?? "");
+                                  updateAdminNotesMutation.mutate({ id: order.id, adminNotes: notes });
+                                }}
+                                title="حفظ"
+                              >✓</button>
+                            </div>
                           </td>
                           <td className="p-3">
                             <Select
