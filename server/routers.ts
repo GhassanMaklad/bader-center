@@ -249,6 +249,30 @@ export const appRouter = router({
       return { success: true, id: insertId };
     }),
 
+    bulkCreate: adminProcedure
+      .input(z.object({ products: z.array(productInput) }))
+      .mutation(async ({ input }) => {
+        let created = 0;
+        const errors: string[] = [];
+        for (const p of input.products) {
+          try {
+            await createProduct({
+              ...p,
+              priceValue: String(p.priceValue),
+              nameEn: p.nameEn ?? "",
+              tags: p.tags ?? null,
+              badge: p.badge ?? null,
+              badgeColor: p.badgeColor ?? null,
+              priceNote: p.priceNote ?? null,
+            });
+            created++;
+          } catch (e) {
+            errors.push(`${p.name}: ${(e as Error).message}`);
+          }
+        }
+        return { success: true, created, errors };
+      }),
+
     update: adminProcedure
       .input(z.object({ id: z.number(), data: productInput.partial() }))
       .mutation(async ({ input }) => {

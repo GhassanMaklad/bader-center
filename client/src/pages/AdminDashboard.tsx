@@ -30,6 +30,7 @@ import {
   Download,
   Edit,
   FileJson,
+  FileSpreadsheet,
   ImagePlus,
   Loader2,
   LogOut,
@@ -133,8 +134,13 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"products" | "requests" | "orders" | "announcements" | "testimonials">("products");
   const [filterOrderStatus, setFilterOrderStatus] = useState<string>("all");
   const [filterOrderDate, setFilterOrderDate] = useState<string>("all");
-
-  // ─── Testimonials state ───
+  // ─── Import state ───
+  type ImportRow = { name: string; nameEn: string; category: string; price: string; priceValue: number; priceNote: string; image: string; badge: string; description: string; rating: number; inStock: boolean; tags: string; sortOrder: number; _valid: boolean; _error: string; };
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [importRows, setImportRows] = useState<ImportRow[]>([]);
+  const [importError, setImportError] = useState("");
+  const importFileRef = useRef<HTMLInputElement>(null);
+  // ─── Testimonials state ────
   type TestimonialForm = { name: string; position: string; text: string; rating: number; avatarUrl: string; isActive: boolean; sortOrder: number; };
   const emptyTestimonialForm: TestimonialForm = { name: "", position: "", text: "", rating: 5, avatarUrl: "", isActive: true, sortOrder: 0 };
   const [testimonialDialogOpen, setTestimonialDialogOpen] = useState(false);
@@ -272,6 +278,79 @@ export default function AdminDashboard() {
 
   const newRequestsCount = serviceRequests?.filter(r => r.status === "new").length ?? 0;
   const pendingOrdersCount = orders?.filter(o => o.status === "pending").length ?? 0;
+
+  // ─── Bulk import mutation ───
+  const bulkCreateMutation = trpc.products.bulkCreate.useMutation({
+    onSuccess: (data) => {
+      toast.success(`تم استيراد ${data.created} منتج بنجاح ✓`);
+      if (data.errors.length > 0) toast.error(`فشل استيراد: ${data.errors.join(" | ")}`);
+      setImportDialogOpen(false);
+      setImportRows([]);
+      refetch();
+    },
+    onError: (e) => toast.error("خطأ في الاستيراد: " + e.message),
+  });
+
+  const VALID_CATEGORIES = ["gifts", "shields", "catering", "occasions", "calligraphy"];
+
+  const parseCSVFile = (file: File) => {
+    setImportError("");
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = (e.target?.result as string) ?? "";
+        // Remove BOM if present
+        const clean = text.replace(/^\uFEFF/, "");
+        const lines = clean.split(/\r?\n/).filter(l => l.trim());
+        if (lines.length < 2) { setImportError("الملف فارغ أو لا يحتوي على بيانات"); return; }
+        const parseCSVLine = (line: string): string[] => {
+          const result: string[] = [];
+          let current = "";
+          let inQuotes = false;
+          for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (ch === '"') {
+              if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
+              else inQuotes = !inQuotes;
+            } else if (ch === ',' && !inQuotes) {
+              result.push(current.trim()); current = "";
+            } else current += ch;
+          }
+          result.push(current.trim());
+          return result;
+        };
+        // Skip header row
+        const rows: ImportRow[] = lines.slice(1).map((line) => {
+          const cols = parseCSVLine(line);
+          // Expected columns: الرقم,الاسم,الاسم الإنجليزي,الفئة,السعر,قيمة السعر,ملاحظة السعر,الوصف,متوفر,الشارة,الوسوم,رابط الصورة,تاريخ الإنشاء
+          // Index: 0=id(skip), 1=name, 2=nameEn, 3=category, 4=price, 5=priceValue, 6=priceNote, 7=description, 8=inStock, 9=badge, 10=tags, 11=image, 12=createdAt(skip)
+          const name = cols[1] ?? "";
+          const nameEn = cols[2] ?? "";
+          const category = cols[3] ?? "";
+          const price = cols[4] ?? "";
+          const priceValue = parseFloat(cols[5] ?? "0") || 0;
+          const priceNote = cols[6] ?? "";
+          const description = cols[7] ?? "";
+          const inStock = (cols[8] ?? "") !== "لا";
+          const badge = cols[9] ?? "";
+          const tags = cols[10] ?? "";
+          const image = cols[11] ?? "";
+          let _error = "";
+          if (!name) _error = "الاسم مطلوب";
+          else if (!VALID_CATEGORIES.includes(category)) _error = `الفئة غير صحيحة: ${category}`;
+          else if (!price) _error = "السعر مطلوب";
+          else if (!image) _error = "رابط الصورة مطلوب";
+          else if (!description) _error = "الوصف مطلوب";
+          return { name, nameEn, category, price, priceValue, priceNote, image, badge, description, rating: 5, inStock, tags, sortOrder: 0, _valid: !_error, _error };
+        });
+        setImportRows(rows);
+        setImportDialogOpen(true);
+      } catch (err) {
+        setImportError("خطأ في قراءة الملف: " + (err as Error).message);
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  };
 
   const uploadImageMutation = trpc.upload.productImage.useMutation({
     onSuccess: ({ url }) => {
@@ -776,6 +855,26 @@ export default function AdminDashboard() {
             <Download className="w-4 h-4 ml-1" />
             Excel
           </Button>
+          <input
+            ref={importFileRef}
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) parseCSVFile(file);
+              e.target.value = "";
+            }}
+          />
+          <Button
+            onClick={() => importFileRef.current?.click()}
+            variant="outline"
+            className="border-blue-600 text-blue-700 hover:bg-blue-50"
+            title="استيراد من Excel"
+          >
+            <FileSpreadsheet className="w-4 h-4 ml-1" />
+            استيراد
+          </Button>
           <Button
             onClick={openAdd}
             className="bg-yellow-600 hover:bg-yellow-500 text-black font-bold"
@@ -784,8 +883,7 @@ export default function AdminDashboard() {
             إضافة منتج جديد
           </Button>
         </div>
-
-        {/* ─── Products Tab ─────────────────────────────────────────────── */}
+        {/* ─── Products Tab ───────────────────────────────────────────────────── */}
         {activeTab === "products" && (
         <>
         {/* Products Table */}
@@ -2118,6 +2216,88 @@ export default function AdminDashboard() {
                 style={{ borderColor: "rgba(156,122,60,0.3)", color: "#6B5A3E" }}>إلغاء</Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Import Products Dialog ───────────────────────────────────────────────────── */}
+      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" style={{ background: "#1A1610", border: "1px solid rgba(156,122,60,0.3)", color: "#F5EDD6" }}>
+          <DialogHeader>
+            <DialogTitle style={{ color: "#C9A84C" }}>استيراد المنتجات من CSV</DialogTitle>
+          </DialogHeader>
+          {importError && (
+            <div className="p-3 rounded-lg bg-red-900/30 border border-red-500/40 text-red-300 text-sm">{importError}</div>
+          )}
+          {importRows.length > 0 && (
+            <>
+              <div className="text-sm mb-2" style={{ color: "#C9A84C" }}>
+                معاينة {importRows.length} منتج — الصالح: {importRows.filter(r => r._valid).length} • غير صالح: {importRows.filter(r => !r._valid).length}
+              </div>
+              <div className="overflow-x-auto rounded-lg" style={{ border: "1px solid rgba(156,122,60,0.2)" }}>
+                <table className="w-full text-xs">
+                  <thead style={{ background: "rgba(156,122,60,0.1)" }}>
+                    <tr>
+                      <th className="p-2 text-right" style={{ color: "#C9A84C" }}>الحالة</th>
+                      <th className="p-2 text-right" style={{ color: "#C9A84C" }}>الاسم</th>
+                      <th className="p-2 text-right" style={{ color: "#C9A84C" }}>الفئة</th>
+                      <th className="p-2 text-right" style={{ color: "#C9A84C" }}>السعر</th>
+                      <th className="p-2 text-right" style={{ color: "#C9A84C" }}>الصورة</th>
+                      <th className="p-2 text-right" style={{ color: "#C9A84C" }}>الخطأ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {importRows.map((row, i) => (
+                      <tr key={i} style={{ borderTop: "1px solid rgba(156,122,60,0.1)", background: row._valid ? "transparent" : "rgba(239,68,68,0.08)" }}>
+                        <td className="p-2">{row._valid ? <span className="text-green-400">✓ صالح</span> : <span className="text-red-400">✗ خطأ</span>}</td>
+                        <td className="p-2" style={{ color: "#F5EDD6" }}>{row.name}</td>
+                        <td className="p-2" style={{ color: "#A89060" }}>{row.category}</td>
+                        <td className="p-2" style={{ color: "#A89060" }}>{row.price}</td>
+                        <td className="p-2">
+                          {row.image ? (
+                            <a href={row.image} target="_blank" rel="noreferrer" className="text-blue-400 underline text-xs">رابط</a>
+                          ) : <span className="text-red-400">لا يوجد</span>}
+                        </td>
+                        <td className="p-2 text-red-400 text-xs">{row._error}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <Button
+                  onClick={() => {
+                    const valid = importRows.filter(r => r._valid);
+                    if (valid.length === 0) { toast.error("لا توجد منتجات صالحة للاستيراد"); return; }
+                    bulkCreateMutation.mutate({
+                      products: valid.map(r => ({
+                        name: r.name,
+                        nameEn: r.nameEn || "",
+                        category: r.category as "gifts" | "shields" | "catering" | "occasions" | "calligraphy",
+                        price: r.price,
+                        priceValue: r.priceValue,
+                        priceNote: r.priceNote || null,
+                        image: r.image,
+                        badge: r.badge || null,
+                        badgeColor: null,
+                        description: r.description,
+                        rating: 5,
+                        inStock: r.inStock,
+                        tags: r.tags || null,
+                        occasionKeys: null,
+                        sortOrder: r.sortOrder,
+                      }))
+                    });
+                  }}
+                  disabled={bulkCreateMutation.isPending}
+                  className="flex-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold"
+                >
+                  {bulkCreateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : `استيراد ${importRows.filter(r => r._valid).length} منتج`}
+                </Button>
+                <Button variant="outline" onClick={() => { setImportDialogOpen(false); setImportRows([]); }}
+                  style={{ borderColor: "rgba(156,122,60,0.3)", color: "#6B5A3E" }}>إلغاء</Button>
+              </div>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>
