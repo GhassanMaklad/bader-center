@@ -27,7 +27,9 @@ import {
   CheckCircle,
   Copy,
   CreditCard,
+  Download,
   Edit,
+  FileJson,
   ImagePlus,
   Loader2,
   LogOut,
@@ -717,6 +719,63 @@ export default function AdminDashboard() {
               ))}
             </SelectContent>
           </Select>
+          <Button
+            onClick={() => {
+              if (!products || products.length === 0) { toast.error("لا توجد منتجات للتصدير"); return; }
+              const json = JSON.stringify(products, null, 2);
+              const blob = new Blob([json], { type: "application/json" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `bader-products-${new Date().toISOString().slice(0,10)}.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+              toast.success(`تم تصدير ${products.length} منتج كـ JSON ✓`);
+            }}
+            variant="outline"
+            className="border-yellow-600 text-yellow-700 hover:bg-yellow-50"
+            title="تصدير JSON"
+          >
+            <FileJson className="w-4 h-4 ml-1" />
+            JSON
+          </Button>
+          <Button
+            onClick={() => {
+              if (!products || products.length === 0) { toast.error("لا توجد منتجات للتصدير"); return; }
+              const headers = ["الرقم","الاسم","الاسم الإنجليزي","الفئة","السعر","قيمة السعر","ملاحظة السعر","الوصف","متوفر","الشارة","الوسوم","رابط الصورة","تاريخ الإنشاء"];
+              const rows = products.map(p => [
+                p.id,
+                p.name,
+                p.nameEn ?? "",
+                p.category,
+                p.price,
+                p.priceValue ?? "",
+                p.priceNote ?? "",
+                (p.description ?? "").replace(/,/g, "،"),
+                p.inStock ? "نعم" : "لا",
+                p.badge ?? "",
+                p.tags ?? "",
+                p.image,
+                p.createdAt ? new Date(p.createdAt).toLocaleDateString("ar-KW") : "",
+              ]);
+              const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+              const BOM = "\uFEFF";
+              const blob = new Blob([BOM + csv], { type: "text/csv;charset=utf-8" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `bader-products-${new Date().toISOString().slice(0,10)}.csv`;
+              a.click();
+              URL.revokeObjectURL(url);
+              toast.success(`تم تصدير ${products.length} منتج كـ Excel ✓`);
+            }}
+            variant="outline"
+            className="border-green-600 text-green-700 hover:bg-green-50"
+            title="تصدير Excel"
+          >
+            <Download className="w-4 h-4 ml-1" />
+            Excel
+          </Button>
           <Button
             onClick={openAdd}
             className="bg-yellow-600 hover:bg-yellow-500 text-black font-bold"
